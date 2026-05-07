@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
 import { OriginPackSelector } from '@/components/game/OriginPackSelector';
 import { Input } from '@/components/ui/input';
