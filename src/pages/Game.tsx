@@ -1,0 +1,61 @@
+import { useEffect } from 'react';
+import { useGameStore } from '@/store/gameStore';
+import { GameHeader } from '@/components/layout/GameHeader';
+import { GameSidebar } from '@/components/layout/GameSidebar';
+import { GameCanvas } from '@/components/game/GameCanvas';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getElementById } from '@/lib/gameData';
+import { Sparkles } from 'lucide-react';
+
+export default function Game() {
+  const { currentPackId, restoreSession, selectedElementId, canvasOrbs } = useGameStore();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!currentPackId) {
+      navigate('/');
+    } else {
+      restoreSession();
+    }
+  }, [currentPackId, navigate, restoreSession]);
+  
+  if (!currentPackId) return null;
+  
+  const selectedElement = selectedElementId ? getElementById(selectedElementId) : null;
+  
+  return (
+    <div className="h-screen w-screen flex flex-col overflow-hidden bg-[hsl(260,20%,96%)]">
+      <GameHeader />
+      <div className="flex-1 flex overflow-hidden p-3 gap-3">
+        <div className="w-[280px] shrink-0 h-full hidden md:block">
+          <GameSidebar />
+        </div>
+        <div className="flex-1 h-full rounded-2xl overflow-hidden border border-indigo-100/60 shadow-xl relative">
+          <GameCanvas />
+          
+          {/* Floating selected element info */}
+          <AnimatePresence>
+            {selectedElement && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-indigo-100 shadow-lg flex items-center gap-2 pointer-events-none"
+              >
+                <span className="text-lg">{selectedElement.emoji}</span>
+                <span className="text-sm font-semibold text-indigo-900">{selectedElement.name}</span>
+                <span className="text-xs text-indigo-900/50 capitalize">({selectedElement.type})</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
+          {/* Orb count hint */}
+          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/60 backdrop-blur-sm border border-indigo-100/40 text-[10px] font-semibold text-indigo-900/50 pointer-events-none">
+            {canvasOrbs.length} orbs on canvas
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

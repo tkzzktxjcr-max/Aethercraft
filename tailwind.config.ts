@@ -52,6 +52,20 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        aether: {
+          cream: "hsl(260 20% 96%)",
+          lavender: "hsl(280 25% 92%)",
+          indigo: "hsl(260 30% 20%)",
+          muted: "hsl(260 15% 45%)",
+        },
+        element: {
+          energy: "hsl(25 95% 55%)",
+          liquid: "hsl(195 90% 55%)",
+          life: "hsl(145 75% 45%)",
+          cosmic: "hsl(270 80% 65%)",
+          matter: "hsl(35 60% 50%)",
+          gas: "hsl(200 80% 60%)",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -70,20 +84,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
