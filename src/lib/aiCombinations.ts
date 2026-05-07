@@ -63,7 +63,7 @@ export async function resolveCombination(
     return waitForPending(key);
   }
 
-  // 3. Appwrite lookup
+  // 3. Appwrite lookup par ID déterministe
   const { databases } = getAppwriteClient();
   if (databases) {
     try {
@@ -110,7 +110,7 @@ export async function resolveCombination(
       }
     } catch (e: any) {
       // 404 = pas trouvé, c'est normal, on continue
-      if (e.code !== 404) {
+      if (e.code !== 404 && e?.response?.code !== 404) {
         console.error('Appwrite lookup error:', e);
       }
     }
@@ -178,7 +178,7 @@ export async function resolveCombination(
           [Permission.read(Role.any()), Permission.update(Role.user(userId))]
         );
       } catch (e: any) {
-        if (e.code === 409) {
+        if (e.code === 409 || e?.response?.code === 409) {
           // Un autre joueur a déjà créé cet élément ! On récupère le sien
           const existingEl = await databases.getDocument(
             APPWRITE_CONFIG.databaseId,
@@ -215,7 +215,7 @@ export async function resolveCombination(
           [Permission.read(Role.any()), Permission.update(Role.user(userId))]
         );
       } catch (e: any) {
-        if (e.code === 409) {
+        if (e.code === 409 || e?.response?.code === 409) {
           // Un autre joueur a déjà créé cette combinaison ! On récupère la sienne
           const existingCombo = await databases.getDocument(
             APPWRITE_CONFIG.databaseId,
