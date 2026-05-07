@@ -5,30 +5,35 @@ import { useGameStore } from '@/store/gameStore';
 import { getElementById } from '@/lib/gameData';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { AIBadge } from '@/components/ai/AIBadge';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 
 export const InventoryPanel = () => {
   const { discoveredElements, addOrb, selectElement } = useGameStore();
   const [search, setSearch] = useState('');
-  
+
   const elements = discoveredElements
-    .map(id => getElementById(id))
+    .map((id) => getElementById(id))
     .filter((el): el is NonNullable<typeof el> => !!el)
-    .filter(el => 
-      search === '' || 
-      el.name.toLowerCase().includes(search.toLowerCase()) ||
-      el.properties.some(p => p.includes(search.toLowerCase()))
+    .filter(
+      (el) =>
+        search === '' ||
+        el.name.toLowerCase().includes(search.toLowerCase()) ||
+        el.properties.some((p) => p.includes(search.toLowerCase()))
     );
-  
-  const byType = elements.reduce((acc, el) => {
-    acc[el.type] = acc[el.type] || [];
-    acc[el.type].push(el);
-    return acc;
-  }, {} as Record<string, typeof elements>);
-  
+
+  const byType = elements.reduce(
+    (acc, el) => {
+      acc[el.type] = acc[el.type] || [];
+      acc[el.type].push(el);
+      return acc;
+    },
+    {} as Record<string, typeof elements>
+  );
+
   const typeOrder = ['energy', 'liquid', 'life', 'matter', 'gas', 'cosmic'];
-  
+
   return (
     <div className="flex flex-col h-full">
       <Input
@@ -39,7 +44,7 @@ export const InventoryPanel = () => {
       />
       <ScrollArea className="flex-1">
         <div className="space-y-4 pr-3 pb-4">
-          {typeOrder.map(type => {
+          {typeOrder.map((type) => {
             const items = byType[type];
             if (!items || items.length === 0) return null;
             return (
@@ -48,7 +53,7 @@ export const InventoryPanel = () => {
                   {type}
                 </h3>
                 <div className="grid grid-cols-3 gap-2">
-                  {items.map(el => (
+                  {items.map((el) => (
                     <motion.button
                       key={el.id}
                       whileHover={{ scale: 1.05, y: -2 }}
@@ -59,6 +64,11 @@ export const InventoryPanel = () => {
                       }}
                       className="flex flex-col items-center p-2 rounded-xl bg-white/60 hover:bg-white/90 border border-indigo-100/50 transition-colors group relative"
                     >
+                      {el.isAIGenerated && (
+                        <div className="absolute top-1 left-1">
+                          <AIBadge size="sm" />
+                        </div>
+                      )}
                       <span className="text-2xl leading-none">{el.emoji}</span>
                       <span className="text-[10px] font-semibold text-indigo-900 mt-1 truncate w-full text-center leading-tight">
                         {el.name}
@@ -72,7 +82,7 @@ export const InventoryPanel = () => {
               </div>
             );
           })}
-          
+
           {elements.length === 0 && (
             <p className="text-sm text-indigo-900/40 text-center py-8">
               {search ? 'No elements match your search' : 'No discoveries yet'}

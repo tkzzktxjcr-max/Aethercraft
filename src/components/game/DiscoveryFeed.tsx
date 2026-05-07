@@ -3,29 +3,41 @@
 import { useGameStore } from '@/store/gameStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Sparkles, Clock } from 'lucide-react';
+import { Sparkles, Clock, Globe } from 'lucide-react';
 
 export const DiscoveryFeed = () => {
-  const { recentDiscoveries } = useGameStore();
-  
+  const { globalDiscoveries } = useGameStore();
+
   const formatTime = (timestamp: number) => {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
     if (seconds < 60) return 'Just now';
     if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
     return `${Math.floor(seconds / 3600)}h ago`;
   };
-  
+
   return (
     <ScrollArea className="h-full">
       <div className="space-y-3 pr-3 pb-4">
+        <div className="flex items-center gap-1.5 mb-2 px-1">
+          <Globe className="w-3.5 h-3.5 text-indigo-900/40" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-900/50">
+            Global Discoveries
+          </span>
+        </div>
+
         <AnimatePresence initial={false}>
-          {recentDiscoveries.map((discovery, index) => (
+          {globalDiscoveries.map((discovery, index) => (
             <motion.div
               key={discovery.id}
               initial={{ opacity: 0, y: -20, scale: 0.92 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ delay: index * 0.03, type: 'spring', stiffness: 400, damping: 25 }}
+              transition={{
+                delay: index * 0.03,
+                type: 'spring',
+                stiffness: 400,
+                damping: 25,
+              }}
               className="p-3 rounded-xl bg-white/60 border border-indigo-100/40 backdrop-blur-sm shadow-sm"
             >
               <div className="flex items-center gap-2.5">
@@ -55,8 +67,8 @@ export const DiscoveryFeed = () => {
             </motion.div>
           ))}
         </AnimatePresence>
-        
-        {recentDiscoveries.length === 0 && (
+
+        {globalDiscoveries.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 text-indigo-900/30 gap-2">
             <Sparkles className="w-6 h-6 opacity-40" />
             <p className="text-sm">No discoveries yet</p>

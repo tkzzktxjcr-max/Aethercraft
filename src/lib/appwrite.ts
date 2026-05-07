@@ -1,39 +1,35 @@
-// Mock Appwrite client for MVP
-// Replace with actual Appwrite SDK when self-hosted backend is ready
+import { Client, Account, Databases, ID, Query, Permission, Role } from 'appwrite';
 
 export const APPWRITE_CONFIG = {
-  endpoint: import.meta.env.VITE_APPWRITE_ENDPOINT || 'http://localhost:80/v1',
-  projectId: import.meta.env.VITE_APPWRITE_PROJECT_ID || 'aethercraft',
+  endpoint: import.meta.env.VITE_APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1',
+  projectId: import.meta.env.VITE_APPWRITE_PROJECT_ID || '',
   databaseId: 'aethercraft_db',
   collections: {
-    elements: 'elements',
-    combinations: 'combinations',
-    packs: 'origin_packs',
-    users: 'users',
-  },
-  functions: {
-    combine: 'combineElements',
-    seed: 'seedDatabase',
-  },
-  realtimeChannels: {
-    combinations: 'databases.aethercraft_db.collections.combinations',
+    aiElements: 'ai_elements',
+    aiCombinations: 'ai_combinations',
+    userProfiles: 'user_profiles',
   },
 };
 
-export const mockAppwrite = {
-  database: {
-    listDocuments: async () => ({ documents: [] }),
-    createDocument: async () => ({}),
-    getDocument: async () => ({}),
-  },
-  functions: {
-    createExecution: async () => ({ response: '{}' }),
-  },
-  realtime: {
-    subscribe: () => ({ unsubscribe: () => {} }),
-  },
-  account: {
-    get: async () => null,
-    createAnonymousSession: async () => ({}),
-  },
-};
+let client: Client | null = null;
+let account: Account | null = null;
+let databases: Databases | null = null;
+
+export function initAppwrite() {
+  if (!APPWRITE_CONFIG.projectId) return false;
+  if (!client) {
+    client = new Client()
+      .setEndpoint(APPWRITE_CONFIG.endpoint)
+      .setProject(APPWRITE_CONFIG.projectId);
+    account = new Account(client);
+    databases = new Databases(client);
+  }
+  return true;
+}
+
+export function getAppwriteClient() {
+  initAppwrite();
+  return { client, account, databases };
+}
+
+export { client, account, databases, ID, Query };

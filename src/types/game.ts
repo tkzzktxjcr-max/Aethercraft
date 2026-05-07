@@ -6,6 +6,17 @@ export interface GameElement {
   emoji: string;
   properties: string[];
   type: ElementType;
+  isAIGenerated?: boolean;
+  createdBy?: string;
+  createdAt?: number;
+  discovererName?: string;
+}
+
+export interface AIElement extends GameElement {
+  isAIGenerated: true;
+  createdBy: string;
+  createdAt: number;
+  discovererName: string;
 }
 
 export interface Combination {
@@ -14,6 +25,20 @@ export interface Combination {
   elementB: string;
   result: string;
 }
+
+export interface AICombination {
+  id: string;
+  elementA: string;
+  elementB: string;
+  resultId: string;
+  discoveredBy: string;
+  discoveredAt: number;
+  discovererName: string;
+  resultName?: string;
+  resultEmoji?: string;
+}
+
+export type AIStatus = 'loading' | 'ready' | 'unavailable' | 'idle';
 
 export interface OriginPack {
   id: string;
@@ -29,6 +54,7 @@ export interface CanvasOrb {
   x: number;
   y: number;
   isNew?: boolean;
+  isGenerating?: boolean;
 }
 
 export interface Discovery {
@@ -39,4 +65,11 @@ export interface Discovery {
   timestamp: number;
   isFirst: boolean;
   discoverer: string;
+}
+
+export interface UserProfile {
+  userId: string;
+  displayName: string;
+  isAnonymous: boolean;
+  createdAt: number;
 }

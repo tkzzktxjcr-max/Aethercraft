@@ -6,12 +6,14 @@ import { GameCanvas } from '@/components/game/GameCanvas';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getElementById } from '@/lib/gameData';
+import { useWebLLM } from '@/hooks/useWebLLM';
+import { useRealtime } from '@/hooks/useRealtime';
 import { Sparkles } from 'lucide-react';
 
 export default function Game() {
   const { currentPackId, restoreSession, selectedElementId, canvasOrbs } = useGameStore();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (!currentPackId) {
       navigate('/');
@@ -19,11 +21,14 @@ export default function Game() {
       restoreSession();
     }
   }, [currentPackId, navigate, restoreSession]);
-  
+
+  useWebLLM();
+  useRealtime();
+
   if (!currentPackId) return null;
-  
+
   const selectedElement = selectedElementId ? getElementById(selectedElementId) : null;
-  
+
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-[hsl(260,20%,96%)]">
       <GameHeader />
@@ -33,8 +38,7 @@ export default function Game() {
         </div>
         <div className="flex-1 h-full rounded-2xl overflow-hidden border border-indigo-100/60 shadow-xl relative">
           <GameCanvas />
-          
-          {/* Floating selected element info */}
+
           <AnimatePresence>
             {selectedElement && (
               <motion.div
@@ -46,11 +50,15 @@ export default function Game() {
                 <span className="text-lg">{selectedElement.emoji}</span>
                 <span className="text-sm font-semibold text-indigo-900">{selectedElement.name}</span>
                 <span className="text-xs text-indigo-900/50 capitalize">({selectedElement.type})</span>
+                {selectedElement.isAIGenerated && (
+                  <span className="text-[10px] bg-violet-100 text-violet-700 px-1.5 py-0.5 rounded-full font-bold">
+                    ✨ IA
+                  </span>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
-          
-          {/* Orb count hint */}
+
           <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/60 backdrop-blur-sm border border-indigo-100/40 text-[10px] font-semibold text-indigo-900/50 pointer-events-none">
             {canvasOrbs.length} orbs on canvas
           </div>

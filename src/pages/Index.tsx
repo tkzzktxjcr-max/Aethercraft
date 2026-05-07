@@ -4,17 +4,48 @@ import { useGameStore } from '@/store/gameStore';
 import { OriginPackSelector } from '@/components/game/OriginPackSelector';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Sparkles, FlaskConical } from 'lucide-react';
+import { Sparkles, FlaskConical, User, LogIn } from 'lucide-react';
+import { loginWithEmail, registerWithEmail } from '@/lib/auth';
+import { showError } from '@/utils/toast';
 
 export default function Index() {
-  const { playerName, setPlayerName } = useGameStore();
-  const [step, setStep] = useState<'name' | 'packs'>('name');
-  
+  const { playerName, setPlayerName, initAuth } = useGameStore();
+  const [step, setStep] = useState<'auth' | 'name' | 'packs'>('auth');
+  const [showLogin, setShowLogin] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isRegister, setIsRegister] = useState(false);
+
+  const handleGuest = async () => {
+    await initAuth();
+    setStep('packs');
+  };
+
+  const handleContinue = () => {
+    if (playerName.trim()) setStep('packs');
+  };
+
+  const handleLogin = async () => {
+    try {
+      if (isRegister) {
+        await registerWithEmail(email, password, playerName || 'Alchemist');
+      } else {
+        await loginWithEmail(email, password);
+      }
+      await initAuth();
+      setStep('packs');
+    } catch (e: any) {
+      showError(e.message || 'Authentication failed');
+    }
+  };
+
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center p-6"
-      style={{ background: 'linear-gradient(135deg, hsl(260, 20%, 96%) 0%, hsl(280, 25%, 92%) 100%)' }}
+    <div
+      className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center p-6"
+      style={{
+        background: 'linear-gradient(135deg, hsl(260, 20%, 96%) 0%, hsl(280, 25%, 92%) 100%)',
+      }}
     >
-      {/* Floating ambient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(8)].map((_, i) => (
           <motion.div
@@ -23,7 +54,12 @@ export default function Index() {
             style={{
               width: 180 + i * 40,
               height: 180 + i * 40,
-              background: i % 3 === 0 ? 'hsl(270, 80%, 65%)' : i % 3 === 1 ? 'hsl(195, 90%, 55%)' : 'hsl(145, 75%, 45%)',
+              background:
+                i % 3 === 0
+                  ? 'hsl(270, 80%, 65%)'
+                  : i % 3 === 1
+                    ? 'hsl(195, 90%, 55%)'
+                    : 'hsl(145, 75%, 45%)',
               left: `${10 + i * 12}%`,
               top: `${15 + (i % 4) * 20}%`,
             }}
@@ -35,13 +71,13 @@ export default function Index() {
             transition={{
               duration: 10 + i * 3,
               repeat: Infinity,
-              ease: "easeInOut",
+              ease: 'easeInOut',
               delay: i * 1.5,
             }}
           />
         ))}
       </div>
-      
+
       <div className="relative z-10 w-full max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -59,41 +95,101 @@ export default function Index() {
             Discover infinite combinations. Craft your world from pure essence.
           </p>
         </motion.div>
-        
+
         <AnimatePresence mode="wait">
-          {step === 'name' ? (
+          {step === 'auth' && (
             <motion.div
-              key="name"
+              key="auth"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
               className="max-w-sm mx-auto"
             >
-              <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 border border-white/60 shadow-xl">
-                <label className="block text-sm font-semibold text-indigo-900 mb-2">
-                  What should we call you?
-                </label>
+              <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 border border-white/60 shadow-xl space-y-4">
+                <h2 className="text-lg font-bold text-indigo-900 text-center">Welcome, Alchemist</h2>
+
+                <Button
+                  className="w-full h-11 bg-violet-600 hover:bg-violet-700 text-white font-semibold"
+                  onClick={handleGuest}
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Play as Guest
+                </Button>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-indigo-100" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-2 text-indigo-900/50">or use a name</span>
+                  </div>
+                </div>
+
                 <Input
                   value={playerName}
                   onChange={(e) => setPlayerName(e.target.value)}
                   placeholder="Enter your name..."
-                  className="mb-4 bg-white/60 border-indigo-100 h-11"
+                  className="bg-white/60 border-indigo-100 h-11"
                   maxLength={20}
-                  onKeyDown={(e) => e.key === 'Enter' && playerName.trim() && setStep('packs')}
-                  autoFocus
+                  onKeyDown={(e) => e.key === 'Enter' && playerName.trim() && handleContinue()}
                 />
-                <Button 
-                  className="w-full h-11 bg-violet-600 hover:bg-violet-700 text-white font-semibold"
+                <Button
+                  className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
                   disabled={!playerName.trim()}
-                  onClick={() => setStep('packs')}
+                  onClick={handleContinue}
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
                   Continue
                 </Button>
+
+                <Button
+                  variant="ghost"
+                  className="w-full h-10 text-indigo-900/60 hover:text-indigo-900"
+                  onClick={() => setShowLogin(!showLogin)}
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  {showLogin ? 'Hide login' : 'Sign In / Register'}
+                </Button>
+
+                {showLogin && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    className="space-y-3 pt-2"
+                  >
+                    <Input
+                      placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="bg-white/60 border-indigo-100 h-10"
+                    />
+                    <Input
+                      type="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="bg-white/60 border-indigo-100 h-10"
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        className="flex-1 h-10 border-indigo-200"
+                        onClick={() => setIsRegister(!isRegister)}
+                      >
+                        {isRegister ? 'Switch to Login' : 'Switch to Register'}
+                      </Button>
+                      <Button className="flex-1 h-10 bg-violet-600" onClick={handleLogin}>
+                        {isRegister ? 'Register' : 'Login'}
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
               </div>
             </motion.div>
-          ) : (
+          )}
+
+          {step === 'packs' && (
             <motion.div
               key="packs"
               initial={{ opacity: 0 }}
@@ -104,11 +200,11 @@ export default function Index() {
                 Choose your Origin
               </h2>
               <OriginPackSelector />
-              <button 
-                onClick={() => setStep('name')}
+              <button
+                onClick={() => setStep('auth')}
                 className="block mx-auto mt-8 text-sm text-indigo-900/40 hover:text-indigo-900 font-medium transition-colors"
               >
-                ← Change name
+                ← Back to auth
               </button>
             </motion.div>
           )}

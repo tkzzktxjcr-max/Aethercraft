@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CanvasOrb, Discovery, GameElement } from '@/types/game';
-import { getElementById, findCombination, ORIGIN_PACKS } from '@/lib/gameData';
+import type { CanvasOrb, Discovery, GameElement, AIElement, AICombination, AIStatus } from '@/types/game';
+import { getElementById, findCombination, ORIGIN_PACKS, ELEMENTS } from '@/lib/gameData';
+import { resolveCombination, hydrateAICache, getAIComboKey } from '@/lib/aiCombinations';
+import { initAuth } from '@/lib/auth';
 
 let idCounter = 0;
 const genId = () => `orb_${++idCounter}_${Date.now().toString(36)}`;
@@ -14,13 +16,26 @@ interface GameState {
   selectedElementId: string | null;
   recentDiscoveries: Discovery[];
   sidebarTab: 'inventory' | 'tree' | 'feed';
-  
+  isGenerating: boolean;
+  generatingElements: [string, string] | null;
+  aiElements: Record<string, AIElement>;
+  aiCombinations: Record<string, AICombination>;
+  aiStatus: AIStatus;
+  userId: string;
+  displayName: string;
+  isAnonymous: boolean;
+  globalDiscoveries: Discovery[];
+
   setPlayerName: (name: string) => void;
+  setUser: (userId: string, displayName: string, isAnonymous: boolean) => void;
+  setAIStatus: (status: AIStatus) => void;
+  addGlobalDiscovery: (discovery: Discovery) => void;
+  initAuth: () => Promise<void>;
   selectPack: (packId: string) => void;
   addOrb: (elementId: string, x?: number, y?: number) => void;
   removeOrb: (orbId: string) => void;
   moveOrb: (orbId: string, x: number, y: number) => void;
-  tryCombine: (orbAId: string, orbBId: string) => { success: boolean; result?: GameElement };
+  tryCombine: (orbAId: string, orbBId: string) => Promise<{ success: boolean; result?: GameElement }>;
   selectElement: (elementId: string | null) => void;
   setSidebarTab: (tab: 'inventory' | 'tree' | 'feed') => void;
   restoreSession: () => void;
@@ -37,11 +52,38 @@ export const useGameStore = create<GameState>()(
       selectedElementId: null,
       recentDiscoveries: [],
       sidebarTab: 'inventory',
-      
+      isGenerating: false,
+      generatingElements: null,
+      aiElements: {},
+      aiCombinations: {},
+      aiStatus: 'idle',
+      userId: '',
+      displayName: '',
+      isAnonymous: true,
+      globalDiscoveries: [],
+
       setPlayerName: (name) => set({ playerName: name }),
-      
+      setUser: (userId, displayName, isAnonymous) => set({ userId, displayName, isAnonymous }),
+      setAIStatus: (status) => set({ aiStatus: status }),
+      addGlobalDiscovery: (discovery) =>
+        set((state) => ({
+          globalDiscoveries: [discovery, ...state.globalDiscoveries].slice(0, 50),
+        })),
+
+      initAuth: async () => {
+        const profile = await initAuth();
+        if (profile) {
+          set({
+            userId: profile.userId,
+            displayName: profile.displayName,
+            isAnonymous: profile.isAnonymous,
+            playerName: profile.displayName,
+          });
+        }
+      },
+
       selectPack: (packId) => {
-        const pack = ORIGIN_PACKS.find(p => p.id === packId);
+        const pack = ORIGIN_PACKS.find((p) => p.id === packId);
         if (!pack) return;
         const starters = pack.elements;
         set({
@@ -58,7 +100,7 @@ export const useGameStore = create<GameState>()(
           recentDiscoveries: [],
         });
       },
-      
+
       addOrb: (elementId, x, y) => {
         const orb: CanvasOrb = {
           id: genId(),
@@ -67,82 +109,156 @@ export const useGameStore = create<GameState>()(
           y: y ?? 350 + Math.random() * 80,
           isNew: false,
         };
-        set(state => ({ canvasOrbs: [...state.canvasOrbs, orb] }));
+        set((state) => ({ canvasOrbs: [...state.canvasOrbs, orb] }));
       },
-      
+
       removeOrb: (orbId) => {
-        set(state => ({ canvasOrbs: state.canvasOrbs.filter(o => o.id !== orbId) }));
+        set((state) => ({ canvasOrbs: state.canvasOrbs.filter((o) => o.id !== orbId) }));
       },
-      
+
       moveOrb: (orbId, x, y) => {
-        set(state => ({
-          canvasOrbs: state.canvasOrbs.map(o => o.id === orbId ? { ...o, x, y } : o),
+        set((state) => ({
+          canvasOrbs: state.canvasOrbs.map((o) => (o.id === orbId ? { ...o, x, y } : o)),
         }));
       },
-      
-      tryCombine: (orbAId, orbBId) => {
+
+      tryCombine: async (orbAId, orbBId) => {
         const state = get();
-        const orbA = state.canvasOrbs.find(o => o.id === orbAId);
-        const orbB = state.canvasOrbs.find(o => o.id === orbBId);
+        if (state.isGenerating) return { success: false };
+
+        const orbA = state.canvasOrbs.find((o) => o.id === orbAId);
+        const orbB = state.canvasOrbs.find((o) => o.id === orbBId);
         if (!orbA || !orbB || orbAId === orbBId) return { success: false };
-        
+
         const resultId = findCombination(orbA.elementId, orbB.elementId);
-        if (!resultId) return { success: false };
-        
-        const resultElement = getElementById(resultId);
-        if (!resultElement) return { success: false };
-        
-        const isNew = !state.discoveredElements.includes(resultId);
-        
-        const newOrb: CanvasOrb = {
-          id: genId(),
-          elementId: resultId,
-          x: (orbA.x + orbB.x) / 2,
-          y: (orbA.y + orbB.y) / 2,
-          isNew: true,
-        };
-        
-        const discovery: Discovery = {
-          id: genId(),
-          elementId: resultId,
-          elementName: resultElement.name,
-          elementEmoji: resultElement.emoji,
-          timestamp: Date.now(),
-          isFirst: true,
-          discoverer: state.playerName || 'You',
-        };
-        
-        set({
-          canvasOrbs: [
-            ...state.canvasOrbs.filter(o => o.id !== orbAId && o.id !== orbBId),
-            newOrb,
-          ],
-          discoveredElements: isNew 
-            ? [...state.discoveredElements, resultId]
-            : state.discoveredElements,
-          recentDiscoveries: [discovery, ...state.recentDiscoveries].slice(0, 50),
-          selectedElementId: resultId,
-        });
-        
-        // Clear isNew flag after animation
-        setTimeout(() => {
-          set(s => ({
-            canvasOrbs: s.canvasOrbs.map(o => 
-              o.id === newOrb.id ? { ...o, isNew: false } : o
-            ),
-          }));
-        }, 2000);
-        
-        return { success: true, result: resultElement };
+
+        if (resultId) {
+          const resultElement = getElementById(resultId);
+          if (!resultElement) return { success: false };
+
+          const isNew = !state.discoveredElements.includes(resultId);
+          const newOrb: CanvasOrb = {
+            id: genId(),
+            elementId: resultId,
+            x: (orbA.x + orbB.x) / 2,
+            y: (orbA.y + orbB.y) / 2,
+            isNew: true,
+          };
+
+          const discovery: Discovery = {
+            id: genId(),
+            elementId: resultId,
+            elementName: resultElement.name,
+            elementEmoji: resultElement.emoji,
+            timestamp: Date.now(),
+            isFirst: isNew,
+            discoverer: state.displayName || state.playerName || 'You',
+          };
+
+          set({
+            canvasOrbs: [...state.canvasOrbs.filter((o) => o.id !== orbAId && o.id !== orbBId), newOrb],
+            discoveredElements: isNew ? [...state.discoveredElements, resultId] : state.discoveredElements,
+            recentDiscoveries: [discovery, ...state.recentDiscoveries].slice(0, 50),
+            globalDiscoveries: [discovery, ...state.globalDiscoveries].slice(0, 50),
+            selectedElementId: resultId,
+          });
+
+          setTimeout(() => {
+            set((s) => ({
+              canvasOrbs: s.canvasOrbs.map((o) => (o.id === newOrb.id ? { ...o, isNew: false } : o)),
+            }));
+          }, 2000);
+
+          return { success: true, result: resultElement };
+        }
+
+        // AI fallback
+        if (state.aiStatus !== 'ready') return { success: false };
+
+        set({ isGenerating: true, generatingElements: [orbA.elementId, orbB.elementId] });
+
+        try {
+          const resolved = await resolveCombination(
+            orbA.elementId,
+            orbB.elementId,
+            state.userId || 'guest',
+            state.displayName || state.playerName || 'Guest'
+          );
+
+          set({ isGenerating: false, generatingElements: null });
+
+          if (!resolved) return { success: false };
+
+          const { element, isNew } = resolved;
+          ELEMENTS[element.id] = element;
+
+          const newOrb: CanvasOrb = {
+            id: genId(),
+            elementId: element.id,
+            x: (orbA.x + orbB.x) / 2,
+            y: (orbA.y + orbB.y) / 2,
+            isNew: true,
+          };
+
+          const discovery: Discovery = {
+            id: genId(),
+            elementId: element.id,
+            elementName: element.name,
+            elementEmoji: element.emoji,
+            timestamp: Date.now(),
+            isFirst: isNew,
+            discoverer: element.discovererName || state.displayName || 'You',
+          };
+
+          const comboKey = getAIComboKey(orbA.elementId, orbB.elementId);
+
+          set({
+            canvasOrbs: [...state.canvasOrbs.filter((o) => o.id !== orbAId && o.id !== orbBId), newOrb],
+            discoveredElements: state.discoveredElements.includes(element.id)
+              ? state.discoveredElements
+              : [...state.discoveredElements, element.id],
+            recentDiscoveries: [discovery, ...state.recentDiscoveries].slice(0, 50),
+            globalDiscoveries: [discovery, ...state.globalDiscoveries].slice(0, 50),
+            selectedElementId: element.id,
+            aiElements: { ...state.aiElements, [element.id]: element },
+            aiCombinations: {
+              ...state.aiCombinations,
+              [comboKey]: {
+                id: comboKey,
+                elementA: orbA.elementId,
+                elementB: orbB.elementId,
+                resultId: element.id,
+                discoveredBy: state.userId || 'guest',
+                discoveredAt: Date.now(),
+                discovererName: state.displayName || 'Guest',
+                resultName: element.name,
+                resultEmoji: element.emoji,
+              },
+            },
+          });
+
+          setTimeout(() => {
+            set((s) => ({
+              canvasOrbs: s.canvasOrbs.map((o) => (o.id === newOrb.id ? { ...o, isNew: false } : o)),
+            }));
+          }, 2000);
+
+          return { success: true, result: element };
+        } catch (e) {
+          set({ isGenerating: false, generatingElements: null });
+          return { success: false };
+        }
       },
-      
+
       selectElement: (id) => set({ selectedElementId: id }),
       setSidebarTab: (tab) => set({ sidebarTab: tab }),
-      
+
       restoreSession: () => {
         const state = get();
+        hydrateAICache(state.aiElements, state.aiCombinations);
+
         if (state.currentPackId && state.canvasOrbs.length === 0) {
-          const pack = ORIGIN_PACKS.find(p => p.id === state.currentPackId);
+          const pack = ORIGIN_PACKS.find((p) => p.id === state.currentPackId);
           if (pack) {
             set({
               canvasOrbs: pack.elements.map((elId, i) => ({
@@ -156,14 +272,16 @@ export const useGameStore = create<GameState>()(
           }
         }
       },
-      
-      resetGame: () => set({
-        discoveredElements: [],
-        canvasOrbs: [],
-        selectedElementId: null,
-        recentDiscoveries: [],
-        currentPackId: null,
-      }),
+
+      resetGame: () =>
+        set({
+          discoveredElements: [],
+          canvasOrbs: [],
+          selectedElementId: null,
+          recentDiscoveries: [],
+          currentPackId: null,
+          globalDiscoveries: [],
+        }),
     }),
     {
       name: 'aethercraft-storage',
@@ -172,6 +290,12 @@ export const useGameStore = create<GameState>()(
         discoveredElements: state.discoveredElements,
         currentPackId: state.currentPackId,
         recentDiscoveries: state.recentDiscoveries,
+        aiElements: state.aiElements,
+        aiCombinations: state.aiCombinations,
+        userId: state.userId,
+        displayName: state.displayName,
+        isAnonymous: state.isAnonymous,
+        globalDiscoveries: state.globalDiscoveries,
       }),
     }
   )
