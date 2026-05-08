@@ -5,17 +5,19 @@ import { GameSidebar } from '@/components/layout/GameSidebar';
 import { GameCanvas } from '@/components/game/GameCanvas';
 import { GameModeSelector } from '@/components/game/GameModeSelector';
 import { PuzzlePanel } from '@/components/game/PuzzlePanel';
+import { PuzzleSelector } from '@/components/game/PuzzleSelector';
 import { DailyChallenge } from '@/components/game/DailyChallenge';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getElementById } from '@/lib/gameData';
 import { useWebLLM } from '@/hooks/useWebLLM';
 import { useRealtime } from '@/hooks/useRealtime';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Puzzle, CalendarDays, Swords } from 'lucide-react';
 
 export default function Game() {
   const { currentPackId, restoreSession, selectedElementId, canvasOrbs, gameMode } = useGameStore();
   const [showModeSelector, setShowModeSelector] = useState(false);
+  const [showPuzzleSelector, setShowPuzzleSelector] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +35,20 @@ export default function Game() {
 
   const selectedElement = selectedElementId ? getElementById(selectedElementId) : null;
 
+  const modeIcons: Record<string, React.ReactNode> = {
+    sandbox: <Sparkles className="w-3 h-3 inline mr-1" />,
+    puzzle: <Puzzle className="w-3 h-3 inline mr-1" />,
+    daily: <CalendarDays className="w-3 h-3 inline mr-1" />,
+    versus: <Swords className="w-3 h-3 inline mr-1" />,
+  };
+
+  const modeLabels: Record<string, string> = {
+    sandbox: 'Sandbox',
+    puzzle: 'Puzzle',
+    daily: 'Daily',
+    versus: 'Versus',
+  };
+
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-[hsl(260,20%,96%)]">
       <GameHeader />
@@ -46,17 +62,24 @@ export default function Game() {
           {/* Mode overlays */}
           {gameMode === 'puzzle' && <PuzzlePanel />}
           {gameMode === 'daily' && <DailyChallenge />}
-          {gameMode === 'sandbox' && (
-            <button
-              onClick={() => setShowModeSelector(true)}
-              className="absolute top-3 left-3 z-20 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-sm border border-indigo-100/40 text-xs font-semibold text-indigo-900/70 hover:bg-white/90 transition-colors"
-            >
-              <Sparkles className="w-3 h-3 inline mr-1" />
-              Change Mode
-            </button>
-          )}
+
+          {/* Mode selector button - now visible in ALL modes */}
+          <button
+            onClick={() => {
+              if (gameMode === 'puzzle') {
+                setShowPuzzleSelector(true);
+              } else {
+                setShowModeSelector(true);
+              }
+            }}
+            className="absolute top-3 left-3 z-20 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-sm border border-indigo-100/40 text-xs font-semibold text-indigo-900/70 hover:bg-white/90 transition-colors flex items-center"
+          >
+            {modeIcons[gameMode]}
+            {gameMode === 'puzzle' ? 'Select Puzzle' : `Change Mode (${modeLabels[gameMode]})`}
+          </button>
 
           <GameModeSelector open={showModeSelector} onClose={() => setShowModeSelector(false)} />
+          <PuzzleSelector open={showPuzzleSelector} onClose={() => setShowPuzzleSelector(false)} />
 
           <AnimatePresence>
             {selectedElement && (
