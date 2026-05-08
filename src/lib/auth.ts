@@ -1,6 +1,5 @@
 import { ID } from 'appwrite';
 import { getAppwriteClient, APPWRITE_CONFIG } from './appwrite';
-import { showError } from '@/utils/toast';
 import type { UserProfile } from '@/types/game';
 
 function generateGuestName(): string {
@@ -30,30 +29,31 @@ export async function initAuth(): Promise<UserProfile> {
   }
 
   let user: any = null;
+
+  // 1. Essayer de récupérer l'utilisateur actuel
   try {
     user = await account.get();
   } catch {
-    // Pas de session active, on en crée une anonyme
+    // 2. Pas de session active → en créer une anonyme
     try {
       await account.createAnonymousSession();
-      user = await account.get();
     } catch (e: any) {
-      // Si l'erreur indique qu'une session existe déjà, on récupère l'utilisateur
-      if (e?.message?.includes('session is active') || e?.code === 401) {
-        try {
-          user = await account.get();
-        } catch {
-          return getLocalProfile();
-        }
-      } else {
-        return getLocalProfile();
-      }
+      // Session peut déjà exister ou autre erreur → on ignore et on réessaye get()
+      console.log('Session creation skipped:', e?.message || e);
+    }
+
+    // 3. Récupérer l'utilisateur (session existante ou nouvelle)
+    try {
+      user = await account.get();
+    } catch {
+      return getLocalProfile();
     }
   }
 
   if (!user) return getLocalProfile();
   if (!databases) return getLocalProfile();
 
+  // 4. Récupérer ou créer le profil dans la base
   try {
     const doc = await databases.getDocument(
       APPWRITE_CONFIG.databaseId,
