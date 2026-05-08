@@ -4,9 +4,9 @@ import { useGameStore } from '@/store/gameStore';
 import { OriginPackSelector } from '@/components/game/OriginPackSelector';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Sparkles, FlaskConical, User, LogIn } from 'lucide-react';
+import { Sparkles, FlaskConical, User, LogIn, AlertCircle } from 'lucide-react';
 import { loginWithEmail, registerWithEmail } from '@/lib/auth';
-import { showError } from '@/utils/toast';
+import { showError, showSuccess } from '@/utils/toast';
 
 export default function Index() {
   const { playerName, setPlayerName, initAuth } = useGameStore();
@@ -15,10 +15,20 @@ export default function Index() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRegister, setIsRegister] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState('');
 
   const handleGuest = async () => {
-    await initAuth();
-    setStep('packs');
+    setIsLoading(true);
+    setAuthError('');
+    try {
+      await initAuth();
+      setStep('packs');
+    } catch (e: any) {
+      setAuthError(e?.message || 'Failed to start guest session');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleContinue = () => {
@@ -26,16 +36,27 @@ export default function Index() {
   };
 
   const handleLogin = async () => {
+    setAuthError('');
+    if (!email.trim() || !password.trim()) {
+      setAuthError('Please enter both email and password');
+      return;
+    }
+    setIsLoading(true);
     try {
       if (isRegister) {
         await registerWithEmail(email, password, playerName || 'Alchemist');
+        showSuccess('Account created successfully!');
       } else {
         await loginWithEmail(email, password);
+        showSuccess('Logged in successfully!');
       }
       await initAuth();
       setStep('packs');
     } catch (e: any) {
-      showError(e.message || 'Authentication failed');
+      setAuthError(e?.message || 'Authentication failed');
+      showError(e?.message || 'Authentication failed');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -112,9 +133,10 @@ export default function Index() {
                 <Button
                   className="w-full h-11 bg-violet-600 hover:bg-violet-700 text-white font-semibold"
                   onClick={handleGuest}
+                  disabled={isLoading}
                 >
                   <User className="w-4 h-4 mr-2" />
-                  Play as Guest
+                  {isLoading ? 'Loading...' : 'Play as Guest'}
                 </Button>
 
                 <div className="relative">
@@ -146,7 +168,10 @@ export default function Index() {
                 <Button
                   variant="ghost"
                   className="w-full h-10 text-indigo-900/60 hover:text-indigo-900"
-                  onClick={() => setShowLogin(!showLogin)}
+                  onClick={() => {
+                    setShowLogin(!showLogin);
+                    setAuthError('');
+                  }}
                 >
                   <LogIn className="w-4 h-4 mr-2" />
                   {showLogin ? 'Hide login' : 'Sign In / Register'}
@@ -158,11 +183,18 @@ export default function Index() {
                     animate={{ height: 'auto', opacity: 1 }}
                     className="space-y-3 pt-2"
                   >
+                    {authError && (
+                      <div className="flex items-start gap-2 p-3 rounded-lg bg-red-50 border border-red-100 text-red-700 text-xs">
+                        <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                        <span>{authError}</span>
+                      </div>
+                    )}
                     <Input
                       placeholder="Email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="bg-white/60 border-indigo-100 h-10"
+                      type="email"
                     />
                     <Input
                       type="password"
@@ -175,12 +207,19 @@ export default function Index() {
                       <Button
                         variant="outline"
                         className="flex-1 h-10 border-indigo-200"
-                        onClick={() => setIsRegister(!isRegister)}
+                        onClick={() => {
+                          setIsRegister(!isRegister);
+                          setAuthError('');
+                        }}
                       >
                         {isRegister ? 'Switch to Login' : 'Switch to Register'}
                       </Button>
-                      <Button className="flex-1 h-10 bg-violet-600" onClick={handleLogin}>
-                        {isRegister ? 'Register' : 'Login'}
+                      <Button 
+                        className="flex-1 h-10 bg-violet-600" 
+                        onClick={handleLogin}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? '...' : (isRegister ? 'Register' : 'Login')}
                       </Button>
                     </div>
                   </motion.div>

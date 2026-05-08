@@ -30,19 +30,15 @@ export async function initAuth(): Promise<UserProfile> {
 
   let user: any = null;
 
-  // 1. Essayer de récupérer l'utilisateur actuel
   try {
     user = await account.get();
   } catch {
-    // 2. Pas de session active → en créer une anonyme
     try {
       await account.createAnonymousSession();
     } catch (e: any) {
-      // Session peut déjà exister ou autre erreur → on ignore et on réessaye get()
-      console.log('Session creation skipped:', e?.message || e);
+      console.log('Anonymous session creation skipped:', e?.message || e);
     }
 
-    // 3. Récupérer l'utilisateur (session existante ou nouvelle)
     try {
       user = await account.get();
     } catch {
@@ -53,7 +49,6 @@ export async function initAuth(): Promise<UserProfile> {
   if (!user) return getLocalProfile();
   if (!databases) return getLocalProfile();
 
-  // 4. Récupérer ou créer le profil dans la base
   try {
     const doc = await databases.getDocument(
       APPWRITE_CONFIG.databaseId,
@@ -90,14 +85,42 @@ export async function initAuth(): Promise<UserProfile> {
 export async function loginWithEmail(email: string, password: string): Promise<void> {
   const { account } = getAppwriteClient();
   if (!account) throw new Error('Appwrite not configured');
-  await account.createEmailPasswordSession(email, password);
+  try {
+    await account.createEmailPasswordSession(email, password);
+  } catch (e: any) {
+    if (e?.code === 401 || e?.message?.includes('Invalid credentials')) {
+      throw new Error('Invalid email or password. Please check your credentials or register first.');
+    }
+    if (e?.code === 403 || e?.message?.includes('disabled') || e?.message?.includes('not enabled')) {
+      throw new Error('Email authentication is disabled in Appwrite console. Please enable it or use Guest mode.');
+    }
+    throw new Error(e?.message || 'Login failed. Please try again.');
+  }
 }
 
 export async function registerWithEmail(email: string, password: string, name: string): Promise<void> {
   const { account } = getAppwriteClient();
   if (!account) throw new Error('Appwrite not configured');
-  await account.create(ID.unique(), email, password, name);
-  await account.createEmailPasswordSession(email, password);
+  try {
+    await account.create(ID.unique(), email, password, name);
+  } catch (e: any) {
+    if (e?.code === 409 || e?.message?.includes('already exists')) {
+      throw new Error('An account with this email already exists. Please login instead.');
+    }
+    if (e?.code === 403 || e?.message?.includes('disabled') || e?.message?.includes('not enabled')) {
+      throw new Error('Email registration is disabled in Appwrite console. Please enable it or use Guest mode.');
+    }
+    throw new Error(e?.message || 'Registration failed. Please try again.');
+  }
+
+  try {
+    await account.createEmailPasswordSession(email, password);
+  } catch (e: any) {
+    if (e?.code === 401) {
+      throw new Error('Account created but login failed. Please try logging in manually.');
+    }
+    throw new Error(e?.message || 'Session creation failed.');
+  }
 }
 
 export async function updateDisplayName(name: string): Promise<void> {
