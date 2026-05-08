@@ -33,14 +33,25 @@ export async function initAuth(): Promise<UserProfile> {
   try {
     user = await account.get();
   } catch {
+    // Pas de session active, on en crée une anonyme
     try {
       await account.createAnonymousSession();
       user = await account.get();
-    } catch (e) {
-      return getLocalProfile();
+    } catch (e: any) {
+      // Si l'erreur indique qu'une session existe déjà, on récupère l'utilisateur
+      if (e?.message?.includes('session is active') || e?.code === 401) {
+        try {
+          user = await account.get();
+        } catch {
+          return getLocalProfile();
+        }
+      } else {
+        return getLocalProfile();
+      }
     }
   }
 
+  if (!user) return getLocalProfile();
   if (!databases) return getLocalProfile();
 
   try {
@@ -67,8 +78,7 @@ export async function initAuth(): Promise<UserProfile> {
           displayName: name,
           isAnonymous: true,
           createdAt: new Date().toISOString(),
-        },
-        [Permission.read(Role.any()), Permission.update(Role.user(user.$id))]
+        }
       );
     } catch {
       // ignore
