@@ -11,8 +11,21 @@ const localElementCache = new Map<string, AIElement>();
 const pendingGenerations = new Set<string>();
 const pendingResolvers = new Map<string, Array<(result: { element: AIElement; isNew: boolean } | null) => void>>();
 
+function hashKey(a: string, b: string): string {
+  const sorted = [a, b].sort().join('+');
+  // FNV-1a hash
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < sorted.length; i++) {
+    hash ^= sorted.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  const base36 = (hash >>> 0).toString(36);
+  // Prefix with 'c' to ensure starts with letter, pad to 12 chars max
+  return `c${base36.padStart(11, '0').slice(0, 20)}`;
+}
+
 export function getAIComboKey(a: string, b: string): string {
-  return [a, b].sort().join('+');
+  return hashKey(a, b);
 }
 
 export function hydrateAICache(
@@ -63,7 +76,7 @@ export async function resolveCombination(
     return waitForPending(key);
   }
 
-  // 3. Appwrite lookup par ID déterministe
+  // 3. Appwrite lookup par ID déterministe (hash court)
   const { databases } = getAppwriteClient();
   if (databases) {
     try {
@@ -130,7 +143,7 @@ export async function resolveCombination(
     }
 
     const generated = await generateElement(elA, elB, engine);
-    const elementId = `ai_${key.replace(/\+/g, '_')}`;
+    const elementId = key; // même hash court que la combinaison
 
     const aiElement: AIElement = {
       id: elementId,
@@ -156,14 +169,14 @@ export async function resolveCombination(
       resultEmoji: aiElement.emoji,
     };
 
-    // 6. Sauvegarde atomique dans Appwrite avec ID déterministes
+    // 6. Sauvegarde atomique dans Appwrite avec ID déterministe (hash court)
     if (databases) {
       try {
         // On essaie d'abord de créer l'élément avec un ID fixe
         await databases.createDocument(
           APPWRITE_CONFIG.databaseId,
           APPWRITE_CONFIG.collections.aiElements,
-          elementId, // $id déterministe !
+          elementId, // $id déterministe et court !
           {
             id: elementId,
             name: aiElement.name,
@@ -199,7 +212,7 @@ export async function resolveCombination(
         await databases.createDocument(
           APPWRITE_CONFIG.databaseId,
           APPWRITE_CONFIG.collections.aiCombinations,
-          key, // $id déterministe = comboKey !
+          key, // $id déterministe et court !
           {
             id: key,
             comboKey: key,
