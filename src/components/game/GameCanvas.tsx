@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { ElementOrb } from '@/components/ui/ElementOrb';
 import { AIGeneratingOverlay } from '@/components/ai/AIGeneratingOverlay';
+import { FusionEffect } from './FusionEffect';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ELEMENTS } from '@/lib/gameData';
 
@@ -39,6 +40,8 @@ export const GameCanvas = () => {
           backgroundSize: '32px 32px',
         }}
       />
+
+      <FusionEffect />
 
       <AnimatePresence mode="popLayout">
         {canvasOrbs.map((orb) => {

@@ -1,8 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { GameHeader } from '@/components/layout/GameHeader';
 import { GameSidebar } from '@/components/layout/GameSidebar';
 import { GameCanvas } from '@/components/game/GameCanvas';
+import { GameModeSelector } from '@/components/game/GameModeSelector';
+import { PuzzlePanel } from '@/components/game/PuzzlePanel';
+import { DailyChallenge } from '@/components/game/DailyChallenge';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getElementById } from '@/lib/gameData';
@@ -11,7 +14,8 @@ import { useRealtime } from '@/hooks/useRealtime';
 import { Sparkles } from 'lucide-react';
 
 export default function Game() {
-  const { currentPackId, restoreSession, selectedElementId, canvasOrbs } = useGameStore();
+  const { currentPackId, restoreSession, selectedElementId, canvasOrbs, gameMode } = useGameStore();
+  const [showModeSelector, setShowModeSelector] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,6 +42,21 @@ export default function Game() {
         </div>
         <div className="flex-1 h-full rounded-2xl overflow-hidden border border-indigo-100/60 shadow-xl relative">
           <GameCanvas />
+
+          {/* Mode overlays */}
+          {gameMode === 'puzzle' && <PuzzlePanel />}
+          {gameMode === 'daily' && <DailyChallenge />}
+          {gameMode === 'sandbox' && (
+            <button
+              onClick={() => setShowModeSelector(true)}
+              className="absolute top-3 left-3 z-20 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-sm border border-indigo-100/40 text-xs font-semibold text-indigo-900/70 hover:bg-white/90 transition-colors"
+            >
+              <Sparkles className="w-3 h-3 inline mr-1" />
+              Change Mode
+            </button>
+          )}
+
+          <GameModeSelector open={showModeSelector} onClose={() => setShowModeSelector(false)} />
 
           <AnimatePresence>
             {selectedElement && (
