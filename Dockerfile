@@ -6,14 +6,18 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm
 
-# Copy dependency files
+# Copy dependency files  
 COPY package.json pnpm-lock.yaml ./
 
-# Install deps (ignore peer deps for lockfile consistency)
-RUN pnpm install --no-frozen-lockfile
+# Install deps (approve build scripts for native modules like esbuild)
+RUN echo "auto-install-peers=true" > .npmrc && pnpm install --no-frozen-lockfile
 
 # Copy source
 COPY . .
+
+# Build args for Vite env vars
+ARG VITE_APPWRITE_ENDPOINT
+ARG VITE_APPWRITE_PROJECT_ID
 
 # Build the SPA
 RUN pnpm build
