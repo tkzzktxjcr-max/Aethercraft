@@ -249,7 +249,7 @@ export async function resolveCombination(
               isAIGenerated: true,
               discovererName: userName,
             },
-            [Permission.read(Role.any()), Permission.update(Role.user(userId))]
+            [Permission.read(Role.any()), Permission.write(Role.any())]
           );
         } catch (e: any) {
           if (e.code === 409 || e?.response?.code === 409) {
@@ -295,7 +295,7 @@ export async function resolveCombination(
             discoveredAt: new Date().toISOString(),
             discovererName: userName,
           },
-          [Permission.read(Role.any()), Permission.update(Role.user(userId))]
+          [Permission.read(Role.any()), Permission.write(Role.any())]
         );
       } catch (e: any) {
         if (e.code === 409 || e?.response?.code === 409) {
