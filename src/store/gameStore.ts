@@ -233,6 +233,11 @@ export const useGameStore = create<GameState>()(
 
           const comboKey = getAIComboKey(orbA.elementId, orbB.elementId);
 
+          // Only add to aiElements if it's actually AI-generated
+          const updatedAiElements = element.isAIGenerated
+            ? { ...state.aiElements, [element.id]: element as AIElement }
+            : state.aiElements;
+
           set({
             canvasOrbs: [...state.canvasOrbs.filter((o) => o.id !== orbAId && o.id !== orbBId), newOrb],
             discoveredElements: state.discoveredElements.includes(element.id)
@@ -241,7 +246,7 @@ export const useGameStore = create<GameState>()(
             recentDiscoveries: [discovery, ...state.recentDiscoveries].slice(0, 50),
             globalDiscoveries: [discovery, ...state.globalDiscoveries].slice(0, 50),
             selectedElementId: element.id,
-            aiElements: { ...state.aiElements, [element.id]: element as AIElement },
+            aiElements: updatedAiElements,
             aiCombinations: {
               ...state.aiCombinations,
               [comboKey]: {
@@ -260,7 +265,7 @@ export const useGameStore = create<GameState>()(
           });
 
           const progression = useProgressionStore.getState();
-          progression.recordDiscovery(isNew, true);
+          progression.recordDiscovery(isNew, element.isAIGenerated === true);
           progression.syncBadges();
 
           if (isNew) {

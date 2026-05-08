@@ -64,15 +64,35 @@ function waitForPending(key: string): Promise<{ element: GameElement; isNew: boo
   });
 }
 
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
 function findElementByNameLocal(name: string): GameElement | null {
   const normalized = name.toLowerCase().trim();
-  const allElements = getAllCachedElements();
+  const slug = slugify(name);
+  
+  // Exact match first
+  const allElements = { ...ELEMENTS, ...getAllCachedElements() };
   for (const el of Object.values(allElements)) {
     if (el.name.toLowerCase().trim() === normalized) return el;
   }
-  for (const el of Object.values(ELEMENTS)) {
-    if (el.name.toLowerCase().trim() === normalized) return el;
+  
+  // Slug match (handles "Black Hole" vs "BlackHole")
+  for (const el of Object.values(allElements)) {
+    if (slugify(el.name) === slug) return el;
   }
+  
+  // Substring match (handles "The Steam" vs "Steam")
+  for (const el of Object.values(allElements)) {
+    const elSlug = slugify(el.name);
+    if (elSlug.includes(slug) || slug.includes(elSlug)) return el;
+  }
+  
   return null;
 }
 
@@ -203,6 +223,7 @@ export async function resolveCombination(
     if (resultElement) {
       elementId = resultElement.id;
       isNewElement = false;
+      console.log(`[AI] Reusing existing element: ${resultElement.name} (${elementId})`);
     } else {
       elementId = key;
       resultElement = {
@@ -217,6 +238,7 @@ export async function resolveCombination(
         discovererName: userName,
       } as AIElement;
       isNewElement = true;
+      console.log(`[AI] Creating new element: ${generated.name} (${elementId})`);
     }
 
     const aiCombo: AICombination = {

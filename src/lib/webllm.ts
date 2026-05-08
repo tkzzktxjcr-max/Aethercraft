@@ -46,16 +46,18 @@ export async function generateElement(
 Element A: ${elementA.name} ${elementA.emoji} (properties: ${tagsA})
 Element B: ${elementB.name} ${elementB.emoji} (properties: ${tagsB})
 
-Rules:
+CRITICAL RULES:
 - Output ONLY valid JSON: {"name":"Element Name","emoji":"single_emoji","type":"one_of_energy_liquid_life_cosmic_matter_gas"}
 - The name should be creative but logical (1-2 words)
 - Use a single emoji that represents the element
 - Type must be exactly one of: energy, liquid, life, cosmic, matter, gas
-- Consider the properties: combining hot + cold should give something neutral or steam-related, not ice
+- If the combination logically produces a common substance that already exists (like water, fire, steam, stone, etc.), USE THAT EXACT NAME
+- Do NOT create synonyms for existing basic elements - if the result is clearly "Steam", output "Steam", not "Vapor" or "Mist"
+- Combining hot + cold should give something neutral or steam-related
 - Combining organic + tool often gives crafted items
 - Combining celestial + void often gives cosmic phenomena
-- Avoid creating elements that already exist with different names
 - Normalize names to common English words
+- Avoid creating elements that already exist with different names
 
 Examples:
 Fire + Water = {"name":"Steam","emoji":"♨️","type":"gas"}
@@ -68,13 +70,13 @@ Now respond with ONLY the JSON object (no markdown, no extra text):
 ${elementA.name} + ${elementB.name} = `;
 
   const messages: webllm.ChatCompletionMessageParam[] = [
-    { role: "system", content: "You are an alchemy game engine. Output ONLY valid JSON." },
+    { role: "system", content: "You are an alchemy game engine. Output ONLY valid JSON. Prefer existing common element names when appropriate." },
     { role: "user", content: prompt }
   ];
 
   const reply = await llm.chat.completions.create({
     messages,
-    temperature: 0.7,
+    temperature: 0.5,
     max_tokens: 64,
   });
 
