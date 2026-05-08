@@ -1,26 +1,23 @@
 import { generateElement, initWebLLM } from './webllm';
 import { getElementById, ELEMENTS } from './gameData';
 import { getAppwriteClient, APPWRITE_CONFIG } from './appwrite';
-import type { AIElement, AICombination } from '@/types/game';
-import { Permission, Role } from 'appwrite';
+import type { AIElement, AICombination, GameElement } from '@/types/game';
+import { Permission, Role, Query } from 'appwrite';
 
 const localAICache = new Map<string, AICombination>();
 const localElementCache = new Map<string, AIElement>();
 
-// Évite que le même joueur ne lance plusieurs générations pour la même combo
 const pendingGenerations = new Set<string>();
-const pendingResolvers = new Map<string, Array<(result: { element: AIElement; isNew: boolean } | null) => void>>();
+const pendingResolvers = new Map<string, Array<(result: { element: GameElement; isNew: boolean } | null) => void>>();
 
 function hashKey(a: string, b: string): string {
   const sorted = [a, b].sort().join('+');
-  // FNV-1a hash
   let hash = 0x811c9dc5;
   for (let i = 0; i < sorted.length; i++) {
     hash ^= sorted.charCodeAt(i);
     hash = Math.imul(hash, 0x01000193);
   }
   const base36 = (hash >>> 0).toString(36);
-  // Prefix with 'c' to ensure starts with letter, pad to 12 chars max
   return `c${base36.padStart(11, '0').slice(0, 20)}`;
 }
 
@@ -41,14 +38,14 @@ export function hydrateAICache(
   });
 }
 
-function resolvePending(key: string, result: { element: AIElement; isNew: boolean } | null) {
+function resolvePending(key: string, result: { element: GameElement; isNew: boolean } | null) {
   const resolvers = pendingResolvers.get(key) || [];
   resolvers.forEach((r) => r(result));
   pendingResolvers.delete(key);
   pendingGenerations.delete(key);
 }
 
-function waitForPending(key: string): Promise<{ element: AIElement; isNew: boolean } | null> {
+function waitForPending(key: string): Promise<{ element: GameElement; isNew: boolean } | null> {
   return new Promise((resolve) => {
     const existing = pendingResolvers.get(key) || [];
     existing.push(resolve);
@@ -56,27 +53,72 @@ function waitForPending(key: string): Promise<{ element: AIElement; isNew: boole
   });
 }
 
+// Cherche un élément par nom (localement uniquement)
+function findElementByNameLocal(name: string): GameElement | null {
+  const normalized = name.toLowerCase().trim();
+  for (const el of localElementCache.values()) {
+    if (el.name.toLowerCase().trim() === normalized) return el;
+  }
+  for (const el of Object.values(ELEMENTS)) {
+    if (el.name.toLowerCase().trim() === normalized) return el;
+  }
+  return null;
+}
+
+// Cherche un élément IA par nom dans Appwrite
+async function findAIElementByNameInAppwrite(name: string): Promise<AIElement | null> {
+  const { databases } = getAppwriteClient();
+  if (!databases) return null;
+  try {
+    const result = await databases.listDocuments(
+      APPWRITE_CONFIG.databaseId,
+      APPWRITE_CONFIG.collections.aiElements,
+      [Query.equal('name', name)]
+    );
+    if (result.documents.length > 0) {
+      const doc = result.documents[0];
+      const element: AIElement = {
+        id: doc.$id,
+        name: doc.name,
+        emoji: doc.emoji,
+        type: doc.type as any,
+        properties: doc.properties || [],
+        isAIGenerated: true,
+        createdBy: doc.createdBy,
+        createdAt: new Date(doc.createdAt).getTime(),
+        discovererName: doc.discovererName,
+      };
+      localElementCache.set(element.id, element);
+      ELEMENTS[element.id] = element;
+      return element;
+    }
+  } catch (e) {
+    console.error('Error searching Appwrite for element by name:', e);
+  }
+  return null;
+}
+
 export async function resolveCombination(
   a: string,
   b: string,
   userId: string,
   userName: string
-): Promise<{ element: AIElement; isNew: boolean } | null> {
+): Promise<{ element: GameElement; isNew: boolean } | null> {
   const key = getAIComboKey(a, b);
 
   // 1. Cache local immédiat
   const localCombo = localAICache.get(key);
   if (localCombo) {
-    const el = localElementCache.get(localCombo.resultId);
+    const el = localElementCache.get(localCombo.resultId) || ELEMENTS[localCombo.resultId];
     if (el) return { element: el, isNew: false };
   }
 
-  // 2. Déjà en cours de génération localement ? On attend le résultat
+  // 2. Déjà en cours de génération localement ?
   if (pendingGenerations.has(key)) {
     return waitForPending(key);
   }
 
-  // 3. Appwrite lookup par ID déterministe (hash court)
+  // 3. Appwrite lookup par ID déterministe
   const { databases } = getAppwriteClient();
   if (databases) {
     try {
@@ -85,7 +127,6 @@ export async function resolveCombination(
         APPWRITE_CONFIG.collections.aiCombinations,
         key
       );
-      // Trouvé ! On met en cache et on retourne
       const combo: AICombination = {
         id: comboDoc.$id,
         elementA: comboDoc.elementA,
@@ -98,6 +139,9 @@ export async function resolveCombination(
         resultEmoji: comboDoc.resultEmoji,
       };
       localAICache.set(key, combo);
+
+      const el = localElementCache.get(combo.resultId) || ELEMENTS[combo.resultId];
+      if (el) return { element: el, isNew: false };
 
       const elDoc = await databases.getDocument(
         APPWRITE_CONFIG.databaseId,
@@ -122,17 +166,15 @@ export async function resolveCombination(
         return { element, isNew: false };
       }
     } catch (e: any) {
-      // 404 = pas trouvé, c'est normal, on continue
       if (e.code !== 404 && e?.response?.code !== 404) {
         console.error('Appwrite lookup error:', e);
       }
     }
   }
 
-  // 4. On prend le verrou de génération
+  // 4. Verrou de génération
   pendingGenerations.add(key);
 
-  // 5. Génération WebLLM
   try {
     const engine = await initWebLLM();
     const elA = getElementById(a);
@@ -143,19 +185,36 @@ export async function resolveCombination(
     }
 
     const generated = await generateElement(elA, elB, engine);
-    const elementId = key; // même hash court que la combinaison
 
-    const aiElement: AIElement = {
-      id: elementId,
-      name: generated.name,
-      emoji: generated.emoji,
-      type: generated.type as any,
-      properties: ['ai-generated'],
-      isAIGenerated: true,
-      createdBy: userId,
-      createdAt: Date.now(),
-      discovererName: userName,
-    };
+    // 5. ANTI-DOUBLON : chercher si un élément avec ce nom existe déjà
+    let resultElement: GameElement | null = findElementByNameLocal(generated.name);
+    let isNewElement = false;
+    let elementId: string;
+
+    if (!resultElement) {
+      resultElement = await findAIElementByNameInAppwrite(generated.name);
+    }
+
+    if (resultElement) {
+      // On réutilise l'élément existant (base ou IA)
+      elementId = resultElement.id;
+      isNewElement = false;
+    } else {
+      // Création d'un nouvel élément IA
+      elementId = key;
+      resultElement = {
+        id: elementId,
+        name: generated.name,
+        emoji: generated.emoji,
+        type: generated.type as any,
+        properties: ['ai-generated'],
+        isAIGenerated: true,
+        createdBy: userId,
+        createdAt: Date.now(),
+        discovererName: userName,
+      } as AIElement;
+      isNewElement = true;
+    }
 
     const aiCombo: AICombination = {
       id: key,
@@ -165,62 +224,73 @@ export async function resolveCombination(
       discoveredBy: userId,
       discoveredAt: Date.now(),
       discovererName: userName,
-      resultName: aiElement.name,
-      resultEmoji: aiElement.emoji,
+      resultName: resultElement.name,
+      resultEmoji: resultElement.emoji,
     };
 
-    // 6. Sauvegarde atomique dans Appwrite avec ID déterministe (hash court)
+    // 6. Sauvegarde dans Appwrite
     if (databases) {
-      try {
-        // On essaie d'abord de créer l'élément avec un ID fixe
-        await databases.createDocument(
-          APPWRITE_CONFIG.databaseId,
-          APPWRITE_CONFIG.collections.aiElements,
-          elementId, // $id déterministe et court !
-          {
-            id: elementId,
-            name: aiElement.name,
-            emoji: aiElement.emoji,
-            type: aiElement.type,
-            properties: aiElement.properties,
-            createdBy: userId,
-            createdAt: new Date().toISOString(),
-            isAIGenerated: true,
-            discovererName: userName,
-          },
-          [Permission.read(Role.any()), Permission.update(Role.user(userId))]
-        );
-      } catch (e: any) {
-        if (e.code === 409 || e?.response?.code === 409) {
-          // Un autre joueur a déjà créé cet élément ! On récupère le sien
-          const existingEl = await databases.getDocument(
+      // Sauvegarder l'élément seulement s'il est nouveau et IA
+      if (isNewElement && resultElement.isAIGenerated) {
+        try {
+          await databases.createDocument(
             APPWRITE_CONFIG.databaseId,
             APPWRITE_CONFIG.collections.aiElements,
-            elementId
+            elementId,
+            {
+              id: elementId,
+              name: resultElement.name,
+              emoji: resultElement.emoji,
+              type: resultElement.type,
+              properties: resultElement.properties,
+              createdBy: userId,
+              createdAt: new Date().toISOString(),
+              isAIGenerated: true,
+              discovererName: userName,
+            },
+            [Permission.read(Role.any()), Permission.update(Role.user(userId))]
           );
-          aiElement.name = existingEl.name;
-          aiElement.emoji = existingEl.emoji;
-          aiElement.type = existingEl.type;
-          aiElement.discovererName = existingEl.discovererName || userName;
-        } else {
-          console.error('Failed to save AI element:', e);
+        } catch (e: any) {
+          if (e.code === 409 || e?.response?.code === 409) {
+            const existingEl = await databases.getDocument(
+              APPWRITE_CONFIG.databaseId,
+              APPWRITE_CONFIG.collections.aiElements,
+              elementId
+            ).catch(() => null);
+            if (existingEl) {
+              resultElement = {
+                id: existingEl.$id,
+                name: existingEl.name,
+                emoji: existingEl.emoji,
+                type: existingEl.type as any,
+                properties: existingEl.properties || [],
+                isAIGenerated: true,
+                createdBy: existingEl.createdBy,
+                createdAt: new Date(existingEl.createdAt).getTime(),
+                discovererName: existingEl.discovererName || userName,
+              } as AIElement;
+              elementId = existingEl.$id;
+            }
+          } else {
+            console.error('Failed to save AI element:', e);
+          }
         }
       }
 
+      // Sauvegarder la combinaison
       try {
-        // On essaie de créer la combinaison avec un ID fixe
         await databases.createDocument(
           APPWRITE_CONFIG.databaseId,
           APPWRITE_CONFIG.collections.aiCombinations,
-          key, // $id déterministe et court !
+          key,
           {
             id: key,
             comboKey: key,
             elementA: a,
             elementB: b,
             resultId: elementId,
-            resultName: aiElement.name,
-            resultEmoji: aiElement.emoji,
+            resultName: resultElement.name,
+            resultEmoji: resultElement.emoji,
             discoveredBy: userId,
             discoveredAt: new Date().toISOString(),
             discovererName: userName,
@@ -229,29 +299,37 @@ export async function resolveCombination(
         );
       } catch (e: any) {
         if (e.code === 409 || e?.response?.code === 409) {
-          // Un autre joueur a déjà créé cette combinaison ! On récupère la sienne
           const existingCombo = await databases.getDocument(
             APPWRITE_CONFIG.databaseId,
             APPWRITE_CONFIG.collections.aiCombinations,
             key
-          );
-          aiCombo.resultId = existingCombo.resultId;
-          aiCombo.resultName = existingCombo.resultName;
-          aiCombo.resultEmoji = existingCombo.resultEmoji;
-          aiCombo.discovererName = existingCombo.discovererName || userName;
-
-          // On met aussi à jour notre élément local avec le vrai résultat
-          const existingEl = await databases.getDocument(
-            APPWRITE_CONFIG.databaseId,
-            APPWRITE_CONFIG.collections.aiElements,
-            existingCombo.resultId
           ).catch(() => null);
+          if (existingCombo) {
+            aiCombo.resultId = existingCombo.resultId;
+            aiCombo.resultName = existingCombo.resultName;
+            aiCombo.resultEmoji = existingCombo.resultEmoji;
+            aiCombo.discovererName = existingCombo.discovererName || userName;
 
-          if (existingEl) {
-            aiElement.name = existingEl.name;
-            aiElement.emoji = existingEl.emoji;
-            aiElement.type = existingEl.type;
-            aiElement.discovererName = existingEl.discovererName || userName;
+            const existingEl = await databases.getDocument(
+              APPWRITE_CONFIG.databaseId,
+              APPWRITE_CONFIG.collections.aiElements,
+              existingCombo.resultId
+            ).catch(() => null);
+
+            if (existingEl) {
+              resultElement = {
+                id: existingEl.$id,
+                name: existingEl.name,
+                emoji: existingEl.emoji,
+                type: existingEl.type as any,
+                properties: existingEl.properties || [],
+                isAIGenerated: true,
+                createdBy: existingEl.createdBy,
+                createdAt: new Date(existingEl.createdAt).getTime(),
+                discovererName: existingEl.discovererName || userName,
+              } as AIElement;
+              elementId = existingEl.$id;
+            }
           }
         } else {
           console.error('Failed to save AI combination:', e);
@@ -259,12 +337,14 @@ export async function resolveCombination(
       }
     }
 
-    // 7. Mise en cache local (toujours, même en offline)
+    // 7. Mise en cache local
     localAICache.set(key, aiCombo);
-    localElementCache.set(elementId, aiElement);
-    ELEMENTS[elementId] = aiElement;
+    if (resultElement.isAIGenerated) {
+      localElementCache.set(elementId, resultElement as AIElement);
+    }
+    ELEMENTS[elementId] = resultElement;
 
-    const result = { element: aiElement, isNew: true };
+    const result = { element: resultElement, isNew: isNewElement };
     resolvePending(key, result);
     return result;
   } catch (e) {
