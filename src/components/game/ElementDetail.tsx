@@ -5,6 +5,7 @@ import { getElementById, getCombinationsForElement, COMBINATIONS } from '@/lib/g
 import { PropertyTag } from '@/components/ui/PropertyTag';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AIBadge } from '@/components/ai/AIBadge';
+import { RecipeHints } from './RecipeHints';
 import { motion } from 'framer-motion';
 import { Beaker, ArrowRight, Sparkles, User } from 'lucide-react';
 
@@ -70,6 +71,21 @@ export const ElementDetail = () => {
           ))}
         </div>
       </div>
+
+      {element.tags && element.tags.length > 0 && (
+        <div className="mb-4">
+          <h3 className="text-[10px] font-bold uppercase tracking-wider text-indigo-900/50 mb-2">
+            Tags
+          </h3>
+          <div className="flex flex-wrap gap-1.5">
+            {element.tags.map((tag) => (
+              <span key={tag} className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-medium border border-indigo-100">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {element.isAIGenerated && (
         <div className="mb-4 p-3 rounded-xl bg-violet-50/50 border border-violet-100">
@@ -201,6 +217,8 @@ export const ElementDetail = () => {
           </div>
         </ScrollArea>
       </div>
+
+      <RecipeHints />
     </motion.div>
   );
 };

@@ -3,9 +3,14 @@ import { getElementById, ELEMENTS } from './gameData';
 import { getAppwriteClient, APPWRITE_CONFIG } from './appwrite';
 import type { AIElement, AICombination, GameElement } from '@/types/game';
 import { Permission, Role, Query } from 'appwrite';
-
-const localAICache = new Map<string, AICombination>();
-const localElementCache = new Map<string, AIElement>();
+import {
+  getCachedCombination,
+  getCachedElement,
+  setCachedCombination,
+  setCachedElement,
+  getAllCachedElements,
+  loadAllFromDB,
+} from './cache';
 
 const pendingGenerations = new Set<string>();
 const pendingResolvers = new Map<string, Array<(result: { element: GameElement; isNew: boolean } | null) => void>>();
@@ -31,10 +36,16 @@ export function hydrateAICache(
 ) {
   Object.values(aiElements).forEach((el) => {
     ELEMENTS[el.id] = el;
-    localElementCache.set(el.id, el);
+    setCachedElement(el);
   });
   Object.values(aiCombinations).forEach((combo) => {
-    localAICache.set(combo.id, combo);
+    setCachedCombination(combo);
+  });
+  loadAllFromDB().then(() => {
+    const elements = getAllCachedElements();
+    Object.values(elements).forEach((el) => {
+      ELEMENTS[el.id] = el;
+    });
   });
 }
 
@@ -53,10 +64,10 @@ function waitForPending(key: string): Promise<{ element: GameElement; isNew: boo
   });
 }
 
-// Cherche un élément par nom (localement uniquement)
 function findElementByNameLocal(name: string): GameElement | null {
   const normalized = name.toLowerCase().trim();
-  for (const el of localElementCache.values()) {
+  const allElements = getAllCachedElements();
+  for (const el of Object.values(allElements)) {
     if (el.name.toLowerCase().trim() === normalized) return el;
   }
   for (const el of Object.values(ELEMENTS)) {
@@ -65,7 +76,6 @@ function findElementByNameLocal(name: string): GameElement | null {
   return null;
 }
 
-// Cherche un élément IA par nom dans Appwrite
 async function findAIElementByNameInAppwrite(name: string): Promise<AIElement | null> {
   const { databases } = getAppwriteClient();
   if (!databases) return null;
@@ -88,7 +98,7 @@ async function findAIElementByNameInAppwrite(name: string): Promise<AIElement | 
         createdAt: new Date(doc.createdAt).getTime(),
         discovererName: doc.discovererName,
       };
-      localElementCache.set(element.id, element);
+      setCachedElement(element);
       ELEMENTS[element.id] = element;
       return element;
     }
@@ -106,19 +116,16 @@ export async function resolveCombination(
 ): Promise<{ element: GameElement; isNew: boolean } | null> {
   const key = getAIComboKey(a, b);
 
-  // 1. Cache local immédiat
-  const localCombo = localAICache.get(key);
+  const localCombo = getCachedCombination(key);
   if (localCombo) {
-    const el = localElementCache.get(localCombo.resultId) || ELEMENTS[localCombo.resultId];
+    const el = getCachedElement(localCombo.resultId) || ELEMENTS[localCombo.resultId];
     if (el) return { element: el, isNew: false };
   }
 
-  // 2. Déjà en cours de génération localement ?
   if (pendingGenerations.has(key)) {
     return waitForPending(key);
   }
 
-  // 3. Appwrite lookup par ID déterministe
   const { databases } = getAppwriteClient();
   if (databases) {
     try {
@@ -138,9 +145,9 @@ export async function resolveCombination(
         resultName: comboDoc.resultName,
         resultEmoji: comboDoc.resultEmoji,
       };
-      localAICache.set(key, combo);
+      setCachedCombination(combo);
 
-      const el = localElementCache.get(combo.resultId) || ELEMENTS[combo.resultId];
+      const el = getCachedElement(combo.resultId) || ELEMENTS[combo.resultId];
       if (el) return { element: el, isNew: false };
 
       const elDoc = await databases.getDocument(
@@ -161,7 +168,7 @@ export async function resolveCombination(
           createdAt: new Date(elDoc.createdAt).getTime(),
           discovererName: elDoc.discovererName || comboDoc.discovererName,
         };
-        localElementCache.set(element.id, element);
+        setCachedElement(element);
         ELEMENTS[element.id] = element;
         return { element, isNew: false };
       }
@@ -172,7 +179,6 @@ export async function resolveCombination(
     }
   }
 
-  // 4. Verrou de génération
   pendingGenerations.add(key);
 
   try {
@@ -186,7 +192,6 @@ export async function resolveCombination(
 
     const generated = await generateElement(elA, elB, engine);
 
-    // 5. ANTI-DOUBLON : chercher si un élément avec ce nom existe déjà
     let resultElement: GameElement | null = findElementByNameLocal(generated.name);
     let isNewElement = false;
     let elementId: string;
@@ -196,11 +201,9 @@ export async function resolveCombination(
     }
 
     if (resultElement) {
-      // On réutilise l'élément existant (base ou IA)
       elementId = resultElement.id;
       isNewElement = false;
     } else {
-      // Création d'un nouvel élément IA
       elementId = key;
       resultElement = {
         id: elementId,
@@ -228,9 +231,7 @@ export async function resolveCombination(
       resultEmoji: resultElement.emoji,
     };
 
-    // 6. Sauvegarde dans Appwrite
     if (databases) {
-      // Sauvegarder l'élément seulement s'il est nouveau et IA
       if (isNewElement && resultElement.isAIGenerated) {
         try {
           await databases.createDocument(
@@ -277,7 +278,6 @@ export async function resolveCombination(
         }
       }
 
-      // Sauvegarder la combinaison
       try {
         await databases.createDocument(
           APPWRITE_CONFIG.databaseId,
@@ -337,10 +337,9 @@ export async function resolveCombination(
       }
     }
 
-    // 7. Mise en cache local
-    localAICache.set(key, aiCombo);
+    setCachedCombination(aiCombo);
     if (resultElement.isAIGenerated) {
-      localElementCache.set(elementId, resultElement as AIElement);
+      setCachedElement(resultElement as AIElement);
     }
     ELEMENTS[elementId] = resultElement;
 

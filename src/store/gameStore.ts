@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { CanvasOrb, Discovery, GameElement, AIElement, AICombination, AIStatus } from '@/types/game';
+import type { CanvasOrb, Discovery, GameElement, AIElement, AICombination, AIStatus, FusionEvent, GameMode } from '@/types/game';
 import { getElementById, findCombination, ORIGIN_PACKS, ELEMENTS } from '@/lib/gameData';
 import { resolveCombination, hydrateAICache, getAIComboKey } from '@/lib/aiCombinations';
 import { initAuth } from '@/lib/auth';
+import { useProgressionStore } from './progressionStore';
+import { playCombineSound, playDiscoverySound } from '@/lib/audio';
 
 let idCounter = 0;
 const genId = () => `orb_${++idCounter}_${Date.now().toString(36)}`;
@@ -15,7 +17,7 @@ interface GameState {
   canvasOrbs: CanvasOrb[];
   selectedElementId: string | null;
   recentDiscoveries: Discovery[];
-  sidebarTab: 'inventory' | 'tree' | 'feed';
+  sidebarTab: 'inventory' | 'tree' | 'feed' | 'quests';
   isGenerating: boolean;
   generatingElements: [string, string] | null;
   aiElements: Record<string, AIElement>;
@@ -25,6 +27,8 @@ interface GameState {
   displayName: string;
   isAnonymous: boolean;
   globalDiscoveries: Discovery[];
+  gameMode: GameMode;
+  fusionEvent: FusionEvent | null;
 
   setPlayerName: (name: string) => void;
   setUser: (userId: string, displayName: string, isAnonymous: boolean) => void;
@@ -37,9 +41,12 @@ interface GameState {
   moveOrb: (orbId: string, x: number, y: number) => void;
   tryCombine: (orbAId: string, orbBId: string) => Promise<{ success: boolean; result?: GameElement }>;
   selectElement: (elementId: string | null) => void;
-  setSidebarTab: (tab: 'inventory' | 'tree' | 'feed') => void;
+  setSidebarTab: (tab: 'inventory' | 'tree' | 'feed' | 'quests') => void;
   restoreSession: () => void;
   resetGame: () => void;
+  setGameMode: (mode: GameMode) => void;
+  triggerFusion: (x: number, y: number, elementType: string) => void;
+  setCanvasOrbs: (orbs: CanvasOrb[]) => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -61,6 +68,8 @@ export const useGameStore = create<GameState>()(
       displayName: '',
       isAnonymous: true,
       globalDiscoveries: [],
+      gameMode: 'sandbox',
+      fusionEvent: null,
 
       setPlayerName: (name) => set({ playerName: name }),
       setUser: (userId, displayName, isAnonymous) => set({ userId, displayName, isAnonymous }),
@@ -98,6 +107,7 @@ export const useGameStore = create<GameState>()(
           })),
           selectedElementId: null,
           recentDiscoveries: [],
+          gameMode: 'sandbox',
         });
       },
 
@@ -161,18 +171,29 @@ export const useGameStore = create<GameState>()(
             recentDiscoveries: [discovery, ...state.recentDiscoveries].slice(0, 50),
             globalDiscoveries: [discovery, ...state.globalDiscoveries].slice(0, 50),
             selectedElementId: resultId,
+            fusionEvent: { x: newOrb.x, y: newOrb.y, elementType: resultElement.type, timestamp: Date.now() },
           });
+
+          const progression = useProgressionStore.getState();
+          progression.recordDiscovery(isNew, false);
+          progression.syncBadges();
+
+          if (isNew) {
+            playDiscoverySound();
+          } else {
+            playCombineSound();
+          }
 
           setTimeout(() => {
             set((s) => ({
               canvasOrbs: s.canvasOrbs.map((o) => (o.id === newOrb.id ? { ...o, isNew: false } : o)),
+              fusionEvent: null,
             }));
           }, 2000);
 
           return { success: true, result: resultElement };
         }
 
-        // AI fallback
         if (state.aiStatus !== 'ready') return { success: false };
 
         set({ isGenerating: true, generatingElements: [orbA.elementId, orbB.elementId] });
@@ -220,7 +241,7 @@ export const useGameStore = create<GameState>()(
             recentDiscoveries: [discovery, ...state.recentDiscoveries].slice(0, 50),
             globalDiscoveries: [discovery, ...state.globalDiscoveries].slice(0, 50),
             selectedElementId: element.id,
-            aiElements: { ...state.aiElements, [element.id]: element },
+            aiElements: { ...state.aiElements, [element.id]: element as AIElement },
             aiCombinations: {
               ...state.aiCombinations,
               [comboKey]: {
@@ -235,11 +256,23 @@ export const useGameStore = create<GameState>()(
                 resultEmoji: element.emoji,
               },
             },
+            fusionEvent: { x: newOrb.x, y: newOrb.y, elementType: element.type, timestamp: Date.now() },
           });
+
+          const progression = useProgressionStore.getState();
+          progression.recordDiscovery(isNew, true);
+          progression.syncBadges();
+
+          if (isNew) {
+            playDiscoverySound();
+          } else {
+            playCombineSound();
+          }
 
           setTimeout(() => {
             set((s) => ({
               canvasOrbs: s.canvasOrbs.map((o) => (o.id === newOrb.id ? { ...o, isNew: false } : o)),
+              fusionEvent: null,
             }));
           }, 2000);
 
@@ -281,7 +314,33 @@ export const useGameStore = create<GameState>()(
           recentDiscoveries: [],
           currentPackId: null,
           globalDiscoveries: [],
+          gameMode: 'sandbox',
         }),
+
+      setGameMode: (mode) => {
+        set({ gameMode: mode });
+        if (mode === 'sandbox' && get().currentPackId) {
+          const pack = ORIGIN_PACKS.find((p) => p.id === get().currentPackId);
+          if (pack) {
+            set({
+              canvasOrbs: pack.elements.map((elId, i) => ({
+                id: genId(),
+                elementId: elId,
+                x: 320 + i * 100,
+                y: 280,
+                isNew: false,
+              })),
+            });
+          }
+        }
+      },
+
+      triggerFusion: (x, y, elementType) => {
+        set({ fusionEvent: { x, y, elementType: elementType as any, timestamp: Date.now() } });
+        setTimeout(() => set({ fusionEvent: null }), 2000);
+      },
+
+      setCanvasOrbs: (orbs) => set({ canvasOrbs: orbs }),
     }),
     {
       name: 'aethercraft-storage',
@@ -296,6 +355,7 @@ export const useGameStore = create<GameState>()(
         displayName: state.displayName,
         isAnonymous: state.isAnonymous,
         globalDiscoveries: state.globalDiscoveries,
+        gameMode: state.gameMode,
       }),
     }
   )

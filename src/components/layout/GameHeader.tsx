@@ -1,18 +1,35 @@
 "use client";
 
 import { useGameStore } from '@/store/gameStore';
+import { useProgressionStore } from '@/store/progressionStore';
 import { Input } from '@/components/ui/input';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { AIStatusBadge } from '@/components/ai/AIStatusBadge';
-import { Search, User, FlaskConical, RotateCcw } from 'lucide-react';
+import { ProgressionBar } from '@/components/game/ProgressionBar';
+import { Search, User, FlaskConical, RotateCcw, Gamepad2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const GameHeader = () => {
-  const { playerName, discoveredElements, currentPackId, resetGame, displayName } = useGameStore();
+  const { playerName, discoveredElements, currentPackId, resetGame, displayName, gameMode, setGameMode } = useGameStore();
+  const { checkAndUpdateStreak } = useProgressionStore();
   const navigate = useNavigate();
   const packName = currentPackId
     ? currentPackId.charAt(0).toUpperCase() + currentPackId.slice(1)
     : 'None';
+
+  const modeLabels: Record<string, string> = {
+    sandbox: 'Sandbox',
+    puzzle: 'Puzzle',
+    daily: 'Daily',
+    versus: 'Versus',
+  };
+
+  const modeColors: Record<string, string> = {
+    sandbox: 'bg-violet-100 text-violet-700',
+    puzzle: 'bg-amber-100 text-amber-700',
+    daily: 'bg-emerald-100 text-emerald-700',
+    versus: 'bg-rose-100 text-rose-700',
+  };
 
   return (
     <GlassCard className="h-14 px-4 flex items-center gap-4 shrink-0 rounded-none border-x-0 border-t-0">
@@ -33,6 +50,19 @@ export const GameHeader = () => {
       </div>
 
       <div className="flex items-center gap-3 text-sm text-indigo-900/70 shrink-0">
+        <ProgressionBar />
+
+        <button
+          onClick={() => setGameMode(gameMode === 'sandbox' ? 'puzzle' : 'sandbox')}
+          className={[
+            "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-colors",
+            modeColors[gameMode] || 'bg-gray-100 text-gray-500'
+          ].join(' ')}
+        >
+          <Gamepad2 className="w-3.5 h-3.5" />
+          {modeLabels[gameMode] || 'Sandbox'}
+        </button>
+
         <AIStatusBadge />
 
         <span className="hidden md:inline">

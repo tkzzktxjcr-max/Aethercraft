@@ -1,4 +1,5 @@
 import * as webllm from "@mlc-ai/web-llm";
+import { getElementById } from "./gameData";
 
 let engine: webllm.MLCEngine | null = null;
 
@@ -30,20 +31,31 @@ export function getEngine(): webllm.MLCEngine | null {
 }
 
 export async function generateElement(
-  elementA: { name: string; emoji: string },
-  elementB: { name: string; emoji: string },
+  elementA: { name: string; emoji: string; tags?: string[] },
+  elementB: { name: string; emoji: string; tags?: string[] },
   engineInstance?: webllm.MLCEngine
 ): Promise<{ name: string; emoji: string; type: string }> {
   const llm = engineInstance || engine;
   if (!llm) throw new Error("WebLLM engine not initialized");
 
+  const tagsA = elementA.tags?.join(', ') || '';
+  const tagsB = elementB.tags?.join(', ') || '';
+
   const prompt = `You are an alchemy game engine. Given two elements, create a new element that would result from combining them.
+
+Element A: ${elementA.name} ${elementA.emoji} (properties: ${tagsA})
+Element B: ${elementB.name} ${elementB.emoji} (properties: ${tagsB})
 
 Rules:
 - Output ONLY valid JSON: {"name":"Element Name","emoji":"single_emoji","type":"one_of_energy_liquid_life_cosmic_matter_gas"}
 - The name should be creative but logical (1-2 words)
 - Use a single emoji that represents the element
 - Type must be exactly one of: energy, liquid, life, cosmic, matter, gas
+- Consider the properties: combining hot + cold should give something neutral or steam-related, not ice
+- Combining organic + tool often gives crafted items
+- Combining celestial + void often gives cosmic phenomena
+- Avoid creating elements that already exist with different names
+- Normalize names to common English words
 
 Examples:
 Fire + Water = {"name":"Steam","emoji":"♨️","type":"gas"}
@@ -62,7 +74,7 @@ ${elementA.name} + ${elementB.name} = `;
 
   const reply = await llm.chat.completions.create({
     messages,
-    temperature: 0.8,
+    temperature: 0.7,
     max_tokens: 64,
   });
 
@@ -78,11 +90,13 @@ function parseAIResponse(raw: string): { name: string; emoji: string; type: stri
       if (parsed.name && parsed.emoji && parsed.type) {
         const validTypes = ['energy', 'liquid', 'life', 'cosmic', 'matter', 'gas'];
         const type = validTypes.includes(parsed.type) ? parsed.type : 'matter';
-        return {
-          name: String(parsed.name).slice(0, 30),
-          emoji: String(parsed.emoji).slice(0, 2),
-          type,
-        };
+        const name = String(parsed.name)
+          .trim()
+          .replace(/\s+/g, ' ')
+          .replace(/[^\w\s]/g, '')
+          .slice(0, 30);
+        const emoji = String(parsed.emoji).trim().slice(0, 2);
+        return { name, emoji, type };
       }
     }
   } catch {
