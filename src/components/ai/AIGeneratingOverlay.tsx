@@ -40,12 +40,12 @@ export const AIGeneratingOverlay = () => {
               <div className="w-5 h-5 rounded-full border-2 border-violet-200 border-t-violet-600 animate-spin" />
               <p className="text-sm font-semibold text-indigo-900 flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-violet-500" />
-                L'IA réfléchit...
+                The AI is thinking...
               </p>
             </div>
 
             <p className="text-xs text-indigo-900/50 text-center">
-              Le modèle local génère un nouvel élément unique
+              The local model generates a unique new element
             </p>
           </motion.div>
         </motion.div>

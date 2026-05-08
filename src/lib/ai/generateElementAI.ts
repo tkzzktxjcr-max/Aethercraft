@@ -1,47 +1,91 @@
+/**
+ * AI element generation using WebLLM.
+ * Handles prompt building, LLM inference, JSON parsing, and timeout.
+ */
 import * as webllm from "@mlc-ai/web-llm";
 import { getElementById } from "./gameData";
 
 let engine: webllm.MLCEngine | null = null;
-
+let initPromise: Promise<webllm.MLCEngine> | null = null;
 export type InitProgressCallback = (report: webllm.InitProgressReport) => void;
 
 export function isWebGPUSupported(): boolean {
-  return typeof navigator !== 'undefined' && 'gpu' in navigator;
+  return typeof navigator !== "undefined" && "gpu" in navigator;
 }
 
-export async function initWebLLM(onProgress?: InitProgressCallback): Promise<webllm.MLCEngine> {
+/** Lazily initialize the WebLLM engine (singleton). */
+export async function ensureWebLLMEngine(
+  onProgress?: InitProgressCallback
+): Promise<webllm.MLCEngine> {
   if (!isWebGPUSupported()) {
     throw new Error("WebGPU is not supported in this browser. Try Chrome 113+ or Edge.");
   }
-
   if (engine) return engine;
+  if (initPromise) return initPromise;
 
-  engine = await webllm.CreateMLCEngine(
-    "Llama-3.2-1B-Instruct-q4f16_1-MLC",
-    {
-      initProgressCallback: onProgress,
-    }
-  );
+  initPromise = webllm.CreateMLCEngine("Llama-3.2-1B-Instruct-q4f16_1-MLC", {
+    initProgressCallback: onProgress,
+  }).then((eng) => {
+    engine = eng;
+    return eng;
+  });
 
-  return engine;
+  return initPromise;
 }
 
 export function getEngine(): webllm.MLCEngine | null {
   return engine;
 }
 
+const AI_TIMEOUT_MS = 10_000;
+
+function sleep(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
+
 export async function generateElement(
   elementA: { name: string; emoji: string; tags?: string[]; properties?: string[] },
   elementB: { name: string; emoji: string; tags?: string[]; properties?: string[] },
-  engineInstance?: webllm.MLCEngine
+  onProgress?: InitProgressCallback
 ): Promise<{ name: string; emoji: string; type: string } | null> {
-  const llm = engineInstance || engine;
-  if (!llm) throw new Error("WebLLM engine not initialized");
+  const llm = await ensureWebLLMEngine(onProgress);
 
-  const tagsA = elementA.tags?.join(', ') || elementA.properties?.join(', ') || '';
-  const tagsB = elementB.tags?.join(', ') || elementB.properties?.join(', ') || '';
+  const tagsA = elementA.tags?.join(", ") || elementA.properties?.join(", ") || "";
+  const tagsB = elementB.tags?.join(", ") || elementB.properties?.join(", ") || "";
 
-  const prompt = `You are a creative alchemy game engine. Given two elements, invent a new element that results from combining them.
+  const prompt = buildPrompt(elementA, elementB, tagsA, tagsB);
+
+  const messages: webllm.ChatCompletionMessageParam[] = [
+    {
+      role: "system",
+      content:
+        "You are a creative alchemy game engine. Always produce a real-world result. Be imaginative but grounded in reality. Never invent fictional or magical elements.",
+    },
+    { role: "user", content: prompt },
+  ];
+
+  return Promise.race([
+    (async () => {
+      const reply = await llm.chat.completions.create({
+        messages,
+        temperature: 0.6,
+        max_tokens: 64,
+      });
+      return parseAIResponse(reply.choices[0].message.content || "");
+    })(),
+    sleep(AI_TIMEOUT_MS).then(() => {
+      throw new Error("AITimeout");
+    }),
+  ]);
+}
+
+function buildPrompt(
+  elementA: { name: string; emoji: string },
+  elementB: { name: string; emoji: string },
+  tagsA: string,
+  tagsB: string
+): string {
+  return `You are a creative alchemy game engine. Given two elements, invent a new element that results from combining them.
 
 Element A: ${elementA.name} ${elementA.emoji} (properties: ${tagsA})
 Element B: ${elementB.name} ${elementB.emoji} (properties: ${tagsB})
@@ -73,20 +117,6 @@ Stone + Air = {"name":"Sand","emoji":"🏜️","type":"matter"}
 
 Now respond with ONLY the JSON object (no markdown, no extra text):
 ${elementA.name} + ${elementB.name} = `;
-
-  const messages: webllm.ChatCompletionMessageParam[] = [
-    { role: "system", content: "You are a creative alchemy game engine. Always produce a real-world result. Be imaginative but grounded in reality. Never invent fictional or magical elements." },
-    { role: "user", content: prompt }
-  ];
-
-  const reply = await llm.chat.completions.create({
-    messages,
-    temperature: 0.6,
-    max_tokens: 64,
-  });
-
-  const raw = reply.choices[0].message.content || "";
-  return parseAIResponse(raw);
 }
 
 function parseAIResponse(raw: string): { name: string; emoji: string; type: string } | null {
@@ -95,20 +125,19 @@ function parseAIResponse(raw: string): { name: string; emoji: string; type: stri
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
       if (parsed.name && parsed.emoji && parsed.type) {
-        const validTypes = ['energy', 'liquid', 'life', 'cosmic', 'matter', 'gas'];
-        const type = validTypes.includes(parsed.type) ? parsed.type : 'matter';
+        const validTypes = ["energy", "liquid", "life", "cosmic", "matter", "gas"];
+        const type = validTypes.includes(parsed.type) ? parsed.type : "matter";
         const name = String(parsed.name)
           .trim()
-          .replace(/\s+/g, ' ')
-          .replace(/[^\w\s]/g, '')
+          .replace(/\s+/g, " ")
+          .replace(/[^\w\s]/g, "")
           .slice(0, 30);
         const emoji = String(parsed.emoji).trim().slice(0, 2);
         return { name, emoji, type };
       }
     }
   } catch {
-    // fallback below
+    // malformed JSON — fallback
   }
-
   return null;
 }

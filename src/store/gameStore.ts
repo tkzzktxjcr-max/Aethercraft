@@ -45,7 +45,7 @@ interface GameState {
   restoreSession: () => void;
   resetGame: () => void;
   setGameMode: (mode: GameMode) => void;
-  triggerFusion: (x: number, y: number, elementType: string) => void;
+  triggerFusion: (x: number, y: number, elementType: ElementType) => void;
   setCanvasOrbs: (orbs: CanvasOrb[]) => void;
 }
 

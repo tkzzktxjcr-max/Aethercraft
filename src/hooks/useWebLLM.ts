@@ -1,35 +1,16 @@
-import { useEffect } from 'react';
-import { initWebLLM, isWebGPUSupported } from '@/lib/webllm';
-import { useGameStore } from '@/store/gameStore';
+import { useEffect } from "react";
+import { isWebGPUSupported } from "@/lib/ai/generateElementAI";
+import { useGameStore } from "@/store/gameStore";
 
 export function useWebLLM() {
   const { setAIStatus } = useGameStore();
 
   useEffect(() => {
     if (!isWebGPUSupported()) {
-      setAIStatus('unavailable');
+      setAIStatus("unavailable");
       return;
     }
-
-    setAIStatus('loading');
-
-    let cancelled = false;
-
-    initWebLLM((report) => {
-      if (cancelled) return;
-      if (report.progress === 1) {
-        setAIStatus('ready');
-      }
-    })
-      .then(() => {
-        if (!cancelled) setAIStatus('ready');
-      })
-      .catch(() => {
-        if (!cancelled) setAIStatus('unavailable');
-      });
-
-    return () => {
-      cancelled = true;
-    };
+    // Lazily loaded — only initialize when the first exotic combo is requested
+    setAIStatus("idle");
   }, [setAIStatus]);
 }

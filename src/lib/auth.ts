@@ -33,11 +33,11 @@ export async function initAuth(): Promise<UserProfile> {
   try {
     user = await account.get();
   } catch {
-    // Session invalide ou expirée ? On nettoie et on crée une anonyme
+    // Invalid or expired session — clean up and create anonymous
     try {
       await account.deleteSessions();
     } catch {
-      // ignore - peut échouer si pas de session
+      // ignore — may fail if there is no active session
     }
 
     try {
@@ -88,7 +88,7 @@ export async function loginWithEmail(email: string, password: string): Promise<v
   const { account } = getAppwriteClient();
   if (!account) throw new Error('Appwrite not configured');
 
-  // Nettoyer toute session existante avant de login
+  // Clear any existing session before logging in
   try {
     await account.deleteSessions();
   } catch {
