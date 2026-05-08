@@ -6,9 +6,28 @@ import { resolveCombination, hydrateAICache, getAIComboKey } from '@/lib/aiCombi
 import { initAuth } from '@/lib/auth';
 import { useProgressionStore } from './progressionStore';
 import { playCombineSound, playDiscoverySound, playErrorSound } from '@/lib/audio';
+import { showError } from '@/utils/toast';
 
 let idCounter = 0;
 const genId = () => `orb_${++idCounter}_${Date.now().toString(36)}`;
+
+// Cooldown tracker to prevent immediate re-combination attempts
+const comboCooldowns = new Map<string, number>();
+const COOLDOWN_MS = 1200;
+
+function getComboKey(a: string, b: string): string {
+  return [a, b].sort().join('+');
+}
+
+function isOnCooldown(a: string, b: string): boolean {
+  const ts = comboCooldowns.get(getComboKey(a, b));
+  if (!ts) return false;
+  return Date.now() - ts < COOLDOWN_MS;
+}
+
+function setCooldown(a: string, b: string) {
+  comboCooldowns.set(getComboKey(a, b), Date.now());
+}
 
 interface GameState {
   playerName: string;
@@ -29,7 +48,6 @@ interface GameState {
   globalDiscoveries: Discovery[];
   gameMode: GameMode;
   fusionEvent: FusionEvent | null;
-  failedCombo: { a: string; b: string; timestamp: number } | null;
 
   setPlayerName: (name: string) => void;
   setUser: (userId: string, displayName: string, isAnonymous: boolean) => void;
@@ -48,7 +66,6 @@ interface GameState {
   setGameMode: (mode: GameMode) => void;
   triggerFusion: (x: number, y: number, elementType: string) => void;
   setCanvasOrbs: (orbs: CanvasOrb[]) => void;
-  clearFailedCombo: () => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -72,7 +89,6 @@ export const useGameStore = create<GameState>()(
       globalDiscoveries: [],
       gameMode: 'sandbox',
       fusionEvent: null,
-      failedCombo: null,
 
       setPlayerName: (name) => set({ playerName: name }),
       setUser: (userId, displayName, isAnonymous) => set({ userId, displayName, isAnonymous }),
@@ -143,6 +159,11 @@ export const useGameStore = create<GameState>()(
         const orbB = state.canvasOrbs.find((o) => o.id === orbBId);
         if (!orbA || !orbB || orbAId === orbBId) return { success: false };
 
+        // Cooldown check to prevent spam when orbs are close
+        if (isOnCooldown(orbA.elementId, orbB.elementId)) {
+          return { success: false };
+        }
+
         const resultId = findCombination(orbA.elementId, orbB.elementId);
 
         if (resultId) {
@@ -212,12 +233,9 @@ export const useGameStore = create<GameState>()(
           set({ isGenerating: false, generatingElements: null });
 
           if (!resolved) {
-            // AI rejected the combination as illogical
+            setCooldown(orbA.elementId, orbB.elementId);
             playErrorSound();
-            set({
-              failedCombo: { a: orbA.elementId, b: orbB.elementId, timestamp: Date.now() },
-            });
-            setTimeout(() => set({ failedCombo: null }), 2000);
+            showError("These elements don't combine");
             return { success: false };
           }
 
@@ -330,7 +348,6 @@ export const useGameStore = create<GameState>()(
           currentPackId: null,
           globalDiscoveries: [],
           gameMode: 'sandbox',
-          failedCombo: null,
         }),
 
       setGameMode: (mode) => {
@@ -357,7 +374,6 @@ export const useGameStore = create<GameState>()(
       },
 
       setCanvasOrbs: (orbs) => set({ canvasOrbs: orbs }),
-      clearFailedCombo: () => set({ failedCombo: null }),
     }),
     {
       name: 'aethercraft-storage',
