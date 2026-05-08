@@ -33,13 +33,15 @@ export async function initAuth(): Promise<UserProfile> {
   try {
     user = await account.get();
   } catch {
+    // Session invalide ou expirée ? On nettoie et on crée une anonyme
     try {
-      await account.createAnonymousSession();
-    } catch (e: any) {
-      console.log('Anonymous session creation skipped:', e?.message || e);
+      await account.deleteSessions();
+    } catch {
+      // ignore - peut échouer si pas de session
     }
 
     try {
+      await account.createAnonymousSession();
       user = await account.get();
     } catch {
       return getLocalProfile();
@@ -85,14 +87,27 @@ export async function initAuth(): Promise<UserProfile> {
 export async function loginWithEmail(email: string, password: string): Promise<void> {
   const { account } = getAppwriteClient();
   if (!account) throw new Error('Appwrite not configured');
+
+  // Nettoyer toute session existante avant de login
+  try {
+    await account.deleteSessions();
+  } catch {
+    // ignore
+  }
+
   try {
     await account.createEmailPasswordSession(email, password);
   } catch (e: any) {
-    if (e?.code === 401 || e?.message?.includes('Invalid credentials')) {
-      throw new Error('Invalid email or password. Please check your credentials or register first.');
+    console.error('Login error:', e);
+    if (e?.code === 401) {
+      throw new Error(
+        'Invalid email or password. If you are sure they are correct, check that Email/Password authentication is enabled in your Appwrite Console (Auth > Settings > Email/Password).'
+      );
     }
-    if (e?.code === 403 || e?.message?.includes('disabled') || e?.message?.includes('not enabled')) {
-      throw new Error('Email authentication is disabled in Appwrite console. Please enable it or use Guest mode.');
+    if (e?.code === 403) {
+      throw new Error(
+        'Email authentication is disabled in your Appwrite project. Please enable it in Console > Auth > Settings > Email/Password.'
+      );
     }
     throw new Error(e?.message || 'Login failed. Please try again.');
   }
@@ -101,14 +116,25 @@ export async function loginWithEmail(email: string, password: string): Promise<v
 export async function registerWithEmail(email: string, password: string, name: string): Promise<void> {
   const { account } = getAppwriteClient();
   if (!account) throw new Error('Appwrite not configured');
+
+  // Nettoyer toute session existante avant de register
+  try {
+    await account.deleteSessions();
+  } catch {
+    // ignore
+  }
+
   try {
     await account.create(ID.unique(), email, password, name);
   } catch (e: any) {
+    console.error('Register error:', e);
     if (e?.code === 409 || e?.message?.includes('already exists')) {
       throw new Error('An account with this email already exists. Please login instead.');
     }
-    if (e?.code === 403 || e?.message?.includes('disabled') || e?.message?.includes('not enabled')) {
-      throw new Error('Email registration is disabled in Appwrite console. Please enable it or use Guest mode.');
+    if (e?.code === 403) {
+      throw new Error(
+        'Email registration is disabled in your Appwrite project. Please enable it in Console > Auth > Settings > Email/Password.'
+      );
     }
     throw new Error(e?.message || 'Registration failed. Please try again.');
   }
@@ -116,8 +142,9 @@ export async function registerWithEmail(email: string, password: string, name: s
   try {
     await account.createEmailPasswordSession(email, password);
   } catch (e: any) {
+    console.error('Session creation after register:', e);
     if (e?.code === 401) {
-      throw new Error('Account created but login failed. Please try logging in manually.');
+      throw new Error('Account created but auto-login failed. Please login manually.');
     }
     throw new Error(e?.message || 'Session creation failed.');
   }
