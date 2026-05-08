@@ -41,47 +41,43 @@ export async function generateElement(
   const tagsA = elementA.tags?.join(', ') || elementA.properties?.join(', ') || '';
   const tagsB = elementB.tags?.join(', ') || elementB.properties?.join(', ') || '';
 
-  const prompt = `You are an alchemy game engine. Given two elements, determine if they can logically combine into something new.
+  const prompt = `You are a creative alchemy game engine. Given two elements, invent a new element that results from combining them.
 
 Element A: ${elementA.name} ${elementA.emoji} (properties: ${tagsA})
 Element B: ${elementB.name} ${elementB.emoji} (properties: ${tagsB})
 
-CRITICAL RULES:
-- If the combination makes NO logical sense (e.g., Sky + House, Rainbow + Car, Ocean + Clock), output: null
-- Only create an element if there is a clear physical, chemical, or semantic relationship
-- Output ONLY valid JSON in one of these two formats:
-  - {"name":"Element Name","emoji":"single_emoji","type":"one_of_energy_liquid_life_cosmic_matter_gas"}
-  - null
-- The name should be creative but logical (1-2 words)
+RULES:
+- Be creative! Almost any combination can produce something interesting.
+- The result should relate to BOTH input elements in some way (physical, chemical, semantic, or metaphorical).
+- Output ONLY valid JSON: {"name":"Element Name","emoji":"single_emoji","type":"one_of_energy_liquid_life_cosmic_matter_gas"}
+- The name should be creative but understandable (1-2 words)
 - Use a single emoji that represents the element
 - Type must be exactly one of: energy, liquid, life, cosmic, matter, gas
-- If the result already exists as a common element (steam, stone, plant, etc.), USE THAT EXACT NAME
+- If the result already exists as a common element, USE THAT EXACT NAME
 - Do NOT create synonyms for existing elements
 - Normalize names to common English words
 
-Examples of VALID combinations:
+Examples of creative combinations:
 Fire + Water = {"name":"Steam","emoji":"♨️","type":"gas"}
 Earth + Water = {"name":"Mud","emoji":"💩","type":"liquid"}
 Sun + Plant = {"name":"Flower","emoji":"🌸","type":"life"}
 Metal + Energy = {"name":"Electricity","emoji":"💡","type":"energy"}
+Flower + Plant = {"name":"Garden","emoji":"🌷","type":"life"}
+Star + Star = {"name":"Galaxy","emoji":"🌌","type":"cosmic"}
+Wood + Fire = {"name":"Campfire","emoji":"🔥","type":"energy"}
+Cloud + Air = {"name":"Sky","emoji":"🌌","type":"gas"}
 
-Examples of INVALID combinations (output null):
-Sky + House = null
-Rainbow + Car = null
-Ocean + Clock = null
-Star + Paper = null
-
-Now respond with ONLY the JSON object or null (no markdown, no extra text):
+Now respond with ONLY the JSON object (no markdown, no extra text):
 ${elementA.name} + ${elementB.name} = `;
 
   const messages: webllm.ChatCompletionMessageParam[] = [
-    { role: "system", content: "You are a strict alchemy game engine. Only combine elements that have a logical relationship. Output ONLY valid JSON or null." },
+    { role: "system", content: "You are a creative alchemy game engine. Always produce a result. Be imaginative but coherent." },
     { role: "user", content: prompt }
   ];
 
   const reply = await llm.chat.completions.create({
     messages,
-    temperature: 0.3,
+    temperature: 0.7,
     max_tokens: 64,
   });
 
@@ -90,12 +86,6 @@ ${elementA.name} + ${elementB.name} = `;
 }
 
 function parseAIResponse(raw: string): { name: string; emoji: string; type: string } | null {
-  // Check for null response
-  const trimmed = raw.trim().toLowerCase();
-  if (trimmed === 'null' || trimmed === 'none' || trimmed === 'undefined') {
-    return null;
-  }
-
   try {
     const jsonMatch = raw.match(/\{[\s\S]*?\}/);
     if (jsonMatch) {
@@ -116,6 +106,5 @@ function parseAIResponse(raw: string): { name: string; emoji: string; type: stri
     // fallback below
   }
 
-  // If we can't parse and it's not explicitly null, default to null (safer than random element)
   return null;
 }

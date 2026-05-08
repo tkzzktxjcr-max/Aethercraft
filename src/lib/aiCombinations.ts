@@ -209,9 +209,7 @@ export async function resolveCombination(
 
     const generated = await generateElement(elA, elB, engine);
 
-    // AI returned null = combination doesn't make sense
     if (!generated) {
-      console.log(`[AI] No logical result for ${elA.name} + ${elB.name}`);
       resolvePending(key, null);
       return null;
     }

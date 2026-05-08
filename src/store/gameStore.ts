@@ -5,29 +5,10 @@ import { getElementById, findCombination, ORIGIN_PACKS, ELEMENTS } from '@/lib/g
 import { resolveCombination, hydrateAICache, getAIComboKey } from '@/lib/aiCombinations';
 import { initAuth } from '@/lib/auth';
 import { useProgressionStore } from './progressionStore';
-import { playCombineSound, playDiscoverySound, playErrorSound } from '@/lib/audio';
-import { showError } from '@/utils/toast';
+import { playCombineSound, playDiscoverySound } from '@/lib/audio';
 
 let idCounter = 0;
 const genId = () => `orb_${++idCounter}_${Date.now().toString(36)}`;
-
-// Cooldown tracker to prevent immediate re-combination attempts
-const comboCooldowns = new Map<string, number>();
-const COOLDOWN_MS = 1200;
-
-function getComboKey(a: string, b: string): string {
-  return [a, b].sort().join('+');
-}
-
-function isOnCooldown(a: string, b: string): boolean {
-  const ts = comboCooldowns.get(getComboKey(a, b));
-  if (!ts) return false;
-  return Date.now() - ts < COOLDOWN_MS;
-}
-
-function setCooldown(a: string, b: string) {
-  comboCooldowns.set(getComboKey(a, b), Date.now());
-}
 
 interface GameState {
   playerName: string;
@@ -159,11 +140,6 @@ export const useGameStore = create<GameState>()(
         const orbB = state.canvasOrbs.find((o) => o.id === orbBId);
         if (!orbA || !orbB || orbAId === orbBId) return { success: false };
 
-        // Cooldown check to prevent spam when orbs are close
-        if (isOnCooldown(orbA.elementId, orbB.elementId)) {
-          return { success: false };
-        }
-
         const resultId = findCombination(orbA.elementId, orbB.elementId);
 
         if (resultId) {
@@ -233,9 +209,6 @@ export const useGameStore = create<GameState>()(
           set({ isGenerating: false, generatingElements: null });
 
           if (!resolved) {
-            setCooldown(orbA.elementId, orbB.elementId);
-            playErrorSound();
-            showError("These elements don't combine");
             return { success: false };
           }
 
