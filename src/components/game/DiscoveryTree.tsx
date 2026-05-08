@@ -3,10 +3,10 @@
 import { useGameStore } from '@/store/gameStore';
 import { getElementById, COMBINATIONS } from '@/lib/gameData';
 import { motion } from 'framer-motion';
-import { TreePine } from 'lucide-react';
+import { TreePine, Sparkles } from 'lucide-react';
 
 export const DiscoveryTree = () => {
-  const { selectedElementId, discoveredElements } = useGameStore();
+  const { selectedElementId, discoveredElements, aiCombinations } = useGameStore();
   
   if (!selectedElementId) {
     return (
@@ -23,11 +23,31 @@ export const DiscoveryTree = () => {
     const element = getElementById(elementId);
     if (!element) return null;
     
-    const combo = COMBINATIONS.find(c => 
+    // Cherche d'abord dans les combinaisons prédéfinies
+    let combo = COMBINATIONS.find(c => 
       c.result === elementId && 
       discoveredElements.includes(c.elementA) && 
       discoveredElements.includes(c.elementB)
     );
+    
+    // Si pas trouvé, cherche dans les combinaisons IA
+    let isAICombo = false;
+    if (!combo) {
+      const aiCombo = Object.values(aiCombinations).find(c => 
+        c.resultId === elementId &&
+        discoveredElements.includes(c.elementA) &&
+        discoveredElements.includes(c.elementB)
+      );
+      if (aiCombo) {
+        combo = {
+          id: aiCombo.id,
+          elementA: aiCombo.elementA,
+          elementB: aiCombo.elementB,
+          result: aiCombo.resultId,
+        };
+        isAICombo = true;
+      }
+    }
     
     const isBase = !combo || depth === 0 && !combo;
     
@@ -38,12 +58,19 @@ export const DiscoveryTree = () => {
           animate={{ scale: 1 }}
           transition={{ delay: depth * 0.1, type: 'spring' }}
           className={[
-            "flex flex-col items-center px-3 py-2 rounded-xl border shadow-sm mb-2 min-w-[80px]",
+            "flex flex-col items-center px-3 py-2 rounded-xl border shadow-sm mb-2 min-w-[80px] relative",
             isBase 
               ? "bg-indigo-50/80 border-indigo-200" 
-              : "bg-white/80 border-indigo-100"
+              : isAICombo
+                ? "bg-violet-50/80 border-violet-200"
+                : "bg-white/80 border-indigo-100"
           ].join(' ')}
         >
+          {isAICombo && (
+            <span className="absolute -top-1.5 -right-1.5 bg-violet-100 text-violet-700 rounded-full p-0.5">
+              <Sparkles className="w-3 h-3" />
+            </span>
+          )}
           <span className="text-xl leading-none">{element.emoji}</span>
           <span className="text-[10px] font-bold text-indigo-900 mt-1">{element.name}</span>
         </motion.div>
