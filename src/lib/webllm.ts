@@ -47,17 +47,19 @@ Element A: ${elementA.name} ${elementA.emoji} (properties: ${tagsA})
 Element B: ${elementB.name} ${elementB.emoji} (properties: ${tagsB})
 
 RULES:
-- Be creative! Almost any combination can produce something interesting.
+- The result MUST be a real, existing thing from the real world. No fictional, magical, or invented concepts.
+- Use common English words for real objects, substances, materials, natural phenomena, or living things.
 - The result should relate to BOTH input elements in some way (physical, chemical, semantic, or metaphorical).
 - Output ONLY valid JSON: {"name":"Element Name","emoji":"single_emoji","type":"one_of_energy_liquid_life_cosmic_matter_gas"}
-- The name should be creative but understandable (1-2 words)
-- Use a single emoji that represents the element
+- The name should be a real-world term (1-2 words max)
+- Use a single emoji that represents the real element
 - Type must be exactly one of: energy, liquid, life, cosmic, matter, gas
 - If the result already exists as a common element, USE THAT EXACT NAME
 - Do NOT create synonyms for existing elements
 - Normalize names to common English words
+- AVOID made-up words, fantasy terms, or impossible concepts
 
-Examples of creative combinations:
+Examples of real-world combinations:
 Fire + Water = {"name":"Steam","emoji":"♨️","type":"gas"}
 Earth + Water = {"name":"Mud","emoji":"💩","type":"liquid"}
 Sun + Plant = {"name":"Flower","emoji":"🌸","type":"life"}
@@ -66,18 +68,20 @@ Flower + Plant = {"name":"Garden","emoji":"🌷","type":"life"}
 Star + Star = {"name":"Galaxy","emoji":"🌌","type":"cosmic"}
 Wood + Fire = {"name":"Campfire","emoji":"🔥","type":"energy"}
 Cloud + Air = {"name":"Sky","emoji":"🌌","type":"gas"}
+Sand + Fire = {"name":"Glass","emoji":"🥃","type":"matter"}
+Stone + Air = {"name":"Sand","emoji":"🏜️","type":"matter"}
 
 Now respond with ONLY the JSON object (no markdown, no extra text):
 ${elementA.name} + ${elementB.name} = `;
 
   const messages: webllm.ChatCompletionMessageParam[] = [
-    { role: "system", content: "You are a creative alchemy game engine. Always produce a result. Be imaginative but coherent." },
+    { role: "system", content: "You are a creative alchemy game engine. Always produce a real-world result. Be imaginative but grounded in reality. Never invent fictional or magical elements." },
     { role: "user", content: prompt }
   ];
 
   const reply = await llm.chat.completions.create({
     messages,
-    temperature: 0.7,
+    temperature: 0.6,
     max_tokens: 64,
   });
 
