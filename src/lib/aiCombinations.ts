@@ -11,6 +11,7 @@ import {
   getAllCachedElements,
   loadAllFromDB,
 } from './cache';
+import { findTagBasedCombination } from './tagEngine';
 
 const pendingGenerations = new Set<string>();
 const pendingResolvers = new Map<string, Array<(result: { element: GameElement; isNew: boolean } | null) => void>>();
@@ -196,6 +197,124 @@ export async function resolveCombination(
     }
   }
 
+  // STEP 1: Try tag-based engine for logical results
+  const tagResult = findTagBasedCombination(a, b);
+  if (tagResult) {
+    let resultElement = findElementByNameLocal(tagResult.name);
+    let isNewElement = false;
+    let elementId: string;
+
+    if (resultElement) {
+      elementId = resultElement.id;
+      isNewElement = false;
+    } else {
+      elementId = key;
+      resultElement = {
+        id: elementId,
+        name: tagResult.name,
+        emoji: tagResult.emoji,
+        type: tagResult.type as any,
+        properties: ['tag-generated'],
+        isAIGenerated: true,
+        createdBy: userId,
+        createdAt: Date.now(),
+        discovererName: userName,
+      } as AIElement;
+      isNewElement = true;
+    }
+
+    const aiCombo: AICombination = {
+      id: key,
+      elementA: a,
+      elementB: b,
+      resultId: elementId,
+      discoveredBy: userId,
+      discoveredAt: Date.now(),
+      discovererName: userName,
+      resultName: resultElement.name,
+      resultEmoji: resultElement.emoji,
+    };
+
+    if (databases && isNewElement) {
+      try {
+        await databases.createDocument(
+          APPWRITE_CONFIG.databaseId,
+          APPWRITE_CONFIG.collections.aiElements,
+          elementId,
+          {
+            id: elementId,
+            name: resultElement.name,
+            emoji: resultElement.emoji,
+            type: resultElement.type,
+            properties: resultElement.properties,
+            createdBy: userId,
+            createdAt: new Date().toISOString(),
+            isAIGenerated: true,
+            discovererName: userName,
+          },
+          [Permission.read(Role.any()), Permission.write(Role.any())]
+        );
+      } catch (e: any) {
+        if (e.code === 409 || e?.response?.code === 409) {
+          const existingEl = await databases.getDocument(
+            APPWRITE_CONFIG.databaseId,
+            APPWRITE_CONFIG.collections.aiElements,
+            elementId
+          ).catch(() => null);
+          if (existingEl) {
+            resultElement = {
+              id: existingEl.$id,
+              name: existingEl.name,
+              emoji: existingEl.emoji,
+              type: existingEl.type as any,
+              properties: existingEl.properties || [],
+              isAIGenerated: true,
+              createdBy: existingEl.createdBy,
+              createdAt: new Date(existingEl.createdAt).getTime(),
+              discovererName: existingEl.discovererName || userName,
+            } as AIElement;
+            elementId = existingEl.$id;
+            isNewElement = false;
+          }
+        }
+      }
+    }
+
+    try {
+      await databases?.createDocument(
+        APPWRITE_CONFIG.databaseId,
+        APPWRITE_CONFIG.collections.aiCombinations,
+        key,
+        {
+          id: key,
+          comboKey: key,
+          elementA: a,
+          elementB: b,
+          resultId: elementId,
+          resultName: resultElement.name,
+          resultEmoji: resultElement.emoji,
+          discoveredBy: userId,
+          discoveredAt: new Date().toISOString(),
+          discovererName: userName,
+        },
+        [Permission.read(Role.any()), Permission.write(Role.any())]
+      );
+    } catch (e: any) {
+      if (e.code !== 409 && e?.response?.code !== 409) {
+        console.error('Failed to save tag combination:', e);
+      }
+    }
+
+    setCachedCombination(aiCombo);
+    if (resultElement.isAIGenerated) {
+      setCachedElement(resultElement as AIElement);
+    }
+    ELEMENTS[elementId] = resultElement;
+
+    return { element: resultElement, isNew: isNewElement };
+  }
+
+  // STEP 2: Fallback to AI for exotic combinations
   pendingGenerations.add(key);
 
   try {
