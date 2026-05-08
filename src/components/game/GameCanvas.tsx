@@ -7,10 +7,12 @@ import { AIGeneratingOverlay } from '@/components/ai/AIGeneratingOverlay';
 import { FusionEffect } from './FusionEffect';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ELEMENTS } from '@/lib/gameData';
+import { getElementById } from '@/lib/gameData';
+import { X } from 'lucide-react';
 
 export const GameCanvas = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
-  const { canvasOrbs, selectElement, isGenerating, generatingElements } = useGameStore();
+  const { canvasOrbs, selectElement, isGenerating, generatingElements, failedCombo } = useGameStore();
 
   const handleCanvasClick = (e: React.MouseEvent) => {
     if (
@@ -42,6 +44,29 @@ export const GameCanvas = () => {
       />
 
       <FusionEffect />
+
+      <AnimatePresence>
+        {failedCombo && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 pointer-events-none"
+          >
+            <div className="bg-white/90 backdrop-blur-md rounded-2xl px-6 py-4 shadow-xl border border-red-100 flex flex-col items-center gap-2">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{getElementById(failedCombo.a)?.emoji}</span>
+                <span className="text-red-400 text-xl">+</span>
+                <span className="text-3xl">{getElementById(failedCombo.b)?.emoji}</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-red-600 font-semibold text-sm">
+                <X className="w-4 h-4" />
+                These elements don't combine
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence mode="popLayout">
         {canvasOrbs.map((orb) => {

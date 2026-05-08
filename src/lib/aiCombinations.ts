@@ -76,18 +76,15 @@ function findElementByNameLocal(name: string): GameElement | null {
   const normalized = name.toLowerCase().trim();
   const slug = slugify(name);
   
-  // Exact match first
   const allElements = { ...ELEMENTS, ...getAllCachedElements() };
   for (const el of Object.values(allElements)) {
     if (el.name.toLowerCase().trim() === normalized) return el;
   }
   
-  // Slug match (handles "Black Hole" vs "BlackHole")
   for (const el of Object.values(allElements)) {
     if (slugify(el.name) === slug) return el;
   }
   
-  // Substring match (handles "The Steam" vs "Steam")
   for (const el of Object.values(allElements)) {
     const elSlug = slugify(el.name);
     if (elSlug.includes(slug) || slug.includes(elSlug)) return el;
@@ -211,6 +208,13 @@ export async function resolveCombination(
     }
 
     const generated = await generateElement(elA, elB, engine);
+
+    // AI returned null = combination doesn't make sense
+    if (!generated) {
+      console.log(`[AI] No logical result for ${elA.name} + ${elB.name}`);
+      resolvePending(key, null);
+      return null;
+    }
 
     let resultElement: GameElement | null = findElementByNameLocal(generated.name);
     let isNewElement = false;

@@ -5,7 +5,7 @@ import { getElementById, findCombination, ORIGIN_PACKS, ELEMENTS } from '@/lib/g
 import { resolveCombination, hydrateAICache, getAIComboKey } from '@/lib/aiCombinations';
 import { initAuth } from '@/lib/auth';
 import { useProgressionStore } from './progressionStore';
-import { playCombineSound, playDiscoverySound } from '@/lib/audio';
+import { playCombineSound, playDiscoverySound, playErrorSound } from '@/lib/audio';
 
 let idCounter = 0;
 const genId = () => `orb_${++idCounter}_${Date.now().toString(36)}`;
@@ -29,6 +29,7 @@ interface GameState {
   globalDiscoveries: Discovery[];
   gameMode: GameMode;
   fusionEvent: FusionEvent | null;
+  failedCombo: { a: string; b: string; timestamp: number } | null;
 
   setPlayerName: (name: string) => void;
   setUser: (userId: string, displayName: string, isAnonymous: boolean) => void;
@@ -47,6 +48,7 @@ interface GameState {
   setGameMode: (mode: GameMode) => void;
   triggerFusion: (x: number, y: number, elementType: string) => void;
   setCanvasOrbs: (orbs: CanvasOrb[]) => void;
+  clearFailedCombo: () => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -70,6 +72,7 @@ export const useGameStore = create<GameState>()(
       globalDiscoveries: [],
       gameMode: 'sandbox',
       fusionEvent: null,
+      failedCombo: null,
 
       setPlayerName: (name) => set({ playerName: name }),
       setUser: (userId, displayName, isAnonymous) => set({ userId, displayName, isAnonymous }),
@@ -208,7 +211,15 @@ export const useGameStore = create<GameState>()(
 
           set({ isGenerating: false, generatingElements: null });
 
-          if (!resolved) return { success: false };
+          if (!resolved) {
+            // AI rejected the combination as illogical
+            playErrorSound();
+            set({
+              failedCombo: { a: orbA.elementId, b: orbB.elementId, timestamp: Date.now() },
+            });
+            setTimeout(() => set({ failedCombo: null }), 2000);
+            return { success: false };
+          }
 
           const { element, isNew } = resolved;
           ELEMENTS[element.id] = element;
@@ -233,7 +244,6 @@ export const useGameStore = create<GameState>()(
 
           const comboKey = getAIComboKey(orbA.elementId, orbB.elementId);
 
-          // Only add to aiElements if it's actually AI-generated
           const updatedAiElements = element.isAIGenerated
             ? { ...state.aiElements, [element.id]: element as AIElement }
             : state.aiElements;
@@ -320,6 +330,7 @@ export const useGameStore = create<GameState>()(
           currentPackId: null,
           globalDiscoveries: [],
           gameMode: 'sandbox',
+          failedCombo: null,
         }),
 
       setGameMode: (mode) => {
@@ -346,6 +357,7 @@ export const useGameStore = create<GameState>()(
       },
 
       setCanvasOrbs: (orbs) => set({ canvasOrbs: orbs }),
+      clearFailedCombo: () => set({ failedCombo: null }),
     }),
     {
       name: 'aethercraft-storage',
