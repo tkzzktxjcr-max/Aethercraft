@@ -1,6 +1,9 @@
 # ---- Build stage ----
 FROM node:22-alpine AS builder
 
+# Force cache invalidation for package.json changes
+ARG CACHEBUST=1
+
 WORKDIR /app
 
 # Install pnpm
