@@ -7,9 +7,12 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # Copy dependency files
-COPY package.json pnpm-lock.yaml .npmrc ./
+COPY package.json pnpm-lock.yaml ./
 
-# Install deps (build scripts allowed via onlyBuiltDependencies in package.json)
+# Configure pnpm to allow all build scripts (pnpm 10+ security)
+RUN printf "auto-install-peers=true\nstrict-peer-dependencies=false\nonly-built-dependencies=false\n" > .npmrc
+
+# Install deps
 RUN pnpm install --no-frozen-lockfile
 
 # Copy source
