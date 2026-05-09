@@ -12,7 +12,7 @@ COPY package.json pnpm-lock.yaml ./
 # Install deps: first pass tolerates ERR_PNPM_IGNORED_BUILDS,
 # then approve build scripts for native deps, then final install
 RUN pnpm install --no-frozen-lockfile || true && \
-    pnpm approve-builds esbuild @swc/core unrs-resolver && \
+    pnpm approve-builds esbuild @swc/core && \
     pnpm install --no-frozen-lockfile
 
 # Copy source
