@@ -7,7 +7,7 @@ import {
   Role,
   type Models,
 } from "appwrite";
-import { getAppwriteClient } from "./appwrite";
+import { getAppwriteClient } from "../appwrite";
 import type { AIElement, AICombination } from "@/types/game";
 
 const { databases } = getAppwriteClient();
