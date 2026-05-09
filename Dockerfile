@@ -1,9 +1,6 @@
 # ---- Build stage ----
 FROM node:22-alpine AS builder
 
-# Force cache invalidation for package.json changes
-ARG CACHEBUST=1
-
 WORKDIR /app
 
 # Install pnpm
@@ -12,8 +9,11 @@ RUN npm install -g pnpm
 # Copy dependency files
 COPY package.json pnpm-lock.yaml ./
 
-# Install deps (build scripts allowed via pnpm.onlyBuiltDependencies in package.json)
-RUN pnpm install --no-frozen-lockfile
+# Install deps: first pass tolerates ERR_PNPM_IGNORED_BUILDS,
+# then approve build scripts for native deps, then final install
+RUN pnpm install --no-frozen-lockfile || true && \
+    pnpm approve-builds esbuild @swc/core unrs-resolver && \
+    pnpm install --no-frozen-lockfile
 
 # Copy source
 COPY . .
