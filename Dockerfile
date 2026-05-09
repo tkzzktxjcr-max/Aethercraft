@@ -6,13 +6,10 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm
 
-# Copy dependency files  
-COPY package.json pnpm-lock.yaml ./
+# Copy dependency files and pnpm build approvals
+COPY package.json pnpm-lock.yaml pnpm-approve-builds.yaml .npmrc ./
 
-# Configure pnpm for CI/Docker builds
-RUN printf "auto-install-peers=true\nignore-scripts=false\n" > .npmrc
-
-# Install deps (allow native builds for esbuild, @swc/core etc.)
+# Install deps
 RUN pnpm install --no-frozen-lockfile
 
 # Copy source
