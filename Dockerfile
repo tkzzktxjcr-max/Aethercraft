@@ -9,8 +9,11 @@ RUN npm install -g pnpm
 # Copy dependency files  
 COPY package.json pnpm-lock.yaml ./
 
-# Install deps (approve build scripts for native modules like esbuild)
-RUN echo "auto-install-peers=true" > .npmrc && pnpm install --no-frozen-lockfile
+# Approve native build scripts for pnpm 10+
+RUN pnpm config set auto-install-peers true && pnpm approve-builds @swc/core esbuild
+
+# Install deps
+RUN pnpm install --no-frozen-lockfile
 
 # Copy source
 COPY . .
