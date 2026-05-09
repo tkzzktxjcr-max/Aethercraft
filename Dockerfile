@@ -9,8 +9,8 @@ RUN npm install -g pnpm
 # Copy dependency files
 COPY package.json pnpm-lock.yaml ./
 
-# Approve build scripts for native deps (pnpm 10+ security), then install
-RUN pnpm approve-builds esbuild @swc/core && pnpm install --no-frozen-lockfile
+# Install deps (build scripts allowed via pnpm.onlyBuiltDependencies in package.json)
+RUN pnpm install --no-frozen-lockfile
 
 # Copy source
 COPY . .
