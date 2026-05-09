@@ -6,10 +6,10 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm
 
-# Copy dependency files and pnpm build approvals
-COPY package.json pnpm-lock.yaml pnpm-approve-builds.yaml .npmrc ./
+# Copy dependency files
+COPY package.json pnpm-lock.yaml .npmrc ./
 
-# Install deps
+# Install deps (build scripts allowed via onlyBuiltDependencies in package.json)
 RUN pnpm install --no-frozen-lockfile
 
 # Copy source
