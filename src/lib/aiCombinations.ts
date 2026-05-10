@@ -11,7 +11,7 @@ import {
 } from "./gameData";
 import { findTagBasedCombination } from "./tagEngine";
 import { generateElement } from "./ai/generateElementAI";
-import { findElementById, findCombinationById } from "./db/appwrite";
+import { findElementById, findElementByName, findCombinationById } from "./db/appwrite";
 import { getAppwriteClient } from "./appwrite";
 import type { AIElement, AICombination, GameElement } from "@/types/game";
 import {
