@@ -13,7 +13,14 @@ export function isWebGPUSupported(): boolean {
   return typeof navigator !== "undefined" && "gpu" in navigator;
 }
 
-/** Lazily initialize the WebLLM engine (singleton). */
+const INIT_TIMEOUT_MS = 30_000;
+const AI_TIMEOUT_MS = 10_000;
+
+function sleep(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
+
+/** Lazily initialize the WebLLM engine (singleton) with timeout. */
 export async function ensureWebLLMEngine(
   onProgress?: InitProgressCallback
 ): Promise<webllm.MLCEngine> {
@@ -23,24 +30,23 @@ export async function ensureWebLLMEngine(
   if (engine) return engine;
   if (initPromise) return initPromise;
 
-  initPromise = webllm.CreateMLCEngine("Llama-3.2-1B-Instruct-q4f16_1-MLC", {
+  const init = webllm.CreateMLCEngine("Llama-3.2-1B-Instruct-q4f16_1-MLC", {
     initProgressCallback: onProgress,
   }).then((eng) => {
     engine = eng;
     return eng;
   });
 
-  return initPromise;
-}
+  initPromise = init;
 
-export function getEngine(): webllm.MLCEngine | null {
-  return engine;
-}
-
-const AI_TIMEOUT_MS = 10_000;
-
-function sleep(ms: number) {
-  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+  return Promise.race([
+    init,
+    sleep(INIT_TIMEOUT_MS).then(() => {
+      // Reset so user can retry later
+      initPromise = null;
+      throw new Error("WebLLM init timeout (30s). Model download may have stalled.");
+    }),
+  ]);
 }
 
 export async function generateElement(
