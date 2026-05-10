@@ -11,7 +11,7 @@ import {
 } from "./gameData";
 import { findTagBasedCombination } from "./tagEngine";
 import { generateElement } from "./ai/generateElementAI";
-import { validateCombo, getFallbackResult } from "./ai/validateCombo";
+import { validateCombo } from "./ai/validateCombo";
 import { findElementById, findElementByName, findCombinationById } from "./db/appwrite";
 import { getAppwriteClient } from "./appwrite";
 import type { AIElement, AICombination, GameElement } from "@/types/game";
@@ -235,11 +235,11 @@ export async function resolveCombination(
     const validator = (result: { name: string; emoji: string; type: string }) =>
       validateCombo(elA, elB, result);
 
-    let generated = await generateElement(elA, elB, undefined, validator);
+    const generated = await generateElement(elA, elB, undefined, validator);
     if (!generated) {
-      // Fallback: use a generic "mixture" derived from inputs
-      generated = getFallbackResult(elA, elB);
-      console.warn(`[AI] Fallback used for ${elA.name} + ${elB.name}: ${generated.name}`);
+      // AI could not produce a valid result — orbs stay on canvas
+      resolvePending(key, null);
+      return null;
     }
 
     let resultElement: GameElement | null = findElementByNameLocal(generated.name);

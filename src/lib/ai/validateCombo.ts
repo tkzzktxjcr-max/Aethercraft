@@ -1,6 +1,8 @@
 /**
  * Post-generation semantic validation for AI-combined elements.
- * Rejects incoherent or tautological results before they reach the game.
+ * Rejects incoherent or tautological results.
+ * Fantasy/mythical elements are ALLOWED as long as they are culturally known concepts
+ * (e.g., Dragon, Phoenix, Unicorn — not "Voidling" or "Starfire").
  */
 import type { GameElement } from "@/types/game";
 import { ELEMENTS } from "../gameData";
@@ -50,7 +52,7 @@ export function validateCombo(
     return { valid: false, reason: "Result equals input B (tautology)" };
   }
 
-  // 2. Semantic link: result must share at least one tag/property/type with A or B
+  // 2. Semantic link: result must share at least one trait with A or B
   const aTraits = new Set([
     elementA.type,
     ...elementA.properties.map((p) => p.toLowerCase()),
@@ -73,33 +75,19 @@ export function validateCombo(
     return { valid: false, reason: "No semantic link to either input" };
   }
 
-  // 3. Anti-synonym: reject exact duplicates of existing elements
-  const existing = findElementByNameLocal(result.name);
-  if (existing) {
-    // If the result already exists and is NOT one of the inputs, that's actually OK
-    // — we want to reuse known elements. Only reject if it's a weird synonym.
-    const isWeirdSynonym =
-      existing.id !== resultName.replace(/\s+/g, "_") &&
-      !aTraits.has(existing.type) &&
-      !bTraits.has(existing.type);
-
-    if (isWeirdSynonym) {
-      return { valid: false, reason: "Synonym with no logical connection" };
-    }
-  }
-
-  // 4. Real-world plausibility: reject overly abstract / fantasy words
-  const fantasyWords = [
-    "magic", "spell", "potion", "enchanted", "mystic", "arcane",
-    "divine", "ethereal", "phantom", "spirit", "ghost",
-    "dragon", "unicorn", "phoenix", "wizard", "sorcerer",
-    "voidling", "starfire", "moonbeam", "soul",
+  // 3. Anti-invented: reject clearly made-up portmanteau words
+  const inventedPatterns = [
+    /\w+ling/,     // voidling, starling, etc.
+    /\w+fire/,    // starfire, moonfire
+    /\w+beam/,    // moonbeam, sunbeam
+    /\w+soul/,    // voidsoul
+    /\w+storm/,   // voidstorm
   ];
-  if (fantasyWords.some((w) => resultName.includes(w))) {
-    return { valid: false, reason: "Fantasy/magical concept rejected" };
+  if (inventedPatterns.some((re) => re.test(resultName))) {
+    return { valid: false, reason: "Portmanteau / invented word" };
   }
 
-  // 5. Length check
+  // 4. Length check
   if (result.name.length < 2 || result.name.length > 30) {
     return { valid: false, reason: "Name too short or too long" };
   }
@@ -107,12 +95,12 @@ export function validateCombo(
   return { valid: true };
 }
 
-/** Fallback element when AI generates garbage. */
+/** Fallback element when AI fails to generate anything logical.
+ *  Returns a generic "nothing happened" so the orbs stay on canvas. */
 export function getFallbackResult(
   elementA: GameElement,
   elementB: GameElement
 ): { name: string; emoji: string; type: string } {
-  // Try to derive a "waste" or "mixture" from the inputs
   const hasChemical =
     [...elementA.properties, ...elementB.properties].some((p) =>
       ["acid", "base", "reactive", "corrosive", "toxic", "chemical"].includes(p.toLowerCase())

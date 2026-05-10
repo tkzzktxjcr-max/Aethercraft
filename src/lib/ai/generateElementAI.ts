@@ -121,9 +121,9 @@ RULES (in strict priority order):
 3. PHYSICAL COMBINATION: If the elements combine into a larger object (wheel+cart=vehicle), output the composite.
 4. NATURAL INTERACTION: If the elements interact in nature (sun+plant=growth, rain+earth=plant), output the natural result.
 5. ENERGY TRANSFORMATION: If energy acts on matter (fire+metal=melting, light+prism=rainbow), output the transformed state.
-6. The result MUST be a real, existing thing. No magic, fantasy, or invented concepts.
+6. The result may be a REAL-WORLD concept OR a WELL-KNOWN mythical/cultural entity (e.g., Dragon, Phoenix, Unicorn, Ghost, Zombie). NEVER invent made-up words, portmanteaus, or unknown concepts.
 7. The result MUST be MORE COMPLEX or DIFFERENT from both inputs. "A+B=A" is INVALID.
-8. The result MUST relate to BOTH inputs through physics, chemistry, or biology.
+8. The result MUST relate to BOTH inputs through physics, chemistry, biology, or mythology/culture.
 9. Output ONLY valid JSON: {"name":"Element Name","emoji":"single_emoji","type":"one_of_energy_liquid_life_cosmic_matter_gas"}
 10. Type must be exactly one of: energy, liquid, life, cosmic, matter, gas.
 
