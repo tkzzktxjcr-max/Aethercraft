@@ -194,11 +194,10 @@ export const useGameStore = create<GameState>()(
           return { success: true, result: resultElement };
         }
 
-        if (state.aiStatus !== 'ready') return { success: false };
 
-        set({ isGenerating: true, generatingElements: [orbA.elementId, orbB.elementId] });
 
         try {
+          set({ isGenerating: true, generatingElements: [orbA.elementId, orbB.elementId] });
           const resolved = await resolveCombination(
             orbA.elementId,
             orbB.elementId,
