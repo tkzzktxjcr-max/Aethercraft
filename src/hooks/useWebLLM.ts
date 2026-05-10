@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { isWebGPUSupported } from "@/lib/ai/generateElementAI";
+import { isWebGPUSupported, ensureWebLLMEngine } from "@/lib/ai/generateElementAI";
 import { useGameStore } from "@/store/gameStore";
 
 export function useWebLLM() {
@@ -10,7 +10,28 @@ export function useWebLLM() {
       setAIStatus("unavailable");
       return;
     }
-    // Lazily loaded — only initialize when the first exotic combo is requested
-    setAIStatus("idle");
+
+    let cancelled = false;
+
+    // Preload engine in the background so first exotic combo is faster
+    setAIStatus("loading");
+    ensureWebLLMEngine((report) => {
+      if (cancelled) return;
+      if (report.progress === 1) {
+        setAIStatus("ready");
+      } else {
+        setAIStatus("loading");
+      }
+    })
+      .then(() => {
+        if (!cancelled) setAIStatus("ready");
+      })
+      .catch(() => {
+        if (!cancelled) setAIStatus("unavailable");
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [setAIStatus]);
 }
