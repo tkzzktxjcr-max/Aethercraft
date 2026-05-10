@@ -1,9 +1,7 @@
 /**
- * AI element generation using WebLLM.
- * Handles prompt building, LLM inference, JSON parsing, and timeout.
+ * AI element generation using WebLLM with structured prompts and post-validation.
  */
 import * as webllm from "@mlc-ai/web-llm";
-import { getElementById } from "./gameData";
 
 let engine: webllm.MLCEngine | null = null;
 let initPromise: Promise<webllm.MLCEngine> | null = null;
@@ -40,80 +38,106 @@ export async function ensureWebLLMEngine(
   return initPromise;
 }
 
+const MAX_RETRIES = 2;
+
 export async function generateElement(
-  elementA: { name: string; emoji: string; tags?: string[]; properties?: string[] },
-  elementB: { name: string; emoji: string; tags?: string[]; properties?: string[] },
-  onProgress?: InitProgressCallback
+  elementA: { name: string; emoji: string; tags?: string[]; properties?: string[]; type?: string },
+  elementB: { name: string; emoji: string; tags?: string[]; properties?: string[]; type?: string },
+  onProgress?: InitProgressCallback,
+  validator?: (
+    result: { name: string; emoji: string; type: string }
+  ) => { valid: boolean; reason?: string }
 ): Promise<{ name: string; emoji: string; type: string } | null> {
   const llm = await ensureWebLLMEngine(onProgress);
 
-  const tagsA = elementA.tags?.join(", ") || elementA.properties?.join(", ") || "";
-  const tagsB = elementB.tags?.join(", ") || elementB.properties?.join(", ") || "";
+  const propsA = [...elementA.properties, ...(elementA.tags || []), elementA.type || ""].filter(Boolean);
+  const propsB = [...elementB.properties, ...(elementB.tags || []), elementB.type || ""].filter(Boolean);
 
-  const prompt = buildPrompt(elementA, elementB, tagsA, tagsB);
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    const prompt = buildPrompt(elementA, elementB, propsA.join(", "), propsB.join(", "), attempt);
 
-  const messages: webllm.ChatCompletionMessageParam[] = [
-    {
-      role: "system",
-      content:
-        "You are a creative alchemy game engine. Always produce a real-world result. Be imaginative but grounded in reality. Never invent fictional or magical elements.",
-    },
-    { role: "user", content: prompt },
-  ];
+    const messages: webllm.ChatCompletionMessageParam[] = [
+      {
+        role: "system",
+        content:
+          "You are a physical/chemical simulation engine for an alchemy game. Always produce real-world results grounded in physics, chemistry, or biology. Never invent magical or fictional concepts.",
+      },
+      { role: "user", content: prompt },
+    ];
 
-  return Promise.race([
-    (async () => {
-      const reply = await llm.chat.completions.create({
-        messages,
-        temperature: 0.6,
-        max_tokens: 64,
-      });
-      return parseAIResponse(reply.choices[0].message.content || "");
-    })(),
-    sleep(AI_TIMEOUT_MS).then(() => {
-      throw new Error("AITimeout");
-    }),
-  ]);
+    try {
+      const reply = await Promise.race([
+        llm.chat.completions.create({
+          messages,
+          temperature: attempt === 0 ? 0.4 : 0.2, // stricter on retries
+          max_tokens: 80,
+        }),
+        sleep(AI_TIMEOUT_MS).then(() => {
+          throw new Error("AITimeout");
+        }),
+      ]);
+
+      const generated = parseAIResponse(reply.choices[0].message.content || "");
+      if (!generated) continue;
+
+      if (validator) {
+        const check = validator(generated);
+        if (!check.valid) {
+          console.warn(`[AI] Attempt ${attempt + 1} rejected: ${check.reason}`);
+          continue;
+        }
+      }
+
+      return generated;
+    } catch {
+      // retry on next loop
+    }
+  }
+
+  return null;
 }
 
 function buildPrompt(
   elementA: { name: string; emoji: string },
   elementB: { name: string; emoji: string },
-  tagsA: string,
-  tagsB: string
+  propsA: string,
+  propsB: string,
+  attempt: number
 ): string {
-  return `You are a creative alchemy game engine. Given two elements, invent a new element that results from combining them.
+  const retryHint = attempt > 0 ? "\n⚠️ Previous result was rejected as illogical. Think more carefully." : "";
 
-Element A: ${elementA.name} ${elementA.emoji} (properties: ${tagsA})
-Element B: ${elementB.name} ${elementB.emoji} (properties: ${tagsB})
+  return `You are a physical/chemical simulation engine for an alchemy game.
+Given two elements, determine the MOST LOGICAL real-world result of their interaction.
 
-RULES:
-- The result MUST be a real, existing thing from the real world. No fictional, magical, or invented concepts.
-- Use common English words for real objects, substances, materials, natural phenomena, or living things.
-- The result should relate to BOTH input elements in some way (physical, chemical, semantic, or metaphorical).
-- Output ONLY valid JSON: {"name":"Element Name","emoji":"single_emoji","type":"one_of_energy_liquid_life_cosmic_matter_gas"}
-- The name should be a real-world term (1-2 words max)
-- Use a single emoji that represents the real element
-- Type must be exactly one of: energy, liquid, life, cosmic, matter, gas
-- If the result already exists as a common element, USE THAT EXACT NAME
-- Do NOT create synonyms for existing elements
-- Normalize names to common English words
-- AVOID made-up words, fantasy terms, or impossible concepts
+Element A: ${elementA.name} ${elementA.emoji}
+  Traits: ${propsA}
 
-Examples of real-world combinations:
-Fire + Water = {"name":"Steam","emoji":"♨️","type":"gas"}
-Earth + Water = {"name":"Mud","emoji":"💩","type":"liquid"}
-Sun + Plant = {"name":"Flower","emoji":"🌸","type":"life"}
-Metal + Energy = {"name":"Electricity","emoji":"💡","type":"energy"}
-Flower + Plant = {"name":"Garden","emoji":"🌷","type":"life"}
-Star + Star = {"name":"Galaxy","emoji":"🌌","type":"cosmic"}
-Wood + Fire = {"name":"Campfire","emoji":"🔥","type":"energy"}
-Cloud + Air = {"name":"Sky","emoji":"🌌","type":"gas"}
-Sand + Fire = {"name":"Glass","emoji":"🥃","type":"matter"}
-Stone + Air = {"name":"Sand","emoji":"🏜️","type":"matter"}
+Element B: ${elementB.name} ${elementB.emoji}
+  Traits: ${propsB}
 
-Now respond with ONLY the JSON object (no markdown, no extra text):
-${elementA.name} + ${elementB.name} = `;
+RULES (in strict priority order):
+1. CHEMICAL REACTION: If the elements react chemically (acid+metal, fire+water, electricity+water), output the chemical product.
+2. PHYSICAL COMPOSITION: If one element is made OF the other (tree+tool=wood), output the component/substance.
+3. PHYSICAL COMBINATION: If the elements combine into a larger object (wheel+cart=vehicle), output the composite.
+4. NATURAL INTERACTION: If the elements interact in nature (sun+plant=growth, rain+earth=plant), output the natural result.
+5. ENERGY TRANSFORMATION: If energy acts on matter (fire+metal=melting, light+prism=rainbow), output the transformed state.
+6. The result MUST be a real, existing thing. No magic, fantasy, or invented concepts.
+7. The result MUST be MORE COMPLEX or DIFFERENT from both inputs. "A+B=A" is INVALID.
+8. The result MUST relate to BOTH inputs through physics, chemistry, or biology.
+9. Output ONLY valid JSON: {"name":"Element Name","emoji":"single_emoji","type":"one_of_energy_liquid_life_cosmic_matter_gas"}
+10. Type must be exactly one of: energy, liquid, life, cosmic, matter, gas.
+
+Examples of LOGICAL real-world combinations:
+Fire + Water → {"name":"Steam","emoji":"♨️","type":"gas"}
+Earth + Water → {"name":"Mud","emoji":"💩","type":"liquid"}
+Metal + Fire → {"name":"Molten Metal","emoji":"🔥","type":"matter"}
+Electricity + Water → {"name":"Electrolysis","emoji":"⚡","type":"energy"}
+Sun + Plant → {"name":"Flower","emoji":"🌸","type":"life"}
+Glass + Light → {"name":"Prism","emoji":"🔮","type":"matter"}
+Acid + Metal → {"name":"Hydrogen","emoji":"💨","type":"gas"}
+Wheel + Wood → {"name":"Cart","emoji":"🛒","type":"matter"}
+${retryHint}
+Now: ${elementA.name} + ${elementB.name} → `;
 }
 
 function parseAIResponse(raw: string): { name: string; emoji: string; type: string } | null {
