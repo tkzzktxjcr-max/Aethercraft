@@ -10,7 +10,7 @@ import {
   ELEMENTS,
 } from "./gameData";
 import { findTagBasedCombination } from "./tagEngine";
-import { generateElement } from "./ai/generateElementAI";
+import { generateElement } from "./ai/apiGenerator";
 import { validateCombo } from "./ai/validateCombo";
 import { findElementById, findElementByName, findCombinationById } from "./db/appwrite";
 import { getAppwriteClient } from "./appwrite";
