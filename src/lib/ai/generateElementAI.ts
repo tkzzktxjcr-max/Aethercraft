@@ -1,5 +1,6 @@
 /**
- * AI element generation using WebLLM with structured prompts and post-validation.
+ * AI element generation using WebLLM.
+ * Simple prompt + light validation. Creativity is encouraged.
  */
 import * as webllm from "@mlc-ai/web-llm";
 
@@ -54,13 +55,19 @@ export async function generateElement(
   const propsB = [...elementB.properties, ...(elementB.tags || []), elementB.type || ""].filter(Boolean);
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-    const prompt = buildPrompt(elementA, elementB, propsA.join(", "), propsB.join(", "), attempt);
+    const prompt = buildPrompt(
+      elementA,
+      elementB,
+      propsA.join(", "),
+      propsB.join(", "),
+      attempt
+    );
 
     const messages: webllm.ChatCompletionMessageParam[] = [
       {
         role: "system",
         content:
-          "You are a physical/chemical simulation engine for an alchemy game. Always produce real-world results grounded in physics, chemistry, or biology. Never invent magical or fictional concepts.",
+          "You are an alchemy game engine. Combine two elements into a single new element. Be creative and surprising, but grounded in real-world physics, chemistry, biology, mythology, or culture. Output ONLY valid JSON.",
       },
       { role: "user", content: prompt },
     ];
@@ -69,7 +76,7 @@ export async function generateElement(
       const reply = await Promise.race([
         llm.chat.completions.create({
           messages,
-          temperature: attempt === 0 ? 0.4 : 0.2, // stricter on retries
+          temperature: attempt === 0 ? 0.7 : 0.85, // creative but structured
           max_tokens: 80,
         }),
         sleep(AI_TIMEOUT_MS).then(() => {
@@ -97,6 +104,13 @@ export async function generateElement(
   return null;
 }
 
+const ANGLES = [
+  "What forms when these two things meet in the real world, in nature, or in a lab?",
+  "What mythical or cultural concept naturally emerges from combining these two elements?",
+  "What physical object, substance, or phenomenon results from these two interacting?",
+  "If an alchemist combined these two, what would the reaction produce?",
+];
+
 function buildPrompt(
   elementA: { name: string; emoji: string },
   elementB: { name: string; emoji: string },
@@ -104,39 +118,29 @@ function buildPrompt(
   propsB: string,
   attempt: number
 ): string {
-  const retryHint = attempt > 0 ? "\n⚠️ Previous result was rejected as illogical. Think more carefully." : "";
+  const angle = ANGLES[attempt % ANGLES.length];
 
-  return `You are a physical/chemical simulation engine for an alchemy game.
-Given two elements, determine the MOST LOGICAL real-world result of their interaction.
+  return `${angle}
 
-Element A: ${elementA.name} ${elementA.emoji}
-  Traits: ${propsA}
+Element A: ${elementA.name} ${elementA.emoji} (${propsA})
+Element B: ${elementB.name} ${elementB.emoji} (${propsB})
 
-Element B: ${elementB.name} ${elementB.emoji}
-  Traits: ${propsB}
+RULES:
+- The result must be a SINGLE concept: a real object, substance, natural phenomenon, creature, plant, material, or well-known mythical entity.
+- The name must be 1-3 common English words. No made-up words like "Starfire" or "Voidling".
+- Use a single emoji that represents the result.
+- Output ONLY valid JSON: {"name":"...","emoji":"...","type":"..."}
+- Type must be one of: energy, liquid, life, cosmic, matter, gas.
+- If the combination makes no sense, invent something poetic but grounded (e.g., Moon + Love → Tide).
 
-RULES (in strict priority order):
-1. CHEMICAL REACTION: If the elements react chemically (acid+metal, fire+water, electricity+water), output the chemical product.
-2. PHYSICAL COMPOSITION: If one element is made OF the other (tree+tool=wood), output the component/substance.
-3. PHYSICAL COMBINATION: If the elements combine into a larger object (wheel+cart=vehicle), output the composite.
-4. NATURAL INTERACTION: If the elements interact in nature (sun+plant=growth, rain+earth=plant), output the natural result.
-5. ENERGY TRANSFORMATION: If energy acts on matter (fire+metal=melting, light+prism=rainbow), output the transformed state.
-6. The result may be a REAL-WORLD concept OR a WELL-KNOWN mythical/cultural entity (e.g., Dragon, Phoenix, Unicorn, Ghost, Zombie). NEVER invent made-up words, portmanteaus, or unknown concepts.
-7. The result MUST be MORE COMPLEX or DIFFERENT from both inputs. "A+B=A" is INVALID.
-8. The result MUST relate to BOTH inputs through physics, chemistry, biology, or mythology/culture.
-9. Output ONLY valid JSON: {"name":"Element Name","emoji":"single_emoji","type":"one_of_energy_liquid_life_cosmic_matter_gas"}
-10. Type must be exactly one of: energy, liquid, life, cosmic, matter, gas.
-
-Examples of LOGICAL real-world combinations:
+Examples:
 Fire + Water → {"name":"Steam","emoji":"♨️","type":"gas"}
 Earth + Water → {"name":"Mud","emoji":"💩","type":"liquid"}
 Metal + Fire → {"name":"Molten Metal","emoji":"🔥","type":"matter"}
-Electricity + Water → {"name":"Electrolysis","emoji":"⚡","type":"energy"}
-Sun + Plant → {"name":"Flower","emoji":"🌸","type":"life"}
-Glass + Light → {"name":"Prism","emoji":"🔮","type":"matter"}
-Acid + Metal → {"name":"Hydrogen","emoji":"💨","type":"gas"}
-Wheel + Wood → {"name":"Cart","emoji":"🛒","type":"matter"}
-${retryHint}
+Dragon + Fire → {"name":"Ash Drake","emoji":"🐉","type":"life"}
+Light + Glass → {"name":"Prism","emoji":"🔮","type":"matter"}
+Moon + Love → {"name":"Tide","emoji":"🌊","type":"liquid"}
+
 Now: ${elementA.name} + ${elementB.name} → `;
 }
 
@@ -152,7 +156,7 @@ function parseAIResponse(raw: string): { name: string; emoji: string; type: stri
           .trim()
           .replace(/\s+/g, " ")
           .replace(/[^\w\s]/g, "")
-          .slice(0, 30);
+          .slice(0, 40);
         const emoji = String(parsed.emoji).trim().slice(0, 2);
         return { name, emoji, type };
       }

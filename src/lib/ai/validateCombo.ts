@@ -1,8 +1,7 @@
 /**
- * Post-generation semantic validation for AI-combined elements.
- * Rejects incoherent or tautological results.
- * Fantasy/mythical elements are ALLOWED as long as they are culturally known concepts
- * (e.g., Dragon, Phoenix, Unicorn — not "Voidling" or "Starfire").
+ * Light post-generation validation.
+ * Only blocks: tautology (A+B=A) and invented portmanteau words.
+ * Fantasy, mythical, and surprising results are encouraged.
  */
 import type { GameElement } from "@/types/game";
 import { ELEMENTS } from "../gameData";
@@ -41,61 +40,37 @@ export function validateCombo(
   result: { name: string; emoji: string; type: string }
 ): ValidationResult {
   const resultName = result.name.toLowerCase().trim();
-  const nameA = elementA.name.toLowerCase().trim();
-  const nameB = elementB.name.toLowerCase().trim();
 
   // 1. Tautology check: result must differ from both inputs
-  if (resultName === nameA || slugify(result.name) === slugify(elementA.name)) {
-    return { valid: false, reason: "Result equals input A (tautology)" };
+  if (resultName === elementA.name.toLowerCase().trim()) {
+    return { valid: false, reason: "Result equals input A" };
   }
-  if (resultName === nameB || slugify(result.name) === slugify(elementB.name)) {
-    return { valid: false, reason: "Result equals input B (tautology)" };
-  }
-
-  // 2. Semantic link: result must share at least one trait with A or B
-  const aTraits = new Set([
-    elementA.type,
-    ...elementA.properties.map((p) => p.toLowerCase()),
-    ...(elementA.tags || []).map((t) => t.toLowerCase()),
-  ]);
-  const bTraits = new Set([
-    elementB.type,
-    ...elementB.properties.map((p) => p.toLowerCase()),
-    ...(elementB.tags || []).map((t) => t.toLowerCase()),
-  ]);
-  const resultTraits = new Set([
-    result.type.toLowerCase(),
-    ...resultName.split(/\s+/),
-  ]);
-
-  const hasLinkToA = [...resultTraits].some((t) => aTraits.has(t));
-  const hasLinkToB = [...resultTraits].some((t) => bTraits.has(t));
-
-  if (!hasLinkToA && !hasLinkToB) {
-    return { valid: false, reason: "No semantic link to either input" };
+  if (resultName === elementB.name.toLowerCase().trim()) {
+    return { valid: false, reason: "Result equals input B" };
   }
 
-  // 3. Anti-invented: reject clearly made-up portmanteau words
+  // 2. Anti-invented: reject clearly made-up portmanteau words
   const inventedPatterns = [
-    /\w+ling/,     // voidling, starling, etc.
-    /\w+fire/,    // starfire, moonfire
-    /\w+beam/,    // moonbeam, sunbeam
-    /\w+soul/,    // voidsoul
-    /\w+storm/,   // voidstorm
+    /\w+ling$/,    // voidling, starling, etc.
+    /\w+fire$/,    // starfire, moonfire
+    /\w+beam$/,   // moonbeam, sunbeam
+    /\w+soul$/,   // voidsoul
+    /\w+storm$/,  // voidstorm
+    /^[a-z]+\d+$/, // anything with numbers
   ];
   if (inventedPatterns.some((re) => re.test(resultName))) {
-    return { valid: false, reason: "Portmanteau / invented word" };
+    return { valid: false, reason: "Made-up portmanteau" };
   }
 
-  // 4. Length check
-  if (result.name.length < 2 || result.name.length > 30) {
+  // 3. Length check
+  if (result.name.length < 2 || result.name.length > 40) {
     return { valid: false, reason: "Name too short or too long" };
   }
 
   return { valid: true };
 }
 
-/** Fallback element when AI fails to generate anything logical.
+/** Fallback element when AI fails to generate anything.
  *  Returns a generic "nothing happened" so the orbs stay on canvas. */
 export function getFallbackResult(
   elementA: GameElement,
