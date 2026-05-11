@@ -1,6 +1,6 @@
 /**
  * AI element generation using WebLLM.
- * Simple prompt + light validation. Creativity is encouraged.
+ * Prompt inspired by Infinite Craft: coherence + creativity + discoverability.
  */
 import * as webllm from "@mlc-ai/web-llm";
 
@@ -39,7 +39,7 @@ export async function ensureWebLLMEngine(
   return initPromise;
 }
 
-const MAX_RETRIES = 2;
+const MAX_RETRIES = 3;
 
 export async function generateElement(
   elementA: { name: string; emoji: string; tags?: string[]; properties?: string[]; type?: string },
@@ -64,11 +64,7 @@ export async function generateElement(
     );
 
     const messages: webllm.ChatCompletionMessageParam[] = [
-      {
-        role: "system",
-        content:
-          "You are an alchemy game engine. Combine two elements into a single new element. Be creative and surprising, but grounded in real-world physics, chemistry, biology, mythology, or culture. Output ONLY valid JSON.",
-      },
+      { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: prompt },
     ];
 
@@ -76,7 +72,7 @@ export async function generateElement(
       const reply = await Promise.race([
         llm.chat.completions.create({
           messages,
-          temperature: attempt === 0 ? 0.7 : 0.85, // creative but structured
+          temperature: attempt === 0 ? 0.65 : 0.75 + attempt * 0.05,
           max_tokens: 80,
         }),
         sleep(AI_TIMEOUT_MS).then(() => {
@@ -104,6 +100,71 @@ export async function generateElement(
   return null;
 }
 
+const SYSTEM_PROMPT = `You are a creative fusion engine for an infinite-crafting alchemy game.
+Your goal: combine two given elements into ONE new element.
+
+The result must:
+- Make immediate sense OR make sense after a moment of thought
+- Be creative without being random
+- Sometimes be funny or absurd, but always coherent
+- Feel like a genuine emergent discovery
+
+The system must favor:
+- Causal relationships
+- Cultural associations
+- Understandable metaphors
+- Shared properties
+- Well-known pop-culture references
+- Natural concept evolutions
+
+The system must NEVER:
+- Produce results with no clear link
+- Generate "random absurd" nonsense
+- Use vague names
+- Invent meaningless made-up words
+- Break the overall world coherence
+
+COHERENCE LEVEL REQUIRED:
+Every fusion must follow AT LEAST one identifiable logic:
+- physical | symbolic | cultural | humorous | linguistic
+- scientific | emotional | historical | fictional
+
+If no credible logic exists:
+- Pick the most intuitive connection
+- Keep it simple
+- Avoid "lol random"
+
+GOOD EXAMPLES:
+Fire + Water → Steam, Sauna, Tea
+Cat + Internet → Meme, Keyboard Cat
+Robot + Magic → Technomancy, Golem, Cyber-Mage
+
+BAD EXAMPLES:
+Fire + Water → Cosmic Banana
+Cat + Internet → Quantum Explosion
+
+PRIORITY ORDER:
+1. Logical coherence
+2. Creative impact
+3. Surprise
+4. Humor
+5. Light absurdity
+
+Humor must NEVER destroy meaning.
+
+STYLE:
+Results should feel like:
+- A huge but coherent world
+- An emerging encyclopedia
+- Something the player thinks: "ah yes… that actually makes sense"
+
+CONSTRAINTS:
+- Name: ≤ 4 words (ideally 1-2)
+- No long explanations
+- Never empty
+- Always pick the MOST coherent AND interesting fusion
+- The result must feel obvious enough that a human could guess the logic afterward.`;
+
 const ANGLES = [
   "What forms when these two things meet in the real world, in nature, or in a lab?",
   "What mythical or cultural concept naturally emerges from combining these two elements?",
@@ -125,21 +186,22 @@ function buildPrompt(
 Element A: ${elementA.name} ${elementA.emoji} (${propsA})
 Element B: ${elementB.name} ${elementB.emoji} (${propsB})
 
-RULES:
-- The result must be a SINGLE concept: a real object, substance, natural phenomenon, creature, plant, material, or well-known mythical entity.
-- The name must be 1-3 common English words. No made-up words like "Starfire" or "Voidling".
-- Use a single emoji that represents the result.
-- Output ONLY valid JSON: {"name":"...","emoji":"...","type":"..."}
-- Type must be one of: energy, liquid, life, cosmic, matter, gas.
-- If the combination makes no sense, invent something poetic but grounded (e.g., Moon + Love → Tide).
+Output ONLY valid JSON: {"name":"...","emoji":"...","type":"..."}
+Type must be one of: energy, liquid, life, cosmic, matter, gas.
 
-Examples:
+Examples of GOOD fusions:
 Fire + Water → {"name":"Steam","emoji":"♨️","type":"gas"}
 Earth + Water → {"name":"Mud","emoji":"💩","type":"liquid"}
 Metal + Fire → {"name":"Molten Metal","emoji":"🔥","type":"matter"}
 Dragon + Fire → {"name":"Ash Drake","emoji":"🐉","type":"life"}
 Light + Glass → {"name":"Prism","emoji":"🔮","type":"matter"}
 Moon + Love → {"name":"Tide","emoji":"🌊","type":"liquid"}
+Robot + Magic → {"name":"Technomancy","emoji":"🤖","type":"energy"}
+Cat + Internet → {"name":"Meme","emoji":"😹","type":"matter"}
+
+Examples of BAD fusions (NEVER do this):
+Fire + Water → {"name":"Cosmic Banana","emoji":"🍌","type":"matter"}
+Metal + Fire → {"name":"Quantum Explosion","emoji":"💥","type":"energy"}
 
 Now: ${elementA.name} + ${elementB.name} → `;
 }
