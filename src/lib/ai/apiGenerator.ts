@@ -50,7 +50,30 @@ async function generateViaServer(
   const propsA = [...elementA.properties, ...(elementA.tags || []), elementA.type].filter(Boolean);
   const propsB = [...elementB.properties, ...(elementB.tags || []), elementB.type].filter(Boolean);
 
-  const prompt = buildServerPrompt(elementA, elementB, propsA.join(", "), propsB.join(", "));
+  const prompt = `<start_of_turn>user
+You are an infinite-crafting alchemy engine inspired by games like Infinite Craft.
+
+Combine these two elements into ONE new element.
+
+RULES:
+- The result must feel obvious after the fact ("ah yes… that makes sense")
+- Follow causal, cultural, metaphorical, humorous, or scientific logic
+- Name: 1-4 common English words max
+- NO made-up portmanteaus (no Starfire, Voidling)
+- Output ONLY valid JSON: {"name":"...","emoji":"...","type":"..."}
+- type must be one of: energy, liquid, life, cosmic, matter, gas
+
+Element A: ${elementA.name} ${elementA.emoji} (${propsA})
+Element B: ${elementB.name} ${elementB.emoji} (${propsB})
+
+GOOD: Fire + Water → {"name":"Steam","emoji":"♨️","type":"gas"}
+GOOD: Robot + Magic → {"name":"Technomancy","emoji":"🤖","type":"energy"}
+GOOD: Cat + Internet → {"name":"Meme","emoji":"😹","type":"matter"}
+BAD: Fire + Water → {"name":"Cosmic Banana","emoji":"🍌","type":"matter"}
+
+${elementA.name} + ${elementB.name} → <end_of_turn>
+<start_of_turn>model
+`;
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
