@@ -9,7 +9,7 @@ const OLLAMA_URL = import.meta.env.VITE_OLLAMA_URL || "/api/ai/generate";
 
 const OLLAMA_MODEL = import.meta.env.VITE_OLLAMA_MODEL || "qwen2.5:7b";
 
-const API_TIMEOUT_MS = 15_000;
+const API_TIMEOUT_MS = 60_000;
 
 function sleep(ms: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
