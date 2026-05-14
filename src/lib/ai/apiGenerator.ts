@@ -5,7 +5,9 @@
 import { generateElement as generateLocal } from "./generateElementAI";
 import type { GameElement } from "@/types/game";
 
-const OLLAMA_URL = import.meta.env.VITE_OLLAMA_URL || "/api/ai/generate";
+// FORCE same-domain proxy — bypasses Safari CORS entirely
+// If you need to change this, edit the source, not env vars (they're baked at build time)
+const OLLAMA_URL = "/api/ai/generate";
 
 const OLLAMA_MODEL = import.meta.env.VITE_OLLAMA_MODEL || "qwen2.5:7b";
 
