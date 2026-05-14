@@ -21,11 +21,26 @@ export const GameCanvas = () => {
     }
   };
 
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const elementId = e.dataTransfer.getData('elementId');
+    if (!elementId) return;
+
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    addOrb(elementId, x, y);
+    selectElement(elementId);
+  };
+
   return (
     <div
       ref={canvasRef}
       data-canvas="true"
       onClick={handleCanvasClick}
+      onDrop={handleDrop}
+      onDragOver={(e) => e.preventDefault()}
       className="relative w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
       style={{
         background:

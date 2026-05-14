@@ -89,7 +89,7 @@ export const ElementOrb = ({ orbId, elementId, x, y, isNew, isAI, isGenerating }
       )}
       style={{ left: 0, top: 0 }}
       onMouseDown={handleMouseDown}
-      onDoubleClick={() => removeOrb(orbId)}
+      onDoubleClick={() => selectElement(elementId)}
     >
       <div
         className={cn(

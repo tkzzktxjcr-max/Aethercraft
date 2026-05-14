@@ -71,6 +71,7 @@ export const ELEMENTS: Record<string, GameElement> = {
   flower: { id: 'flower', name: 'Flower', emoji: '🌸', properties: ['beautiful', 'plant'], type: 'life', tags: ['beautiful', 'plant', 'life', 'color', 'organic', 'small'] },
   eclipse: { id: 'eclipse', name: 'Eclipse', emoji: '🌒', properties: ['sun', 'moon'], type: 'cosmic', tags: ['sun', 'moon', 'celestial', 'dark', 'rare'] },
   mushroom: { id: 'mushroom', name: 'Mushroom', emoji: '🍄', properties: ['fungus', 'small'], type: 'life', tags: ['fungus', 'small', 'organic', 'life', 'earth'] },
+  generating: { id: 'generating', name: 'Generating...', emoji: '✨', properties: ['ai', 'pending'], type: 'energy', tags: ['ai', 'pending', 'generating'] },
 };
 
 export const COMBINATIONS: Combination[] = [

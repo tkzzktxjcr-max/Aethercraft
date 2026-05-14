@@ -56,13 +56,16 @@ export const InventoryPanel = () => {
                   {items.map((el) => (
                     <motion.button
                       key={el.id}
-                      whileHover={{ scale: 1.05, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData('elementId', el.id);
+                        e.dataTransfer.effectAllowed = 'copy';
+                      }}
+                      draggable
                       onClick={() => {
                         addOrb(el.id);
                         selectElement(el.id);
                       }}
-                      className="flex flex-col items-center p-2 rounded-xl bg-white/60 hover:bg-white/90 border border-indigo-100/50 transition-colors group relative"
+                      className="flex flex-col items-center p-2 rounded-xl bg-white/60 hover:bg-white/90 border border-indigo-100/50 transition-colors group relative cursor-grab active:cursor-grabbing"
                     >
                       {el.isAIGenerated && (
                         <div className="absolute top-1 left-1">
