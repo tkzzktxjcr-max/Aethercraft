@@ -1,103 +1,96 @@
 /**
- * Server-side AI generation via Ollama API.
- * Falls back to WebLLM local if server is unreachable.
+ * Server-side AI generation via Ollama API with streaming progress.
+ * No fallback — Ollama is the sole AI source.
+ * Streaming shows partial output in real-time for immersive UX.
  */
-import { generateElement as generateLocal } from "./generateElementAI";
 import type { GameElement } from "@/types/game";
 
-// Direct Ollama API — CORS handled by Ollama (OLLAMA_ORIGINS=* in docker-compose)
-const OLLAMA_URL =
-  import.meta.env.VITE_OLLAMA_URL || "https://ai.aethercraft.071098v2.duckdns.org/api/generate";
+const OLLAMA_URL = "https://ai.aethercraft.071098v2.duckdns.org/api/generate";
+const OLLAMA_MODEL = "qwen2.5:7b";
 
-const OLLAMA_MODEL = import.meta.env.VITE_OLLAMA_MODEL || "qwen2.5:7b";
-
-const API_TIMEOUT_MS = 60_000;
-
-function sleep(ms: number) {
-  return new Promise<void>((resolve) => setTimeout(resolve, ms));
-}
+export type OnProgress = (partialText: string) => void;
 
 /**
- * Try server-side Ollama first, fallback to local WebLLM if offline.
+ * Stream a combination from Ollama, showing partial text as it arrives.
  */
-export async function generateElement(
+export async function generateElementStream(
   elementA: GameElement,
   elementB: GameElement,
+  onProgress: OnProgress,
   validator?: (result: { name: string; emoji: string; type: string }) => {
     valid: boolean;
     reason?: string;
   }
 ): Promise<{ name: string; emoji: string; type: string } | null> {
-  try {
-    const serverResult = await generateViaServer(elementA, elementB, validator);
-    if (serverResult) return serverResult;
-  } catch {
-    console.warn("[AI] Server unreachable — falling back to local WebLLM");
+  const prompt = buildPrompt(elementA, elementB);
+
+  const res = await fetch(OLLAMA_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: OLLAMA_MODEL,
+      prompt,
+      stream: true,
+      options: {
+        temperature: 0.7,
+        num_predict: 80,
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    console.error("[AI] Server error:", res.status);
+    return null;
   }
-  return generateLocal(elementA, elementB, undefined, validator);
+
+  const reader = res.body?.getReader();
+  if (!reader) return null;
+
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let fullResponse = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() || "";
+
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      try {
+        const msg = JSON.parse(line);
+        if (msg.response) {
+          fullResponse += msg.response;
+          onProgress(fullResponse);
+        }
+        if (msg.done) break;
+      } catch {
+        // ignore malformed line
+      }
+    }
+  }
+
+  const generated = parseServerResponse(fullResponse);
+  if (!generated) return null;
+
+  if (validator) {
+    const check = validator(generated);
+    if (!check.valid) {
+      console.warn("[AI] Server result rejected:", check.reason);
+      return null;
+    }
+  }
+
+  return generated;
 }
 
-async function generateViaServer(
-  elementA: GameElement,
-  elementB: GameElement,
-  validator?: (result: { name: string; emoji: string; type: string }) => {
-    valid: boolean;
-    reason?: string;
-  }
-): Promise<{ name: string; emoji: string; type: string } | null> {
+function buildPrompt(elementA: GameElement, elementB: GameElement): string {
   const propsA = [...elementA.properties, ...(elementA.tags || []), elementA.type].filter(Boolean);
   const propsB = [...elementB.properties, ...(elementB.tags || []), elementB.type].filter(Boolean);
 
-  const prompt = buildPrompt(elementA, elementB, propsA.join(", "), propsB.join(", "));
-
-  try {
-    const res = await fetch(OLLAMA_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      // NO AbortController — Safari has a silent-fail bug with signal on cross-subdomain fetch
-      body: JSON.stringify({
-        model: OLLAMA_MODEL,
-        prompt,
-        stream: false,
-        options: {
-          temperature: 0.7,
-          num_predict: 80,
-        },
-      }),
-    });
-
-    if (!res.ok) {
-      console.error("[AI] Server error:", res.status);
-      return null;
-    }
-
-    const data = await res.json();
-    const raw = data.response || "";
-    const generated = parseServerResponse(raw);
-    if (!generated) return null;
-
-    if (validator) {
-      const check = validator(generated);
-      if (!check.valid) {
-        console.warn("[AI] Server result rejected:", check.reason);
-        return null;
-      }
-    }
-
-    return generated;
-  } catch (e: any) {
-    console.error("[AI] Ollama fetch failed:", e.message || e);
-    // Don't throw — let fallback to WebLLM local happen silently
-    return null;
-  }
-}
-
-function buildPrompt(
-  elementA: GameElement,
-  elementB: GameElement,
-  propsA: string,
-  propsB: string
-): string {
   return `You are an infinite-crafting alchemy game engine inspired by Infinite Craft.
 
 Combine these two elements into ONE new element. The result must be creative, surprising, and instantly make sense.
@@ -110,8 +103,8 @@ RULES:
 - Output ONLY valid JSON: {"name":"...","emoji":"...","type":"..."}
 - Type must be one of: energy, liquid, life, cosmic, matter, gas
 
-Element A: ${elementA.name} ${elementA.emoji} (${propsA})
-Element B: ${elementB.name} ${elementB.emoji} (${propsB})
+Element A: ${elementA.name} ${elementA.emoji} (${propsA.join(", ")})
+Element B: ${elementB.name} ${elementB.emoji} (${propsB.join(", ")})
 
 GOOD:
 Fire + Water → {"name":"Steam","emoji":"♨️","type":"gas"}

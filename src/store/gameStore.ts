@@ -3,12 +3,21 @@ import { persist } from 'zustand/middleware';
 import type { CanvasOrb, Discovery, GameElement, AIElement, AICombination, AIStatus, FusionEvent, GameMode } from '@/types/game';
 import { getElementById, findCombination, ORIGIN_PACKS, ELEMENTS } from '@/lib/gameData';
 import { resolveCombination, hydrateAICache, getAIComboKey } from '@/lib/aiCombinations';
+import { generateElementStream, type OnProgress } from '@/lib/ai/apiGenerator';
 import { initAuth } from '@/lib/auth';
 import { useProgressionStore } from './progressionStore';
 import { playCombineSound, playDiscoverySound } from '@/lib/audio';
 
 let idCounter = 0;
 const genId = () => `orb_${++idCounter}_${Date.now().toString(36)}`;
+
+interface GeneratingOrb {
+  id: string;
+  elementIds: [string, string];
+  progress: string;
+  x: number;
+  y: number;
+}
 
 interface GameState {
   playerName: string;
@@ -20,6 +29,7 @@ interface GameState {
   sidebarTab: 'inventory' | 'tree' | 'feed' | 'quests';
   isGenerating: boolean;
   generatingElements: [string, string] | null;
+  generatingOrb: GeneratingOrb | null;
   aiElements: Record<string, AIElement>;
   aiCombinations: Record<string, AICombination>;
   aiStatus: AIStatus;
@@ -47,6 +57,7 @@ interface GameState {
   setGameMode: (mode: GameMode) => void;
   triggerFusion: (x: number, y: number, elementType: ElementType) => void;
   setCanvasOrbs: (orbs: CanvasOrb[]) => void;
+  updateGeneratingProgress: (progress: string) => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -61,6 +72,7 @@ export const useGameStore = create<GameState>()(
       sidebarTab: 'inventory',
       isGenerating: false,
       generatingElements: null,
+      generatingOrb: null,
       aiElements: {},
       aiCombinations: {},
       aiStatus: 'idle',
@@ -132,9 +144,14 @@ export const useGameStore = create<GameState>()(
         }));
       },
 
+      updateGeneratingProgress: (progress) => {
+        set((state) => ({
+          generatingOrb: state.generatingOrb ? { ...state.generatingOrb, progress } : null,
+        }));
+      },
+
       tryCombine: async (orbAId, orbBId) => {
         const state = get();
-        if (state.isGenerating) return { success: false };
 
         const orbA = state.canvasOrbs.find((o) => o.id === orbAId);
         const orbB = state.canvasOrbs.find((o) => o.id === orbBId);
@@ -194,29 +211,73 @@ export const useGameStore = create<GameState>()(
           return { success: true, result: resultElement };
         }
 
+        // AI fallback: create a placeholder orb immediately so the player can keep playing
+        const generatingOrbId = `gen_${Date.now()}`;
+        const placeholderOrb: CanvasOrb = {
+          id: generatingOrbId,
+          elementId: 'generating',
+          x: (orbA.x + orbB.x) / 2,
+          y: (orbA.y + orbB.y) / 2,
+          isNew: false,
+          isGenerating: true,
+        };
 
+        set((s) => ({
+          canvasOrbs: [...s.canvasOrbs.filter((o) => o.id !== orbAId && o.id !== orbBId), placeholderOrb],
+          isGenerating: true,
+          generatingElements: [orbA.elementId, orbB.elementId],
+          generatingOrb: {
+            id: generatingOrbId,
+            elementIds: [orbA.elementId, orbB.elementId],
+            progress: 'The AI is thinking...',
+            x: placeholderOrb.x,
+            y: placeholderOrb.y,
+          },
+        }));
+
+        const elA = getElementById(orbA.elementId);
+        const elB = getElementById(orbB.elementId);
+        if (!elA || !elB) return { success: false };
+
+        const onProgress: OnProgress = (partialText) => {
+          const short = partialText.slice(0, 60).replace(/\n/g, ' ');
+          get().updateGeneratingProgress(short);
+        };
 
         try {
-          set({ isGenerating: true, generatingElements: [orbA.elementId, orbB.elementId] });
-          const resolved = await resolveCombination(
-            orbA.elementId,
-            orbB.elementId,
-            state.userId || 'guest',
-            state.displayName || state.playerName || 'Guest'
-          );
+          const generated = await generateElementStream(elA, elB, onProgress);
 
-          set({ isGenerating: false, generatingElements: null });
-
-          if (!resolved) {
+          if (!generated) {
+            set((s) => ({
+              canvasOrbs: s.canvasOrbs.filter((o) => o.id !== generatingOrbId),
+              isGenerating: false,
+              generatingElements: null,
+              generatingOrb: null,
+            }));
             return { success: false };
           }
 
-          const { element, isNew } = resolved;
-          ELEMENTS[element.id] = element;
+          let resultElement: GameElement | null = getElementById(generated.name);
+          if (!resultElement) {
+            resultElement = {
+              id: getAIComboKey(orbA.elementId, orbB.elementId),
+              name: generated.name,
+              emoji: generated.emoji,
+              type: generated.type as any,
+              properties: ['ai-generated'],
+              isAIGenerated: true,
+              createdBy: state.userId || 'guest',
+              createdAt: Date.now(),
+              discovererName: state.displayName || 'Guest',
+            } as AIElement;
+          }
 
-          const newOrb: CanvasOrb = {
+          const discoveredId = resultElement.id;
+          const isNew = !state.discoveredElements.includes(discoveredId);
+
+          const finalOrb: CanvasOrb = {
             id: genId(),
-            elementId: element.id,
+            elementId: discoveredId,
             x: (orbA.x + orbB.x) / 2,
             y: (orbA.y + orbB.y) / 2,
             isNew: true,
@@ -224,48 +285,52 @@ export const useGameStore = create<GameState>()(
 
           const discovery: Discovery = {
             id: genId(),
-            elementId: element.id,
-            elementName: element.name,
-            elementEmoji: element.emoji,
+            elementId: discoveredId,
+            elementName: resultElement.name,
+            elementEmoji: resultElement.emoji,
             timestamp: Date.now(),
             isFirst: isNew,
-            discoverer: element.discovererName || state.displayName || 'You',
+            discoverer: state.displayName || 'You',
           };
 
           const comboKey = getAIComboKey(orbA.elementId, orbB.elementId);
 
-          const updatedAiElements = element.isAIGenerated
-            ? { ...state.aiElements, [element.id]: element as AIElement }
-            : state.aiElements;
-
-          set({
-            canvasOrbs: [...state.canvasOrbs.filter((o) => o.id !== orbAId && o.id !== orbBId), newOrb],
-            discoveredElements: state.discoveredElements.includes(element.id)
-              ? state.discoveredElements
-              : [...state.discoveredElements, element.id],
-            recentDiscoveries: [discovery, ...state.recentDiscoveries].slice(0, 50),
-            globalDiscoveries: [discovery, ...state.globalDiscoveries].slice(0, 50),
-            selectedElementId: element.id,
-            aiElements: updatedAiElements,
+          set((s) => ({
+            canvasOrbs: [
+              ...s.canvasOrbs.filter((o) => o.id !== generatingOrbId),
+              finalOrb,
+            ],
+            discoveredElements: isNew
+              ? [...s.discoveredElements, discoveredId]
+              : s.discoveredElements,
+            recentDiscoveries: [discovery, ...s.recentDiscoveries].slice(0, 50),
+            globalDiscoveries: [discovery, ...s.globalDiscoveries].slice(0, 50),
+            selectedElementId: discoveredId,
+            isGenerating: false,
+            generatingElements: null,
+            generatingOrb: null,
+            aiElements: resultElement.isAIGenerated
+              ? { ...s.aiElements, [discoveredId]: resultElement as AIElement }
+              : s.aiElements,
             aiCombinations: {
-              ...state.aiCombinations,
+              ...s.aiCombinations,
               [comboKey]: {
                 id: comboKey,
                 elementA: orbA.elementId,
                 elementB: orbB.elementId,
-                resultId: element.id,
+                resultId: discoveredId,
                 discoveredBy: state.userId || 'guest',
                 discoveredAt: Date.now(),
                 discovererName: state.displayName || 'Guest',
-                resultName: element.name,
-                resultEmoji: element.emoji,
+                resultName: resultElement.name,
+                resultEmoji: resultElement.emoji,
               },
             },
-            fusionEvent: { x: newOrb.x, y: newOrb.y, elementType: element.type, timestamp: Date.now() },
-          });
+            fusionEvent: { x: finalOrb.x, y: finalOrb.y, elementType: resultElement.type, timestamp: Date.now() },
+          }));
 
           const progression = useProgressionStore.getState();
-          progression.recordDiscovery(isNew, element.isAIGenerated === true);
+          progression.recordDiscovery(isNew, resultElement.isAIGenerated === true);
           progression.syncBadges();
 
           if (isNew) {
@@ -275,19 +340,25 @@ export const useGameStore = create<GameState>()(
           }
 
           setTimeout(() => {
-            set((s) => ({
-              canvasOrbs: s.canvasOrbs.map((o) => (o.id === newOrb.id ? { ...o, isNew: false } : o)),
+            set((s2) => ({
+              canvasOrbs: s2.canvasOrbs.map((o) => (o.id === finalOrb.id ? { ...o, isNew: false } : o)),
               fusionEvent: null,
             }));
           }, 2000);
 
-          return { success: true, result: element };
+          return { success: true, result: resultElement };
         } catch (e) {
-          set({ isGenerating: false, generatingElements: null });
+          set((s) => ({
+            canvasOrbs: s.canvasOrbs.filter((o) => o.id !== generatingOrbId),
+            isGenerating: false,
+            generatingElements: null,
+            generatingOrb: null,
+          }));
           return { success: false };
         }
       },
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       selectElement: (id) => set({ selectedElementId: id }),
       setSidebarTab: (tab) => set({ sidebarTab: tab }),
 

@@ -10,7 +10,6 @@ import { DailyChallenge } from '@/components/game/DailyChallenge';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getElementById } from '@/lib/gameData';
-import { useWebLLM } from '@/hooks/useWebLLM';
 import { useRealtime } from '@/hooks/useRealtime';
 import { Sparkles, Puzzle, CalendarDays, Swords } from 'lucide-react';
 
@@ -28,7 +27,6 @@ export default function Game() {
     }
   }, [currentPackId, navigate, restoreSession]);
 
-  useWebLLM();
   useRealtime();
 
   if (!currentPackId) return null;
