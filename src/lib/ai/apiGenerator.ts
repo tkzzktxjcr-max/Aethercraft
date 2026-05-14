@@ -50,13 +50,11 @@ async function generateViaServer(
 
   const prompt = buildPrompt(elementA, elementB, propsA.join(", "), propsB.join(", "));
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
-
   try {
     const res = await fetch(OLLAMA_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      // NO AbortController — Safari has a silent-fail bug with signal on cross-subdomain fetch
       body: JSON.stringify({
         model: OLLAMA_MODEL,
         prompt,
@@ -66,10 +64,7 @@ async function generateViaServer(
           num_predict: 80,
         },
       }),
-      signal: controller.signal,
     });
-
-    clearTimeout(timeout);
 
     if (!res.ok) {
       console.error("[AI] Server error:", res.status);
@@ -90,9 +85,10 @@ async function generateViaServer(
     }
 
     return generated;
-  } catch (e) {
-    clearTimeout(timeout);
-    throw e;
+  } catch (e: any) {
+    console.error("[AI] Ollama fetch failed:", e.message || e);
+    // Don't throw — let fallback to WebLLM local happen silently
+    return null;
   }
 }
 
