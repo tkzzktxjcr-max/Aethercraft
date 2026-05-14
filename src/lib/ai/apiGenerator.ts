@@ -5,8 +5,7 @@
 import { generateElement as generateLocal } from "./generateElementAI";
 import type { GameElement } from "@/types/game";
 
-const OLLAMA_URL =
-  import.meta.env.VITE_OLLAMA_URL || "https://ai.aethercraft.071098v2.duckdns.org/api/generate";
+const OLLAMA_URL = import.meta.env.VITE_OLLAMA_URL || "/api/ai/generate";
 
 const OLLAMA_MODEL = import.meta.env.VITE_OLLAMA_MODEL || "qwen2.5:7b";
 
