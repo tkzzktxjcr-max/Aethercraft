@@ -10,7 +10,7 @@ import {
   ELEMENTS,
 } from "./gameData";
 import { findTagBasedCombination } from "./tagEngine";
-import { generateElement } from "./ai/apiGenerator";
+import { generateElementStream } from "./ai/apiGenerator";
 import { validateCombo } from "./ai/validateCombo";
 import { findElementById, findElementByName, findCombinationById } from "./db/appwrite";
 import { getAppwriteClient } from "./appwrite";
@@ -235,7 +235,7 @@ export async function resolveCombination(
     const validator = (result: { name: string; emoji: string; type: string }) =>
       validateCombo(elA, elB, result);
 
-    const generated = await generateElement(elA, elB, undefined, validator);
+    const generated = await generateElementStream(elA, elB, () => {}, validator);
     if (!generated) {
       // AI could not produce a valid result — orbs stay on canvas
       resolvePending(key, null);
