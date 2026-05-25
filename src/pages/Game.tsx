@@ -1,1 +1,118 @@
-Inpwb3J0IHsgdXNlRWZmZWN0LCB1c2VTdGF0ZSB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgdXNlR2FtZVN0b3JlIH0gZnJvbSAnQC9zdG9yZS9nYW1lU3RvcmUnOwppbXBvcnQgeyBHYW1lSGVhZGVyIH0gZnJvbSAnQC9jb21wb25lbnRzL2xheW91dC9HYW1lSGVhZGVyJzsKaW1wb3J0IHsgR2FtZVNpZGViYXIgfSBmcm9tICdAL2NvbXBvbmVudHMvbGF5b3V0L0dhbWVTaWRlYmFyJzsKaW1wb3J0IHsgR2FtZUNhbnZhcyB9IGZyb20gJ0AvY29tcG9uZW50cy9nYW1lL0dhbWVDYW52YXMnOwppbXBvcnQgeyBHYW1lTW9kZVNlbGVjdG9yIH0gZnJvbSAnQC9jb21wb25lbnRzL2dhbWUvR2FtZU1vZGVTZWxlY3Rvcic7CmltcG9ydCB7IFB1enpsZVBhbmVsIH0gZnJvbSAnQC9jb21wb25lbnRzL2dhbWUvUHV6emxlUGFuZWwnOwppbXBvcnQgeyBQdXp6bGVTZWxlY3RvciB9IGZyb20gJ0AvY29tcG9uZW50cy9nYW1lL1B1enpsZVNlbGVjdG9yJzsKaW1wb3J0IHsgRGFpbHlDaGFsbGVuZ2UgfSBmcm9tICdAL2NvbXBvbmVudHMvZ2FtZS9EYWlseUNoYWxsZW5nZSc7CmltcG9ydCB7IEFJTWFzY290IH0gZnJvbSAnQC9jb21wb25lbnRzL2dhbWUvQUlNYXNjb3QnOwppbXBvcnQgeyBGaXJzdERpc2NvdmVyeVRvYXN0IH0gZnJvbSAnQC9jb21wb25lbnRzL2dhbWUvRmlyc3REaXNjb3ZlcnlUb2FzdCc7CmltcG9ydCB7IENvbWJvQ291bnRlciB9IGZyb20gJ0AvY29tcG9uZW50cy9nYW1lL0NvbWJvQ291bnRlcic7CmltcG9ydCB7IE5lYXJNaXNzSGludCB9IGZyb20gJ0AvY29tcG9uZW50cy9nYW1lL05lYXJNaXNzSGludCc7CmltcG9ydCB7IHVzZU5hdmlnYXRlIH0gZnJvbSAncmVhY3Qtcm91dGVyLWRvbSc7CmltcG9ydCB7IG1vdGlvbiwgQW5pbWF0ZVByZXNlbmNlIH0gZnJvbSAnZnJhbWVyLW1vdGlvbic7CmltcG9ydCB7IGdldEVsZW1lbnRCeUlkIH0gZnJvbSAnQC9saWIvZ2FtZURhdGEnOwppbXBvcnQgeyB1c2VSZWFsdGltZSB9IGZyb20gJ0AvaG9va3MvdXNlUmVhbHRpbWUnOwppbXBvcnQgeyBTcGFya2xlcywgUHV6emxlLCBDYWxlbmRhckRheXMsIFN3b3JkcyB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBHYW1lKCkgewogIGNvbnN0IHsgY3VycmVudFBhY2tJZCwgcmVzdG9yZVNlc3Npb24sIHNlbGVjdGVkRWxlbWVudElkLCBjYW52YXNPcmJzLCBnYW1lTW9kZSB9ID0gdXNlR2FtZVN0b3JlKCk7CiAgY29uc3QgW3Nob3dNb2RlU2VsZWN0b3IsIHNldFNob3dNb2RlU2VsZWN0b3JdID0gdXNlU3RhdGUoZmFsc2UpOwogIGNvbnN0IFtzaG93UHV6emxlU2VsZWN0b3IsIHNldFNob3dQdXp6bGVTZWxlY3Rvcl0gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgbmF2aWdhdGUgPSB1c2VOYXZpZ2F0ZSgpOwoKICB1c2VFZmZlY3QoKCkgPT4gewogICAgaWYgKCFjdXJyZW50UGFja0lkKSB7CiAgICAgIG5hdmlnYXRlKCcvJyk7CiAgICB9IGVsc2UgewogICAgICByZXN0b3JlU2Vzc2lvbigpOwogICAgfQogIH0sIFtjdXJyZW50UGFja0lkLCBuYXZpZ2F0ZSwgcmVzdG9yZVNlc3Npb25dKTsKCiAgdXNlUmVhbHRpbWUoKTsKCiAgaWYgKCFjdXJyZW50UGFja0lkKSByZXR1cm4gbnVsbDsKCiAgY29uc3Qgc2VsZWN0ZWRFbGVtZW50ID0gc2VsZWN0ZWRFbGVtZW50SWQgPyBnZXRFbGVtZW50QnlJZChzZWxlY3RlZEVsZW1lbnRJZCkgOiBudWxsOwoKICBjb25zdCBtb2RlSWNvbnM6IFJlY29yZDxzdHJpbmcsIFJlYWN0LlJlYWN0Tm9kZT4gPSB7CiAgICBzYW5kYm94OiA8U3BhcmtsZXMgY2xhc3NOYW1lPSJ3LTMgaC0zIGlubGluZSBtci0xIiAvPiwKICAgIHB1enpsZTogPFB1enpsZSBjbGFzc05hbWU9InctMyBoLTMgaW5saW5lIG1yLTEiIC8+LAogICAgZGFpbHk6IDxDYWxlbmRhckRheXMgY2xhc3NOYW1lPSJ3LTMgaC0zIGlubGluZSBtci0xIiAvPiwKICAgIHZlcnN1czogPFN3b3JkcyBjbGFzc05hbWU9InctMyBoLTMgaW5saW5lIG1yLTEiIC8+LAogIH07CgogIGNvbnN0IG1vZGVMYWJlbHM6IFJlY29yZDxzdHJpbmcsIHN0cmluZz4gPSB7CiAgICBzYW5kYm94OiAnU2FuZGJveCcsCiAgICBwdXp6bGU6ICdQdXp6bGUnLAogICAgZGFpbHk6ICdEYWlseScsCiAgICB2ZXJzdXM6ICdWZXJzdXMnLAogIH07CgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0iaC1zY3JlZW4gdy1zY3JlZW4gZmxleCBmbGV4LWNvbCBvdmVyZmxvdy1oaWRkZW4gYmdfW2hzbCgyNjAsMjAlLDk2KV0iPgogICAgICA8R2FtZUhlYWRlciAvPgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleC0xIGZsZXggb3ZlcmZsb3ctaGlkZGVuIHAzIGFwLTMiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ3LVsyODBweF0gc2hyaW5rLTMgaC1mdWxsIGhpZGRlbiBtZDpibG9jayI+CiAgICAgICAgICA8R2FtZVNpZGViYXIgLz4KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleC0xIGgtZnVsbCByb3VuZGVkLTJ4bCBvdmVyZmxvdy1oaWRkZW4gYm9yZGVyIGJvcmRlci1pbmRpZ28tMTAwLzYwIHNoYWRvdy14bCByZWxhdGl2ZSI+CiAgICAgICAgICA8R2FtZUNhbnZhcyAvPgoKICAgICAgICAgIHsvKiBNb2RlIG92ZXJsYXlzICovfQogICAgICAgICAge2dhbWVNb2RlID09PSAncHV6emxlJyAmJiA8UHV6emxlUGFuZWwgLz59CiAgICAgICAgICB7Z2FtZU1vZGUgPT09ICdkYWlseScgJiYgPERhaWx5Q2hhbGxlbmdlIC8+fQoKICAgICAgICAgIHsvKiBNb2RlIHNlbGVjdG9yIGJ1dHRvbiAtIG5vdyB2aXNpYmxlIGluIEFMTCBtb2RlcyAqL30KICAgICAgICAgIDxidXR0b24KICAgICAgICAgICAgb25DbGljaz17KCkgPT4gewogICAgICAgICAgICAgIGlmIChnYW1lTW9kZSA9PT0gJ3B1enpsZScpIHsKICAgICAgICAgICAgICAgIHNldFNob3dQdXp6bGVTZWxlY3Rvcih0cnVlKTsKICAgICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgc2V0U2hvd01vZGVTZWxlY3Rvcih0cnVlKTsKICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICAgICAgY2xhc3NOYW1lPSJhYnNvbHV0ZSB0b3AtMyBsZWZ0LTMgejIwIHB4LTMgcHktMS41IHJvdW5kZWQtZnVsbCBiZy13aGl0ZS82MCBiYWNrZHJvcC1ibHVyLXNtIGJvcmRlciBib3JkZXItaW5kaWdvLTEwMC80MCB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1pbmRpZ28tOTAwLzcwIGhvdmVyOmJnLXdoaXRlLzkwIHRyYW5zaXRpb24tY29sb3JzIGZsZXggaXRlbXMtY2VudGVyIgogICAgICAgICAgPgogICAgICAgICAgICB7bW9kZUljb25zW2dhbWVNb2RlXX0KICAgICAgICAgICAge2dhbWVNb2RlID09PSAncHV6emxlJyA/ICdTZWxlY3QgUHV6emxlJyA6IGBDaGFuZ2UgTW9kZSAoJHttb2RlTGFiZWxzW2dhbWVNb2RlXX0pfWB9CiAgICAgICAgICA8L2J1dHRvbj4KCiAgICAgICAgICA8R2FtZU1vZGVTZWxlY3RvciBvcGVuPXtzaG93TW9kZVNlbGVjdG9yfSBvbkNsb3NlPXsoKSA9PiBzZXRTaG93TW9kZVNlbGVjdG9yKGZhbHNlKX0gLz4KICAgICAgICAgIDxQdXp6bGVTZWxlY3RvciBvcGVuPXtzaG93UHV6emxlU2VsZWN0b3J9IG9uQ2xvc2U9eygpID0+IHNldFNob3dQdXp6bGVTZWxlY3RvcihmYWxzZSl9IC8+CgogICAgICAgICAgPEFuaW1hdGVQcmVzZW5jZT4KICAgICAgICAgICAge3NlbGVjdGVkRWxlbWVudCAmJigKICAgICAgICAgICAgICA8bW90aW9uLmRpdgogICAgICAgICAgICAgICAgaW5pdGlhbD17eyBvcGFjaXR5OiAwLCB5OiAxMCB9fQogICAgICAgICAgICAgICAgYW5pbWF0ZT17eyBvcGFjaXR5OiAxLCB5OiAwIH19CiAgICAgICAgICAgICAgICBleGl0PXt7IG9wYWNpdHk6IDAsIHk6IDEwIH19CiAgICAgICAgICAgICAgICBjbGFzc05hbWU9ImFic29sdXRlIGJvdHRvbS00IGxlZnQtMS8yIC10cmFuc2xhdGUteC0xLzIgcHg0IHB5LTIgcm91bmRlZC1mdWxsIGJnLXdoaXRlLzgwIGJhY2tkcm9wLWJsdXItbWQgYm9yZGVyIGJvcmRlci1pbmRpZ28tMTAwIHNoYWRvdy1sZyBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBwb2ludGVyLWV2ZW50cy1ub25lIgogICAgICAgICAgICAgID4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1sZyI+IntzZWxlY3RlZEVsZW1lbnQuZW1vaml9PC9zcGFuPgogICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtc2VtaWJvbGQgdGV4dC1pbmRpZ28tOTAwe3NlbGVjdGVkRWxlbWVudC5uYW1lfTwvc3Bhbj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LWluZGlnby05MDAvNTAgY2FwaXRhbGl6ZSI+IntzZWxlY3RlZEVsZW1lbnQudHlwZX0pPC9zcGFuPgogICAgICAgICAgICAgICAge3NlbGVjdGVkRWxlbWVudC5pc0FJR2VuZXJhdGVkICYmICgKICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LVsxMHB4XSBiZy12aW9sZXQtMTAwIHRleHQtdmlvbGV0LTcwMCBwdy0xLjUgcHktMC41IHJvdW5kZWQtZnVsbCBmb250LWJvbGQiPgogICAgICAgICAgICAgICAgICAgIOKbhCBJQQogICAgICAgICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICAgICAgICApfQogICAgICAgICAgICAgIDwvbW90aW9uLmRpdj4KICAgICAgICAgICAgKX0KICAgICAgICAgIDwvQW5pbWF0ZVByZXNlbmNlPgoKICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJhYnNvbHV0ZSB0b3AtMyByaWdodC0zIHB4Mi41IHB5LTEgcm91bmRlZC1mdWxsIGJnLXdoaXRlLzYwIGJhY2tkcm9wLWJsdXItc20gYm9yZGVyIGJvcmRlci1pbmRpZ28tMTAwLzQwIHRleHQtWzEwcHhdIGZvbnQtc2VtaWJvbGQgdGV4dC1pbmRpZ28tOTAwLzUwIHBvaW50ZXItZXZlbnRzLW5vbmUiPgogICAgICAgICAgICB7Y2FudmFzT3Jicy5sZW5ndGh9IG9yYnMgb24gY2FudmFzCiAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICA8QUlNYXNjb3QgLz4KICAgICAgICAgIDxGaXJzdERpc2NvdmVyeVRvYXN0IC8+CiAgICAgICAgICA8Q29tYm9Db3VudGVyIC8+CiAgICAgICAgICA8TmVhck1pc3NIaW50IC8+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgKTsKfQo=
+import { useEffect, useState } from 'react';
+import { useGameStore } from '@/store/gameStore';
+import { GameHeader } from '@/components/layout/GameHeader';
+import { GameSidebar } from '@/components/layout/GameSidebar';
+import { GameCanvas } from '@/components/game/GameCanvas';
+import { GameModeSelector } from '@/components/game/GameModeSelector';
+import { PuzzlePanel } from '@/components/game/PuzzlePanel';
+import { PuzzleSelector } from '@/components/game/PuzzleSelector';
+import { DailyChallenge } from '@/components/game/DailyChallenge';
+import { AIMascot } from '@/components/game/AIMascot';
+import { FirstDiscoveryToast } from '@/components/game/FirstDiscoveryToast';
+import { ComboCounter } from '@/components/game/ComboCounter';
+import { NearMissHint } from '@/components/game/NearMissHint';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getElementById } from '@/lib/gameData';
+import { useRealtime } from '@/hooks/useRealtime';
+import { Sparkles, Puzzle, CalendarDays, Swords } from 'lucide-react';
+
+export default function Game() {
+  const { currentPackId, restoreSession, selectedElementId, canvasOrbs, gameMode } = useGameStore();
+  const [showModeSelector, setShowModeSelector] = useState(false);
+  const [showPuzzleSelector, setShowPuzzleSelector] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!currentPackId) {
+      navigate('/');
+    } else {
+      restoreSession();
+    }
+  }, [currentPackId, navigate, restoreSession]);
+
+  useRealtime();
+
+  if (!currentPackId) return null;
+
+  const selectedElement = selectedElementId ? getElementById(selectedElementId) : null;
+
+  const modeIcons: Record<string, React.ReactNode> = {
+    sandbox: <Sparkles className="w-3 h-3 inline mr-1" />,
+    puzzle: <Puzzle className="w-3 h-3 inline mr-1" />,
+    daily: <CalendarDays className="w-3 h-3 inline mr-1" />,
+    versus: <Swords className="w-3 h-3 inline mr-1" />,
+  };
+
+  const modeLabels: Record<string, string> = {
+    sandbox: 'Sandbox',
+    puzzle: 'Puzzle',
+    daily: 'Daily',
+    versus: 'Versus',
+  };
+
+  return (
+    <div className="h-screen w-screen flex flex-col overflow-hidden bg-[hsl(260,20%,96%)]">
+      <GameHeader />
+      <div className="flex-1 flex overflow-hidden p-3 gap-3">
+        <div className="w-[280px] shrink-0 h-full hidden md:block">
+          <GameSidebar />
+        </div>
+        <div className="flex-1 h-full rounded-2xl overflow-hidden border border-indigo-100/60 shadow-xl relative">
+          <GameCanvas />
+
+          {/* Mode overlays */}
+          {gameMode === 'puzzle' && <PuzzlePanel />}
+          {gameMode === 'daily' && <DailyChallenge />}
+
+          {/* Mode selector button */}
+          <button
+            onClick={() => {
+              if (gameMode === 'puzzle') {
+                setShowPuzzleSelector(true);
+              } else {
+                setShowModeSelector(true);
+              }
+            }}
+            className="absolute top-3 left-3 z-20 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-sm border border-indigo-100/40 text-xs font-semibold text-indigo-900/70 hover:bg-white/90 transition-colors flex items-center"
+          >
+            {modeIcons[gameMode]}
+            {gameMode === 'puzzle' ? 'Select Puzzle' : `Change Mode (${modeLabels[gameMode]})`}
+          </button>
+
+          <GameModeSelector open={showModeSelector} onClose={() => setShowModeSelector(false)} />
+          <PuzzleSelector open={showPuzzleSelector} onClose={() => setShowPuzzleSelector(false)} />
+
+          <AnimatePresence>
+            {selectedElement && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-indigo-100 shadow-lg flex items-center gap-2 pointer-events-none"
+              >
+                <span className="text-lg">{selectedElement.emoji}</span>
+                <span className="text-sm font-semibold text-indigo-900">{selectedElement.name}</span>
+                <span className="text-xs text-indigo-900/50 capitalize">({selectedElement.type})</span>
+                {selectedElement.isAIGenerated && (
+                  <span className="text-[10px] bg-violet-100 text-violet-700 px-1.5 py-0.5 rounded-full font-bold">
+                    Bestätigung AI
+                  </span>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/60 backdrop-blur-sm border border-indigo-100/40 text-[10px] font-semibold text-indigo-900/50 pointer-events-none">
+            {canvasOrbs.length} orbs on canvas
+          </div>
+
+          <AIMascot />
+          <FirstDiscoveryToast />
+          <ComboCounter />
+          <NearMissHint />
+        </div>
+      </div>
+    </div>
+  );
+}
