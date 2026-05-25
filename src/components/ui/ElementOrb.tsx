@@ -18,9 +18,10 @@ interface ElementOrbProps {
 }
 
 export const ElementOrb = ({ orbId, elementId, x, y, isNew, isAI, isGenerating }: ElementOrbProps) => {
-  const { moveOrb, removeOrb, tryCombine, selectElement, selectedElementId, canvasOrbs } = useGameStore();
+  const { moveOrb, removeOrb, tryCombine, selectElement, selectedElementId } = useGameStore();
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0, orbX: 0, orbY: 0 });
+  const lastPos = useRef({ x, y });
   const element = getElementById(elementId);
 
   if (!element) return null;
@@ -35,6 +36,7 @@ export const ElementOrb = ({ orbId, elementId, x, y, isNew, isAI, isGenerating }
       orbX: x,
       orbY: y,
     };
+    lastPos.current = { x, y };
     selectElement(elementId);
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -42,27 +44,26 @@ export const ElementOrb = ({ orbId, elementId, x, y, isNew, isAI, isGenerating }
       const dy = e.clientY - dragStart.current.y;
       const newX = dragStart.current.orbX + dx;
       const newY = dragStart.current.orbY + dy;
+      lastPos.current = { x: newX, y: newY };
       moveOrb(orbId, newX, newY);
-
-      // Check for overlap with other orbs
-      const otherOrb = canvasOrbs.find((o) => {
-        if (o.id === orbId) return false;
-        const dist = Math.sqrt((o.x - newX) ** 2 + (o.y - newY) ** 2);
-        return dist < 50;
-      });
-
-      if (otherOrb) {
-        tryCombine(orbId, otherOrb.id);
-        setIsDragging(false);
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-      }
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
+
+      const state = useGameStore.getState();
+      const { x: finalX, y: finalY } = lastPos.current;
+      const otherOrb = state.canvasOrbs.find((o) => {
+        if (o.id === orbId) return false;
+        const dist = Math.sqrt((o.x - finalX) ** 2 + (o.y - finalY) ** 2);
+        return dist < 50;
+      });
+
+      if (otherOrb) {
+        state.tryCombine(orbId, otherOrb.id);
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
