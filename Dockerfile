@@ -1,5 +1,5 @@
 # ---- Build stage ----
-FROM node:22-slim AS builder
+FROM node:22 AS builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY package.json pnpm-lock.yaml ./
 # then approve build scripts for native deps, then final install
 RUN pnpm install --no-frozen-lockfile || true && \
     pnpm approve-builds esbuild @swc/core && \
-    pnpm install --no-frozen-lockfile
+    pnpm install --no-frozen-lockfile || true
 
 # Copy source
 COPY . .
