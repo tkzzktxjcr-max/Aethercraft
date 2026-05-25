@@ -1,5 +1,10 @@
 import type { GameElement } from "@/types/game";
-import { ELEMENTS } from "./gameData";
+import { ELEMENTS } from "../gameData";
+
+const USED_NAMES = new Set<string>();
+export function getUsedElementNames(): string[] {
+  return Object.values(ELEMENTS).map(e => e.name.toLowerCase());
+}
 
 const POETIC_INTROS = [
   "From ancient cosmic whispers,",
@@ -8,10 +13,6 @@ const POETIC_INTROS = [
   "Through the alchemy of dreams,",
   "Where forgotten myths collide,",
 ];
-
-export function getUsedElementNames(): string[] {
-  return Object.values(ELEMENTS).map(e => e.name.toLowerCase());
-}
 
 export function buildPrompt(elementA: GameElement, elementB: GameElement): string {
   const propsA = [...elementA.properties, ...(elementA.tags || []), elementA.type].filter(Boolean);
