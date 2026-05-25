@@ -1,1 +1,191 @@
-InVzZSBjbGllbnQiOwoKaW1wb3J0IHsgdXNlRWZmZWN0LCB1c2VTdGF0ZSB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgdXNlR2FtZVN0b3JlIH0gZnJvbSAnQC9zdG9yZS9nYW1lU3RvcmUnOwppbXBvcnQgeyBtb3Rpb24sIEFuaW1hdGVQcmVzZW5jZSB9IGZyb20gJ2ZyYW1lci1tb3Rpb24nOwppbXBvcnQgeyBTcGFya2xlcywgTWVzc2FnZUNpcmNsZSwgTGlnaHRidWIsIFdhbmQyIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKCmludGVyZmFjZSBNYXNjb3RTdGF0ZSB7CiAgbW9vZDogJ2lkbGUnIHwgJ3RoaW5raW5nJyB8ICdoYXBweScgfCAnc3VycHJpc2VkJyB8ICdzYWQnIHwgJ2NlbGVicmF0aW5nJzsKICBtZXNzYWdlOiBzdHJpbmcgfCBudWxsOwogIHNob3dIaW50OiBib29sZWFuOwp9Cgpjb25zdCBIIU5UUyA9IFsKICAiVHJ5IGNvbWJpbmluZyBmaXJlIHdpdGggc29tZXRoaW5nIHNvbGlkISIsCiAgIldhdGVyICsgZWFydGggb2Z0ZW4gY3JlYXRlcyBzb21ldGhpbmcgb3JnYW5pYy4uLiIsCiAgIkRvbid0IGZvcmdldCB0byBjaGVjayB0aGUgZGlzY292ZXJ5IHRyZWUgZm9yIGhpbnRzISIsCiAgIlNvbWUgZWxlbWVudHMgY29tYmluZSB3aXRoIHRoZW1zZWx2ZXMhIiwKICAiTG9vayBmb3IgaGlkZGVuIHBhdHRlcm5zIGluIGVsZW1lbnQgdHlwZXMuIiwKICAiVGhlIGNvc21vcyBob2xkcyBtYW55IHNlY3JldHM6Li4iLAogICJUcnkgbWl4aW5nIG9wcG9zaXRlcyDigJQgdGhleSBvZnRlbiBzdXJwcmlzZSEiLAogICJLZWVwIGV4cGVyaW1lbnRpbmchIFRoZSBBSSBsb3dlcyB3ZWlyZCBjb21ib3MuIiwKXTsKCmZ1bmN0aW9uIGdldEVtb2ppRm9yTW9vZChtb29kOiBNYXNjb3RTdGF0ZVsnbW9vZCddKTogc3RyaW5nIHsKICBzd2l0Y2ggKG1vb2QpIHsKICAgIGNhc2UgJ3RoaW5raW5nJzogcmV0dXJuICflgZEnOwogICAgY2FzZSAnaGFwcHknOiByZXR1cm4gJ+Kbjic7CiAgICBjYXNlICdzdXJwcmlzZWQnOiByZXR1cm4gJ+Kbjic7CiAgICBjYXNlICdzYWQnOiByZXR1cm4gJ+Kbjic7CiAgICBjYXNlICdjZWxlYnJhdGluZyc6IHJldHVybiAn8J+miCc7CiAgICBkZWZhdWx0OiByZXR1cm4gJ+KnsCc7CiAgfQp9CgpmdW5jdGlvbiBnZXRHbG93Q29sb3IobW9vZDogTWFzY290U3RhdGVbbW9vZCddKTogc3RyaW5nIHsKICBzd2l0Y2ggKG1vb2QpIHsKICAgIGNhc2UgJ3RoaW5raW5nJzogcmV0dXJuICdiZy1ibHVlLTQwMCc7CiAgICBjYXNlICdoYXBweSc6IHJldHVybiAnYmctZW1lcmFsZC00MDAnOwogICAgY2FzZSAnc3VycHJpc2VkJzogcmV0dXJuICdiZy1hbWJlci00MDAnOwogICAgY2FzZSAnc2FkJzogcmV0dXJuICdiZy1zbGF0ZS00MDAnOwogICAgY2FzZSAnY2VsZWJyYXRpbmcnOiByZXR1cm4gJ2JnLXZpb2xldC00MDAnOwogICAgZGVmYXVsdDogcmV0dXJuICdiZy1pbmRpZ28tMzAwJzsKICB9Cn0KCmV4cG9ydCBjb25zdCBBSU1hc2NvdCA9ICgpID0+IHsKICBjb25zdCB7IGlzR2VuZXJhdGluZywgcmVjZW50RGlzY292ZXJpZXMsIGZ1c2lvbkV2ZW50IH0gPSB1c2VHYW1lU3RvcmUoKTsKICBjb25zdCBbbWFzY290LCBzZXRNYXNjb3RdID0gdXNlU3RhdGU8TWFzY290U3RhdGU+KHsKICAgIG1vb2Q6ICdpZGxlJywKICAgIG1lc3NhZ2U6IG51bGwsCiAgICBzaG93SGludDogZmFsc2UsCiAgfSk7CiAgY29uc3QgW2JvdW5jZSwgc2V0Qm91bmNlXSA9IHVzZVN0YXRlKDApOwogIGNvbnN0IFtoaW50Q29vbGRvd24sIHNldEhpbnRDb29sZG93bl0gPSB1c2VTdGF0ZShmYWxzZSk7CgogIC8vIFJlYWN0IHRvIEFJIGdlbmVyYXRpbmcKICB1c2VFZmZlY3QoKCkgPT4gewogICAgaWYgKGlzR2VuZXJhdGluZykgewogICAgICBzZXRNYXNjb3QoKHByZXYpID0+ICh7IC4uLnByZXYsIG1vb2Q6ICd0aGlua2luZycsIG1lc3NhZ2U6ICJJJ20gbWl4aW5nIHRoZSBjb3Ntb3MgZm9yIHlvdS4uLiIgfSkpOwogICAgfSBlbHNlIGlmIChtYXNjb3QubW9vZCA9PT0gJ3RoaW5raW5nJykgewogICAgICBzZXRNYXNjb3QoKHByZXYpID0+ICh7IC4uLnByZXYsIG1vb2Q6ICdpZGxlJywgbWVzc2FnZTogbnVsbCB9KSk7CiAgICB9CiAgfSwgW2lzR2VuZXJhdGluZ10pOwoKICAvLyBSZWFjdCB0byBuZXcgZGlzY292ZXJ5CiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGlmIChyZWNlbnREaXNjb3Zlcmllcy5sZW5ndGggPT09IDApIHJldHVybjsKICAgIGNvbnN0IGxhdGVzdCA9IHJlY2VudERpc2NvdmVyaWVzWzBdOwogICAgaWYgKCFsYXRlc3QpIHJldHVybjsKCiAgICBjb25zdCBub3cgPSBEYXRlLm5vdygpOwogICAgaWYgKG5vdyAtIGxhdGVzdC50aW1lc3RhbXAgPCAyMDAwKSB7CiAgICAgIGlmIChsYXRlc3QuaXNGaXJzdCkgewogICAgICAgIHNldE1hc2NvdCh7CiAgICAgICAgICBtb29kOiAnY2VsZWJyYXRpbmcnLAogICAgICAgICAgbWVzc2FnZTogYENlbGVicmF0aW5nIT8gJHsxYXRlc3QuZWxlbWVudEVtb2ppfSAke2xhdGVzdC5lbGVtZW50TmFtZX0g4oCUIGZpcnN0IGRpc2NvdmVyeSFgLAogICAgICAgICAgc2hvd0hpbnQ6IGZhbHNlLAogICAgICAgIH0pOwogICAgICB9IGVsc2UgewogICAgICAgIHNldE1hc2NvdCh7CiAgICAgICAgICBtb29kOiAnaGFwcHknLAogICAgICAgICAgbWVzc2FnZTogYEJlYXV0aWZ1bCAke2xhdGVzdC5lbGVtZW50RW1vaml9ICR7bGF0ZXN0LmVsZW1lbnROYW1lfWAsCiAgICAgICAgICBzaG93SGludDogZmFsc2UsCiAgICAgICAgfSk7CiAgICAgIH0KICAgICAgc2V0Qm91bmNlKChwcmV2KSA9PiBwcmV2ICsgMSk7CiAgICAgIGNvbnN0IHRpbWVyID0gc2V0VGltZW91dCgoKSA9PiB7CiAgICAgICAgc2V0TWFzY290KChwcmV2KSA9PiAoeyAuLi5wcmV2LCBtb29kOiAnaWRsZScsIG1lc3NhZ2U6IG51bGwgfSkpOwogICAgICB9LCAzNTAwKTsKICAgICAgcmV0dXJuICgpID0+IGNsZWFyVGltZW91dCh0aW1lcik7CiAgICB9CiAgfSwgW3JlY2VudERpc2NvdmVyaWVzXSkgOwoKICAvLyBJZGxlIGhpbnQgYnViYmxlCiAgY29uc3Qgc2hvd0hpbnRIYW5kbGVyID0gKCkgPT4gewogICAgaWYgKGhpbnRDb29sZG93bikgcmV0dXJuOwogICAgc2V0TWFzY290KChwcmV2KSA9PiAoewogICAgICAuLi5wcmV2LAogICAgICBtb29kOiAnaWRsZScsCiAgICAgIG1lc3NhZ2U6IEhJTlRzW01hdGguZmxvb3IoTWF0aC5yYW5kb20oKSAqIEhJTlRTLmxlbmd0aCldLAogICAgICBzaG93SGludDogdHJ1ZSwKICAgIH0pKTsKICAgIHNldEhpbnRDb29sZG93bih0cnVlKTsKICAgIHNldFRpbWVvdXQoKCkgPT4gewogICAgICBzZXRNYXNjb3QoKHByZXYpID0+ICh7IC4uLnByZXYsIG1lc3NhZ2U6IG51bGwsIHNob3dIaW50OiBmYWxzZSB9KSk7CiAgICAgIHNldFRpbWVvdXQoKCkgPT4gc2V0SGludENvb2xkb3duKGZhbHNlKSwgNTAwMCk7CiAgICB9LCA1MDAwKTsKICB9OwoKICByZXR1cm4gKAogICAgPG1vdGlvbi5kaXYKICAgICAgY2xhc3NOYW1lPSJhYnNvbHV0ZSBib3R0b20tNCBsZWZ0LTQgdy0xNCBoLTE0IHItNTAgZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIiCiAgICAgIGFuaW1hdGU9e3sgb3BhY2l0eTogMSwgeTogMCB9fQogICAgICBpbml0aWFsPXt7IG9wYWNpdHk6IDAsIHk6IDIwIH19CiAgICB0cmFuc2l0aW9uPXt7IGRlbGF5OiAwLjUgfX0KICAgID4KICAgICAgPGRpdj5BSSBNYXNjb3Q8L2Rpdj4KICAgIDwvbW90aW9uLmRpdj4KICApOwp9Ow==
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useGameStore } from '@/store/gameStore';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles, MessageCircle, Lightbulb, Wand2 } from 'lucide-react';
+
+interface MascotState {
+  mood: 'idle' | 'thinking' | 'happy' | 'surprised' | 'sad' | 'celebrating';
+  message: string | null;
+  showHint: boolean;
+}
+
+const HINTS = [
+  "Try combining fire with something solid!",
+  "Water + earth often creates something organic...",
+  "Don't forget to check the discovery tree for hints!",
+  "Some elements combine with themselves!",
+  "Look for hidden patterns in element types.",
+  "The cosmos holds many secrets...",
+  "Try mixing opposites — they often surprise!",
+  "Keep experimenting! The AI loves weird combos.",
+];
+
+function getEmojiForMood(mood: MascotState['mood']): string {
+  switch (mood) {
+    case 'thinking': return '🤔';
+    case 'happy': return '😊';
+    case 'surprised': return '😮';
+    case 'sad': return '😢';
+    case 'celebrating': return '🥳';
+    default: return '✨';
+  }
+}
+
+function getGlowColor(mood: MascotState['mood']): string {
+  switch (mood) {
+    case 'thinking': return 'bg-blue-400';
+    case 'happy': return 'bg-emerald-400';
+    case 'surprised': return 'bg-amber-400';
+    case 'sad': return 'bg-slate-400';
+    case 'celebrating': return 'bg-violet-400';
+    default: return 'bg-indigo-300';
+  }
+}
+
+export const AIMascot = () => {
+  const { isGenerating, recentDiscoveries } = useGameStore();
+  const [mascot, setMascot] = useState<MascotState>({
+    mood: 'idle',
+    message: null,
+    showHint: false,
+  });
+  const [bounce, setBounce] = useState(0);
+  const [hintCooldown, setHintCooldown] = useState(false);
+
+  useEffect(() => {
+    if (isGenerating) {
+      setMascot((prev) => ({ ...prev, mood: 'thinking', message: "I'm mixing the cosmos for you..." }));
+    } else if (mascot.mood === 'thinking') {
+      setMascot((prev) => ({ ...prev, mood: 'idle', message: null }));
+    }
+  }, [isGenerating]);
+
+  useEffect(() => {
+    if (recentDiscoveries.length === 0) return;
+    const latest = recentDiscoveries[0];
+    if (!latest) return;
+
+    const now = Date.now();
+    if (now - latest.timestamp < 3000) {
+      if (latest.isFirst) {
+        setMascot({
+          mood: 'celebrating',
+          message: `First Discovery! ${latest.elementEmoji} ${latest.elementName} — amazing!`,
+          showHint: false,
+        });
+      } else {
+        setMascot({
+          mood: 'happy',
+          message: `You forged ${latest.elementEmoji} ${latest.elementName}!`,
+          showHint: false,
+        });
+      }
+      setBounce((prev) => prev + 1);
+      const timer = setTimeout(() => {
+        setMascot((prev) => ({ ...prev, mood: 'idle', message: null }));
+      }, 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [recentDiscoveries]);
+
+  const showRandomHint = () => {
+    if (hintCooldown) return;
+    const hint = HINTS[Math.floor(Math.random() * HINTS.length)];
+    setMascot((prev) => ({ ...prev, mood: 'idle', message: hint, showHint: true }));
+    setHintCooldown(true);
+    setTimeout(() => {
+      setMascot((prev) => ({ ...prev, message: null, showHint: false }));
+      setTimeout(() => setHintCooldown(false), 5000);
+    }, 5000);
+  };
+
+  return (
+    <motion.div
+      className="absolute bottom-4 right-4 z-50 flex flex-col items-end gap-2"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.5 }}
+    >
+      <AnimatePresence>
+        {mascot.message && (
+          <motion.div
+            key={mascot.message}
+            initial={{ opacity: 0, scale: 0.8, x: 10 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.8, x: 10 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className="mb-2 max-w-[220px]"
+          >
+            <div className="bg-white/90 backdrop-blur-md rounded-2xl rounded-br-sm px-4 py-3 shadow-lg border border-indigo-100">
+              <div className="flex items-start gap-2">
+                {mascot.mood === 'thinking' ? (
+                  <Wand2 className="w-4 h-4 text-violet-500 shrink-0 mt-0.5 animate-spin" style={{ animationDuration: '2s' }} />
+                ) : mascot.mood === 'celebrating' ? (
+                  <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                ) : (
+                  <Lightbulb className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                )}
+                <p className="text-xs font-medium text-indigo-900 leading-relaxed">{mascot.message}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.button
+        onClick={showRandomHint}
+        className="relative w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg cursor-pointer hover:scale-110 transition-transform"
+        style={{
+          background: 'linear-gradient(135deg, hsl(270, 80%, 65%), hsl(280, 70%, 55%))',
+          boxShadow: '0 0 20px hsl(270, 80%, 65%, 0.4), 0 4px 16px rgba(0,0,0,0.15)',
+        }}
+        animate={{
+          y: mascot.mood === 'celebrating' || mascot.mood === 'surprised'
+            ? [0, -12, 0, -6, 0]
+            : mascot.mood === 'thinking'
+            ? [0, -4, 0, -4, 0]
+            : [0, -3, 0, -3, 0],
+          scale: mascot.mood === 'celebrating' ? [1, 1.15, 1, 1.1, 1] : 1,
+        }}
+        transition={{
+          duration: mascot.mood === 'celebrating' ? 0.8 : 2,
+          repeat: mascot.mood === 'idle' ? Infinity : 0,
+          ease: 'easeInOut',
+        }}
+      >
+        <span className="relative z-10">{getEmojiForMood(mascot.mood)}</span>
+
+        <motion.div
+          className={`absolute inset-0 rounded-full ${getGlowColor(mascot.mood)} opacity-30`}
+          animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.1, 0.3] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        <AnimatePresence>
+          {mascot.mood === 'celebrating' && (
+            <>
+              {[0, 1, 2].map((i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-2 h-2 rounded-full bg-amber-300"
+                  initial={{ scale: 0, x: 0, y: 0 }}
+                  animate={{
+                    scale: [0, 1, 0],
+                    x: [0, Math.cos((i * Math.PI * 2) / 3) * 30],
+                    y: [0, Math.sin((i * Math.PI * 2) / 3) * 30],
+                    opacity: [1, 0],
+                  }}
+                  transition={{ duration: 1, delay: i * 0.2 }}
+                />
+              ))}
+            </>
+          )}
+        </AnimatePresence>
+      </motion.button>
+
+      <span className="text-[9px] font-bold text-indigo-900/40 mt-1">AI Assistant</span>
+    </motion.div>
+  );
+};
