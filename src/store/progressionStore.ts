@@ -44,7 +44,7 @@ interface ProgressionState {
   stats: PlayerStats;
   newlyUnlocked: string[];
   addXp: (amount: number) => void;
-  recordDiscovery: (isFirst: boolean, isAI: boolean) => void;
+  recordDiscovery: (isFirst: boolean, isAI: boolean, multiplier?: number) => void;
   recordPuzzleSolved: () => void;
   recordDailyCompleted: () => void;
   checkAndUpdateStreak: () => void;
@@ -91,12 +91,12 @@ export const useProgressionStore = create<ProgressionState>()(
         });
       },
 
-      recordDiscovery: (isFirst, isAI) => {
+      recordDiscovery: (isFirst, isAI, multiplier = 1) => {
         const { addXp } = get();
         let xp = 10;
         if (isFirst) xp += 20;
         if (isAI) xp += 30;
-        addXp(xp);
+        addXp(Math.round(xp * multiplier));
         set((state) => ({
           stats: {
             ...state.stats,
