@@ -1,1 +1,101 @@
-In91c2UgY2xpZW50IjsKaW1wb3J0IHsgdXNlRWZmZWN0LCB1c2VTdGF0ZSB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgdXNlR2FtZVN0b3JlIH0gZnJvbSAnQC9zdG9yZS9nYW1lU3RvcmUnOwppbXBvcnQgeyBtb3Rpb24sIEFuaW1hdGVQcmVzZW5jZSB9IGZyb20gJ2ZyYW1lci1tb3Rpb24nOwppbXBvcnQgeyBDcm93biwgU3BhcmtsZXMgfSBmcm9tICdsdWNpZGUtcmVhY3QnOwppbnRlcmZhY2UgVG9hc3REYXRhIHsKICBpZDogbnVtYmVyOwogIGVsZW1lbnRFbW9qaTogc3RyaW5nOwogIGVsZW1lbnROYW1lOiBzdHJpbmc7CiAgZGlzY292ZXJlcjogc3RyaW5nOwp9CmV4cG9ydCBjb25zdCBGaXJzdERpc2NvdmVyeVRvYXN0ID0gKCkgPT4gewogIGNvbnN0IHsgcmVjZW50RGlzY292ZXJpZXMgfSA9IHVzZUdhbWVTdG9yZSgpOwogIGNvbnN0IFt0b2FzdHMsIHNldFRvYXN0c10gPSB1c2VTdGF0ZTxUb2FzdERhdGFbXT4oW10pOwogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBpZiAocmVjZW50RGlzY292ZXJpZXMubGVuZ3RoID09PSAwKSByZXR1cm47CiAgICBjb25zdCBsYXRlc3QgPSByZWNlbnREaXNjb3Zlcmllc1swXTsKICAgIGlmICghbGF0ZXN0IHx8ICFsYXRlc3QuaXNGaXJzdCkgcmV0dXJuOwogICAgY29uc3Qgbm93ID0gRGF0ZS5ub3coKTsKICAgIGlmIChub3cgLSBsYXRlc3QudGltZXN0YW1wIDwgMzAwMCkgewogICAgICBjb25zdCB0b2FzdDogVG9hc3REYXRhID0gewogICAgICAgIGlkOiBEYXRlLm5vdygpLAogICAgICAgIGVsZW1lbnRFbW9qaTogbGF0ZXN0LmVsZW1lbnRFbW9qaSwKICAgICAgICBlbGVtZW50TmFtZTogbGF0ZXN0LmVsZW1lbnROYW1lLAogICAgICAgIGRpc2NvdmVyZXI6IGxhdGVzdC5kaXNjb3ZlcmVyIHx8ICdZb3UnLAogICAgICB9OwogICAgICBzZXRUb2FzdHMoKHByZXYpID0+IFsuLi5wcmV2LnNsaWNlKC0yKSwgdG9hc3RdKTsKICAgICAgY29uc3QgdGltZXIgPSBzZXRUaW1lb3V0KCgpID0+IHsKICAgICAgICBzZXRUb2FzdHMoKHByZXYpID0+IHByZXYuZmlsdGVyKCh0KSA9PiB0LmlkICE9PSB0b2FzdC5pZCkpOwogICAgICB9LCA0NTAwKTsKICAgICAgcmV0dXJuICgpID0+IGNsZWFyVGltZW91dCh0aW1lcik7CiAgICB9CiAgfSwgW3JlY2VudERpc2NvdmVyaWVzXSk7CiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJhYnNvbHV0ZSB0b3AtMTQgbGVmdC0xLzIgLXRyYW5zbGF0ZS14LTEvMiB6LVs2MF0gZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIgZ2FwLTIgcG9pbnRlci1ldmVudHMtbm9uZSI+CiAgICAgIDxBbmltYXRlUHJlc2VuY2U+CiAgICAgICAge3RvYXN0cy5tYXAoKHRvYXN0KSA9PiAoCiAgICAgICAgICA8bW90aW9uLmRpdgogICAgICAgICAgICBrZXk9e3RvYXN0LmlkfQogICAgICAgICAgICBpbml0aWFsPXt7IG9wYWNpdHk6IDAsIHk6IC0zMCwgc2NhbGU6IDAuOCB9fQogICAgICAgICAgICBhbmltYXRlPXt7IG9wYWNpdHk6IDEsIHk6IDAsIHNjYWxlOiAxIH19CiAgICAgICAgICAgIGV4aXQ9e3sgb3BhY2l0eTogMCwgeTogLTIwLCBzY2FsZTogMC45IH19CiAgICAgICAgICAgIHRyYW5zaXRpb249e3sgdHlwZTogJ3NwcmluZycsIHN0aWZmbmVzczogMzAwLCBkYW1waW5nOiAyMCB9fQogICAgICAgICAgICBjbGFzc05hbWU9InJlbGF0aXZlIgogICAgICAgICAgPgogICAgICAgICAgICA8ZGl2CiAgICAgICAgICAgICAgY2xhc3NOYW1lPSJweC01IHB5LTMgcm91bmRlZC0yeGwgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTMgc2hhZG93LXhsIGJvcmRlciByb3VuZGVkLTJ4bCIKICAgICAgICAgICAgICBzdHlsZT17ewogICAgICAgICAgICAgICAgYmFja2dyb3VuZDogJ2xpbmVhci1ncmFkaWVudCgxMzVkZWcsIGhzbCg0NSwgOTUlLCA1NSUpLCBoc2woMzUsIDkwJSwgNDUlKSksCiAgICAgICAgICAgICAgICBib3JkZXJDb2xvcjogJ2hzbCg0NSwgOTAlLCA2NSUpJywKICAgICAgICAgICAgICAgIGJveFNoYWRvdzogJzAgOHB4IDMycHggaHNsKDQ1LCA5MCUsIDUwJSwgMC4zNSksIDAgMCA2MHB4IGhzbCg0NSwgOTAlLCA1MCUsIDAuMiknLAogICAgICAgICAgICAgIH19CiAgICAgICAgICAgID4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgdy04IGgtOCByb3VuZGVkLWZ1bGwgYmctd2hpdGUvMjAiPgogICAgICAgICAgICAgICAgPENyb3duIGNsYXNzTmFtZT0idy01IGgtNSB0ZXh0LXdoaXRlIiAvPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGZsZXgtY29sIj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bMTBweF0gZm9udC1ibGFjayB0ZXh0LXdoaXRlLzkwIHVwcGVyY2FzZSB0cmFja2luZy13aWRlc3QiPgogICAgICAgICAgICAgICAgICDwn5OMIEZpcnN0IERpc2NvdmVyeSEKICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41Ij4KICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LWxnIj57dG9hc3QuZWxlbWVudEVtb2ppfTwvc3Bhbj4KICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtYm9sZCB0ZXh0LXdoaXRlIj57dG9hc3QuZWxlbWVudE5hbWV9PC9zcGFuPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgPFNwYXJrbGVzIGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LXdoaXRlLzcwIG1sLTIgYW5pbWF0ZS1zcGluIiBzdHlsZT17eyBhbmltYXRpb25EdXJhdGlvbjogJzNzJyB9fSAvPgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgIHtbMCwgMSwgMiwgMywgNF0ubWFwKChpKSA9PiAoCiAgICAgICAgICAgICAgPG1vdGlvbi5kaXYKICAgICAgICAgICAgICAgIGtleT17aX0KICAgICAgICAgICAgICAgIGNsYXNzTmFtZT0iYWJzb2x1dGUgcm91bmRlZC1mdWxsIgogICAgICAgICAgICAgICAgc3R5bGU9e3sKICAgICAgICAgICAgICAgICAgd2lkdGg6IDQgKyBpICogMiwKICAgICAgICAgICAgICAgICAgaGVpZ2h0OiA0ICsgaSAqIDIsCiAgICAgICAgICAgICAgICAgIGJhY2tncm91bmRDb2xvcjogWycjZmJiZjI0JywgJyNmNTllMGQnLCAnI2ZjZDM0ZCcsICcjZjk3MzE2JywgJyNmZGUwNDcnXVtpXSwKICAgICAgICAgICAgICAgICAgbGVmdDogJzUwJScsCiAgICAgICAgICAgICAgICAgIHRvcDogJzUwJScsCiAgICAgICAgICAgICAgICB9fQogICAgICAgICAgICAgICAgaW5pdGlhbD17eyB4OiAwLCB5OiAwLCBvcGFjaXR5OiAxLCBzY2FsZTogMSB9fQogICAgICAgICAgICAgICAgYW5pbWF0ZT17ewogICAgICAgICAgICAgICAgICB4OiAoTWF0aC5yYW5kb20oKSAtIDAuNSkgKiAxNjAsCiAgICAgICAgICAgICAgICAgIHk6IChNYXRoLnJhbmRvbSgpIC0gMC41KSAqIDE2MCAtIDQwLAogICAgICAgICAgICAgICAgICBvcGFjaXR5OiAwLAogICAgICAgICAgICAgICAgICBzY2FsZTogMCwKICAgICAgICAgICAgICAgIH19CiAgICAgICAgICAgICAgICB0cmFuc2l0aW9uPXt7IGR1cmF0aW9uOiAxLjIsIGRlbGF5OiBpICogMC4wOCwgZWFzZTogJ2Vhc2VPdXQnIH19CiAgICAgICAgICAgICAgLz4KICAgICAgICAgICAgKSl9CiAgICAgICAgICA8L21vdGlvbi5kaXY+CiAgICAgICAgKSl9CiAgICAgIDwvQW5pbWF0ZVByZXNlbmNlPgogICAgPC9kaXY+CiAgKTsKfTsK
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useGameStore } from '@/store/gameStore';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Crown, Sparkles } from 'lucide-react';
+
+interface ToastData {
+  id: number;
+  elementEmoji: string;
+  elementName: string;
+  discoverer: string;
+}
+
+export const FirstDiscoveryToast = () => {
+  const { recentDiscoveries } = useGameStore();
+  const [toasts, setToasts] = useState<ToastData[]>([]);
+
+  useEffect(() => {
+    if (recentDiscoveries.length === 0) return;
+    const latest = recentDiscoveries[0];
+    if (!latest || !latest.isFirst) return;
+
+    const now = Date.now();
+    if (now - latest.timestamp < 3000) {
+      const toast: ToastData = {
+        id: Date.now(),
+        elementEmoji: latest.elementEmoji,
+        elementName: latest.elementName,
+        discoverer: latest.discoverer || 'You',
+      };
+      setToasts((prev) => [...prev.slice(-2), toast]);
+      const timer = setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== toast.id));
+      }, 4500);
+      return () => clearTimeout(timer);
+    }
+  }, [recentDiscoveries]);
+
+  return (
+    <div className="absolute top-14 left-1/2 -translate-x-1/2 z-[60] flex flex-col items-center gap-2 pointer-events-none">
+      <AnimatePresence>
+        {toasts.map((toast) => (
+          <motion.div
+            key={toast.id}
+            initial={{ opacity: 0, y: -30, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            className="relative"
+          >
+            <div
+              className="px-5 py-3 rounded-2xl flex items-center gap-3 shadow-xl border"
+              style={{
+                background: 'linear-gradient(135deg, hsl(45, 95%, 55%), hsl(35, 90%, 45%))',
+                borderColor: 'hsl(45, 90%, 65%)',
+                boxShadow: '0 8px 32px hsl(45, 90%, 50%, 0.35), 0 0 60px hsl(45, 90%, 50%, 0.2)',
+              }}
+            >
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/20">
+                <Crown className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black text-white/90 uppercase tracking-widest">
+                  First Discovery!
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg">{toast.elementEmoji}</span>
+                  <span className="text-sm font-bold text-white">{toast.elementName}</span>
+                </div>
+              </div>
+              <Sparkles className="w-4 h-4 text-white/70 ml-2 animate-spin" style={{ animationDuration: '3s' }} />
+            </div>
+
+            {[0, 1, 2, 3, 4].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: 4 + i * 2,
+                  height: 4 + i * 2,
+                  backgroundColor: ['#fbbf24', '#f59e0b', '#fcd34d', '#f97316', '#fde047'][i],
+                  left: '50%',
+                  top: '50%',
+                }}
+                initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+                animate={{
+                  x: (Math.random() - 0.5) * 160,
+                  y: (Math.random() - 0.5) * 160 - 40,
+                  opacity: 0,
+                  scale: 0,
+                }}
+                transition={{ duration: 1.2, delay: i * 0.08, ease: 'easeOut' }}
+              />
+            ))}
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+};
