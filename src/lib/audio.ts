@@ -1,1 +1,161 @@
-bGV0IGF1ZGlvQ3R4OiBBdWRpb0NvbnRleHQgfCBudWxsID0gbnVsbDsKbGV0IHJlc3VtZWQgPSBmYWxzZTsKCmZ1bmN0aW9uIGdldEN0eCgpOiBBdWRpb0NvbnRleHQgewogIGlmICghYXVkaW9DdHgpIHsKICAgIGF1ZGlvQ3R4ID0gbmV3ICh3aW5kb3cuQXVkaW9Db250ZXh0IHx8ICh3aW5kb3cgYXMgYW55KS53ZWJraXRBdWRpb0NvbnRleHQpKCk7CiAgfQogIGlmIChhdWRpb2N0eC5zdGF0ZSA9PT0gInN1c3BlbmRlZCIgJiYgIXJlc3VtZWQpIHsKICAgIGF1ZGlvQ3R4LnJlc3VtZSgpLmNhdGNoKCgpID0+IG51bGwpOwogICAgcmVzdW1lZCA9IHRydWU7CiAgfQogIHJldHVybiBhdWRpb0N0eDsKfQoKZXhwb3J0IGZ1bmN0aW9uIGluaXRBdWRpb1Jlc3VtZSgpIHsKICBpZiAodHlwZW9mIGRvY3VtZW50ID09PSAidW5kZWZpbmVkIikgcmV0dXJuOwogIGNvbnN0IHJlc3VtZU9uY2UgPSAoKSA9PiB7CiAgICBpZiAoYXVkaW9DdHggJiYgYXVkaW9DdHguc3RhdGUgPT09ICJzdXNwZW5kZWQiKSB7CiAgICAgIGF1ZGlvQ3R4LnJlc3VtZSgpLmNhdGNoKCgpID0+IG51bGwpOwogICAgfQogICAgZG9jdW1lbnQucmVtb3ZlRXZlbnRMaXN0ZW5lcigiY2xpY2siLCByZXN1bWVPbmNlKTsKICAgIGRvY3VtZW50LnJlbW92ZUV2ZW50TGlzdGVuZXIoInRvdWNoc3RhcnQiLCByZXN1bWVPbmNlKTsKICB9OwogIGRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoImNsaWNrIiwgcmVzdW1lT25jZSk7CiAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcigidG91Y2hzdGFydCIsIHJlc3VtZU9uY2UpOwp9CgpleHBvcnQgZnVuY3Rpb24gcGxheURyYWdTb3VuZCgpIHsKICB0cnkgewogICAgY29uc3QgY3R4ID0gZ2V0Q3R4KCk7CiAgICBjb25zdCBvc2MgPSBjdHguY3JlYXRlT3NjaWxsYXRvcigpOwogICAgY29uc3QgZ2FpbiA9IGN0eC5jcmVhdGVHYWluKCk7CiAgICBvc2MuY29ubmVjdChnYWluKTsKICAgIGdhaW4uY29ubmVjdChjdHguZGVzdGluYXRpb24pOwogICAgb3NjLnR5cGUgPSAic2luZSI7CiAgICBvc2MuZnJlcXVlbmN5LnNldFZhbHVlQXRUaW1lKDMwMCwgY3R4LmN1cnJlbnRUaW1lKTsKICAgIG9zYy5mcmVxdWVuY3kuZXhwb25lbnRpYWxSYW1wVG9WYWx1ZUF0VGltZSg0MDAsIGN0eC5jdXJyZW50VGltZSArIDAuMDUpOwogICAgZ2Fpbi5nYWluLnNldFZhbHVlQXRUaW1lKDAuMDMsIGN0eC5jdXJyZW50VGltZSk7CiAgICBnYWluLmdhaW4uZXhwb25lbnRpYWxSYW1wVG9WYWx1ZUF0VGltZSgwLjAwMSwgY3R4LmN1cnJlbnRUaW1lICsgMC4wNSk7CiAgICBvc2Muc3RhcnQoKTsKICAgIG9zYy5zdG9wKGN0eC5jdXJyZW50VGltZSArIDAuMDUpOwogIH0gY2F0Y2ggewogICAgLy8gYXVkaW8gdW5hdmFpbGFibGUKICB9Cn0KCmV4cG9ydCBmdW5jdGlvbiBwbGF5Q29tYmluZVNvdW5kKCkgewogIHRyeSB7CiAgICBjb25zdCBjdHggPSBnZXRDdHgoKTsKICAgIGNvbnN0IG9zYzEgPSBjdHguY3JlYXRlT3NjaWxsYXRvcigpOwogICAgY29uc3Qgb3NjMiA9IGN0eC5jcmVhdGVPc2NpbGxhdG9yKCk7CiAgICBjb25zdCBnYWluID0gY3R4LmNyZWF0ZUdhaW4oKTsKICAgIG9zYzEuY29ubmVjdChnYWluKTsKICAgIG9zYzIuY29ubmVjdChnYWluKTsKICAgIGdhaW4uY29ubmVjdChjdHguZGVzdGluYXRpb24pOwogICAgb3NjMS50eXBlID0gInNpbmUiOwogICAgb3NjMi50eXBlID0gInNpbmUiOwogICAgb3NjMS5mcmVxdWVuY3kuc2V0VmFsdWVBdFRpbWUoNDQwLCBjdHguY3VycmVudFRpbWUpOwogICAgb3NjMS5mcmVxdWVuY3kuZXhwb25lbnRpYWxSYW1wVG9WYWx1ZUF0VGltZSg2NjAsIGN0eC5jdXJyZW50VGltZSArIDAuMTUpOwogICAgb3NjMi5mcmVxdWVuY3kuc2V0VmFsdWVBdFRpbWUoNTU0LCBjdHguY3VycmVudFRpbWUpOwogICAgb3NjMi5mcmVxdWVuY3kuZXhwb25lbnRpYWxSYW1wVG9WYWx1ZUF0VGltZSg4ODAsIGN0eC5jdXJyZW50VGltZSArIDAuMTUpOwogICAgZ2Fpbi5nYWluLnNldFZhbHVlQXRUaW1lKDAuMDUsIGN0eC5jdXJyZW50VGltZSk7CiAgICBnYWluLmdhaW4uZXhwb25lbnRpYWxSYW1wVG9WYWx1ZUF0VGltZSgwLjAwMSwgY3R4LmN1cnJlbnRUaW1lICsgMC4zKTsKICAgIG9zYzEuc3RhcnQoKTsKICAgIG9zYzIuc3RhcnQoKTsKICAgIG9zYzEuc3RvcChjdHguY3VycmVudFRpbWUgKyAwLjMpOwogICAgb3NjMi5zdG9wKGN0eC5jdXJyZW50VGltZSArIDAuMyk7CiAgfSBjYXRjaCB7CiAgICAvLyBhdWRpbyB1bmF2YWlsYWJsZQogIH0KfQoKZXhwb3J0IGZ1bmN0aW9uIHBsYXlEaXNjb3ZlcnlTb3VuZCgpIHsKICB0cnkgewogICAgY29uc3QgY3R4ID0gZ2V0Q3R4KCk7CiAgICBjb25zdCBub3RlcyA9IFs1MjMsIDY1OSwgNzg0LCAxMDQ3XTsKICAgIG5vdGVzLmZvckVhY2goKGZyZXEsIGkpID0+IHsKICAgICAgY29uc3Qgb3NjID0gY3R4LmNyZWF0ZU9zY2lsbGF0b3IoKTsKICAgICAgY29uc3QgZ2FpbiA9IGN0eC5jcmVhdGVHYWluKCk7CiAgICAgIG9zYy5jb25uZWN0KGdhaW4pOwogICAgICBnYWluLmNvbm5lY3QoY3R4LmRlc3RpbmF0aW9uKTsKICAgICAgb3NjLnR5cGUgPSAic2luZSI7CiAgICAgIG9zYy5mcmVxdWVuY3kuc2V0VmFsdWVBdFRpbWUoZnJlcSwgY3R4LmN1cnJlbnRUaW1lICsgaSAqIDAuMDgpOwogICAgICBnYWluLmdhaW4uc2V0VmFsdWVBdFRpbWUoMCwgY3R4LmN1cnJlbnRUaW1lICsgaSAqIDAuMDgpOwogICAgICBnYWluLmdhaW4ubGluZWFyUmFtcFRvVmFsdWVBdFRpbWUoMC4wNiwgY3R4LmN1cnJlbnRUaW1lICsgaSAqIDAuMDggKyAwLjAyKTsKICAgICAgZ2Fpbi5nYWluLmV4cG9uZW50aWFsUmFtcFRvVmFsdWVBdFRpbWUoMC4wMDEsIGN0eC5jdXJyZW50VGltZSArIGkgKiAwLjA4ICsgMC4yNSk7CiAgICAgIG9zYy5zdGFydChjdHguY3VycmVudFRpbWUgKyBpICogMC4wOCk7CiAgICAgIG9zYy5zdG9wKGN0eC5jdXJyZW50VGltZSArIGkgKiAwLjA4ICsgMC4zKTsKICAgIH0pOwogIH0gY2F0Y2ggewogICAgLy8gYXVkaW8gdW5hdmFpbGFibGUKICB9Cn0KCmV4cG9ydCBmdW5jdGlvbiBwbGF5RXJyb3JTb3VuZCgpIHsKICB0cnkgewogICAgY29uc3QgY3R4ID0gZ2V0Q3R4KCk7CiAgICBjb25zdCBvc2MgPSBjdHguY3JlYXRlT3NjaWxsYXRvcigpOwogICAgY29uc3QgZ2FpbiA9IGN0eC5jcmVhdGVHYWluKCk7CiAgICBvc2MuY29ubmVjdChnYWluKTsKICAgIGdhaW4uY29ubmVjdChjdHguZGVzdGluYXRpb24pOwogICAgb3NjLnR5cGUgPSAic2F3dG9vdGgiOwogICAgb3NjLmZyZXF1ZW5jeS5zZXRWYWx1ZUF0VGltZSgxNTAsIGN0eC5jdXJyZW50VGltZSk7CiAgICBvc2MuZnJlcXVlbmN5LmV4cG9uZW50aWFsUmFtcFRvVmFsdWVBdFRpbWUoODAsIGN0eC5jdXJyZW50VGltZSArIDAuMik7CiAgICBnYWluLmdhaW4uc2V0VmFsdWVBdFRpbWUoMC4wNCwgY3R4LmN1cnJlbnRUaW1lKTsKICAgIGdhaW4uZ2Fpbi5leHBvbmVudGlhbFJhbXBUb1ZhbHVlQXRUaW1lKDAuMDAxLCBjdHguY3VycmVudFRpbWUgKyAwLjIpOwogICAgb3NjLnN0YXJ0KCk7CiAgICBvc2Muc3RvcChjdHguY3VycmVudFRpbWUgKyAwLjIpOwogIH0gY2F0Y2ggewogICAgLy8gYXVkaW8gdW5hdmFpbGFibGUKICB9Cn0KCmV4cG9ydCBmdW5jdGlvbiBwbGF5RnVubnlGYWlsU291bmQoKSB7CiAgdHJ5IHsKICAgIGNvbnN0IGN0eCA9IGdldEN0eCgpOwogICAgY29uc3Qgbm93ID0gY3R4LmN1cnJlbnRUaW1lOwogICAgWzAsIDAuMTJdLmZvckVhY2goKG9mZnNldCwgaSkgPT4gewogICAgICBjb25zdCBvc2MgPSBjdHguY3JlYXRlT3NjaWxsYXRvcigpOwogICAgICBjb25zdCBnYWluID0gY3R4LmNyZWF0ZUdhaW4oKTsKICAgICAgb3NjLmNvbm5lY3QoZ2Fpbik7CiAgICAgIGdhaW4uY29ubmVjdChjdHguZGVzdGluYXRpb24pOwogICAgICBvc2MudHlwZSA9ICJzaW5lIjsKICAgICAgb3NjLmZyZXF1ZW5jeS5zZXRWYWx1ZUF0VGltZSg0MjAgLSBpIDogODAsIG5vdyArIG9mZnNldCk7CiAgICAgIGdhaW4uZ2Fpbi5zZXRWYWx1ZUF0VGltZSgwLCBub3cgKyBvZmZzZXQpOwogICAgICBnYWluLmdhaW4ubGluZWFyUmFtcFRvVmFsdWVBdFRpbWUoMC4wNCwgbm93ICsgb2Zmc2V0ICsgMC4wMik7CiAgICAgIGdhaW4uZ2Fpbi5leHBvbmVudGlhbFJhbXBUb1ZhbHVlQXRUaW1lKDAuMDAxLCBub3cgKyBvZmZzZXQgKyAwLjE1KTsKICAgICAgb3NjLnN0YXJ0KG5vdyArIG9mZnNldCk7CiAgICAgIG9zYy5zdG9wKG5vdyArIG9mZnNldCArIDAuMTgpOwogICAgfSk7CiAgfSBjYXRjaCB7CiAgICAvLyBhdWRpbyB1bmF2YWlsYWJsZQogIH0KfQoKZXhwb3J0IGZ1bmN0aW9uIHBsYXlDb21ib1NvdW5kKGNvbWJvQ291bnQ6IG51bWJlcikgewogIHRyeSB7CiAgICBjb25zdCBjdHggPSBnZXRDdHgoKTsKICAgIGNvbnN0IG5vdyA9IGN0eC5jdXJyZW50VGltZTsKICAgIGNvbnN0IGJhc2VGcmVxID0gNDQwICsgY29tYm9Db3VudCAqIDExMDsKICAgIGNvbnN0IG5vdGVzID0gW2Jhc2VGcmVxLCBiYXNlRnJlcSAqIDEuMjUsIGJhc2VGcmVxICogMS41XTsKICAgIG5vdGVzLmZvckVhY2goKGZyZXEsIGkpID0+IHsKICAgICAgY29uc3Qgb3NjID0gY3R4LmNyZWF0ZU9zY2lsbGF0b3IoKTsKICAgICAgY29uc3QgZ2FpbiA9IGN0eC5jcmVhdGVHYWluKCk7CiAgICAgIG9zYy5jb25uZWN0KGdhaW4pOwogICAgICBnYWluLmNvbm5lY3QoY3R4LmRlc3RpbmF0aW9uKTsKICAgICAgb3NjLnR5cGUgPSAic2luZSI7CiAgICAgIG9zYy5mcmVxdWVuY3kuc2V0VmFsdWVBdFRpbWUoZnJlcSwgbm93ICsgaSAqIDAuMDgpOwogICAgICBnYWluLmdhaW4uc2V0VmFsdWVBdFRpbWUoMCwgbm93ICsgaSAqIDAuMDgpOwogICAgICBnYWluLmdhaW4ubGluZWFyUmFtcFRvVmFsdWVBdFRpbWUoMC4wNSwgbm93ICsgaSAqIDAuMDggKyAwLjAyKTsKICAgICAgZ2Fpbi5nYWluLmV4cG9uZW50aWFsUmFtcFRvVmFsdWVBdFRpbWUoMC4wMDEsIG5vdyArIGkgKiAwLjA4ICsgMC4yNSk7CiAgICAgIG9zYy5zdGFydChub3cgKyBpICogMC4wOCk7CiAgICAgIG9zYy5zdG9wKG5vdyArIGkgKiAwLjA4ICsgMC4zKTsKICAgIH0pOwogIH0gY2F0Y2ggewogICAgLy8gYXVkaW8gdW5hdmFpbGFibGUKICB9Cn0K
+let audioCtx: AudioContext | null = null;
+let resumed = false;
+
+function getCtx(): AudioContext {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  // Safari iOS: AudioContext starts suspended until a user gesture
+  if (audioCtx.state === "suspended" && !resumed) {
+    audioCtx.resume().catch(() => null);
+    resumed = true;
+  }
+  return audioCtx;
+}
+
+/** Attach a one-time listener to resume AudioContext on first user interaction.
+ *  Must be called once at app startup. */
+export function initAudioResume() {
+  if (typeof document === "undefined") return;
+  const resumeOnce = () => {
+    if (audioCtx && audioCtx.state === "suspended") {
+      audioCtx.resume().catch(() => null);
+    }
+    document.removeEventListener("click", resumeOnce);
+    document.removeEventListener("touchstart", resumeOnce);
+  };
+  document.addEventListener("click", resumeOnce);
+  document.addEventListener("touchstart", resumeOnce);
+}
+
+export function playDragSound() {
+  try {
+    const ctx = getCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(300, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.03, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.05);
+  } catch {
+    // audio unavailable
+  }
+}
+
+export function playCombineSound() {
+  try {
+    const ctx = getCtx();
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+    osc1.type = "sine";
+    osc2.type = "sine";
+    osc1.frequency.setValueAtTime(440, ctx.currentTime);
+    osc1.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.15);
+    osc2.frequency.setValueAtTime(554, ctx.currentTime);
+    osc2.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    osc1.start();
+    osc2.start();
+    osc1.stop(ctx.currentTime + 0.3);
+    osc2.stop(ctx.currentTime + 0.3);
+  } catch {
+    // audio unavailable
+  }
+}
+
+export function playDiscoverySound() {
+  try {
+    const ctx = getCtx();
+    const notes = [523, 659, 784, 1047];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.08);
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.08);
+      gain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + i * 0.08 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.25);
+      osc.start(ctx.currentTime + i * 0.08);
+      osc.stop(ctx.currentTime + i * 0.08 + 0.3);
+    });
+  } catch {
+    // audio unavailable
+  }
+}
+
+export function playErrorSound() {
+  try {
+    const ctx = getCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(150, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.2);
+    gain.gain.setValueAtTime(0.04, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.2);
+  } catch {
+    // audio unavailable
+  }
+}
+
+export function playFunnyFailSound() {
+  try {
+    const ctx = getCtx();
+    const now = ctx.currentTime;
+    [0, 0.12].forEach((offset, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(420 - i * 80, now + offset);
+      gain.gain.setValueAtTime(0, now + offset);
+      gain.gain.linearRampToValueAtTime(0.04, now + offset + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.15);
+      osc.start(now + offset);
+      osc.stop(now + offset + 0.18);
+    });
+  } catch {
+    // audio unavailable
+  }
+}
+
+export function playComboSound(comboCount: number) {
+  try {
+    const ctx = getCtx();
+    const now = ctx.currentTime;
+    const baseFreq = 440 + comboCount * 110;
+    const notes = [baseFreq, baseFreq * 1.25, baseFreq * 1.5];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now + i * 0.08);
+      gain.gain.setValueAtTime(0, now + i * 0.08);
+      gain.gain.linearRampToValueAtTime(0.05, now + i * 0.08 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.25);
+      osc.start(now + i * 0.08);
+      osc.stop(now + i * 0.08 + 0.3);
+    });
+  } catch {
+    // audio unavailable
+  }
+}
