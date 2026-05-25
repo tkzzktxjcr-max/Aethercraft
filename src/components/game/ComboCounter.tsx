@@ -1,1 +1,82 @@
-In91c2UgY2xpZW50IjsKCmltcG9ydCB7IHVzZUVmZmVjdCwgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IG1vdGlvbiwgQW5pbWF0ZVByZXNlbmNlIH0gZnJvbSAnZnJhbWVyLW1vdGlvbic7CAppbnRlcmZhY2UgQ29tYm9EYXRhIHsKICBjb3VudDogbnVtYmVyOwogIG11bHRpcGxpZXI6IG51bWJlcjsKICBpZDogbnVtYmVyOwp9CgppbnRlcmZhY2UgQ29tYm9Db3VudGVyUHJvcHMgewogIGNvbWJvQ291bnQ6IG51bWJlcjsKICBsYXN0RGlzY292ZXJ5VGltZTogbnVtYmVyOwp9CgpleHBvcnQgY29uc3QgQ29tYm9Db3VudGVyID0gKCkgPT4gewogIGNvbnN0IFtjb21ibywgc2V0Q29tYm9dID0gdXNlU3RhdGU8Q29tYm9EYXRhIHwgbnVsbD4obnVsbCk7CiAgY29uc3QgWywgc2V0TGFzdERpc2NvdmVyeVRpbWVdID0gdXNlU3RhdGUoMCk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBjb25zdCBoYW5kbGVyID0gKGU6IEN1c3RvbUV2ZW50PENvbWJvQ291bnRlclByb3BzPikgPT4gewogICAgICBjb25zdCB7IGNvbWJvQ291bnQsIGxhc3REaXNjb3ZlcnlUaW1lIH0gPSBlLmRldGFpbDsKICAgICAgc2V0TGFzdERpc2NvdmVyeVRpbWUobGFzdERpc2NvdmVyeVRpbWUpOwogICAgICBpZiAoY29tYm9Db3VudCA+PSAyKSB7CiAgICAgICAgY29uc3QgbXVsdGlwbGllcnMgPSB7IDI6IDEuNSwgMzogMiwgNDogMi41LCA1OiAzIH07CiAgICAgICAgY29uc3QgbXVsdGlwbGllciA9IG11bHRpcGxpZXJzW2NvbWJvQ291bnQgYXMga2V5b2YgdHlwZW9mIG11bHRpcGxpZXJzXSB8fCAzOwogICAgICAgIHNldENvbWJvKHsgY291bnQ6IGNvbWJvQ291bnQsIG11bHRpcGxpZXIsIGlkOiBEYXRlLm5vdygpIH0pOwogICAgICB9IGVsc2UgewogICAgICAgIHNldENvbWJvKG51bGwpOwogICAgICB9CiAgICB9OwogICAgd2luZG93LmFkZEV2ZW50TGlzdGVuZXIoJ2NvbWJvLXVwZGF0ZScsIGhhbmRsZXIgYXMgRXZlbnRMaXN0ZW5lcik7CiAgICByZXR1cm4gKCkgPT4gd2luZG93LnJlbW92ZUV2ZW50TGlzdGVuZXIoJ2NvbWJvLXVwZGF0ZScsIGhhbmRsZXIgYXMgRXZlbnRMaXN0ZW5lcik7CiAgfSwgW10pOwoKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9ImFic29sdXRlIHRvcC0yOCByaWdodC00IHotWzU1XSBmbGV4IGZsZXgtY29sIGl0ZW1zLWVuZCBwb2ludGVyLWV2ZW50cy1ub25lIj4KICAgICAgPEFuaW1hdGVQcmVzZW5jZT4KICAgICAgICB7Y29tYm8gJmYmIChcbiAgICAgICAgICA8bW90aW9uLmRpdlxuICAgICAgICAgICAga2V5PXtjb21iby5pZH1cbiAgICAgICAgICAgIGluaXRpYWw9e3sgb3BhY2l0eTogMCwgc2NhbGU6IDAuNSwgeTogMjAgfX1cbiAgICAgICAgICAgIGFuaW1hdGU9e3sgb3BhY2l0eTogMSwgc2NhbGU6IDEsIHk6IDAgfX1cbiAgICAgICAgICAgIGV4aXQ9e3sgb3BhY2l0eTogMCwgc2NhbGU6IDAuNSwgeTogLTIwIH19XG4gICAgICAgICAgICB0cmFuc2l0aW9uPXt7IHR5cGU6ICdzcHJpbmcnLCBzdGlmZm5lc3M6IDQwMCwgZGFtcGluZzogMjAgfX1cbiAgICAgICAgICAgIGNsYXNzTmFtZT0iZmxleCBmbGV4LWNvZiBpdGVtcy1jZW50ZXIgZ2FwLTEiXG4gICAgICAgICAgPlxuICAgICAgICAgICAgPG1vdGlvbi5kaXZcbiAgICAgICAgICAgICAgY2xhc3NOYW1lPSJweC0zIHB5LTEuNSByb3VuZGVkLWZ1bGwgZm9udC1ibGFjayB0ZXh0LXdoaXRlIHRleHQtc20gc2hhZG93LWxnIlxuICAgICAgICAgICAgICBzdHlsZT17e1xuICAgICAgICAgICAgICAgIGJhY2tncm91bmQ6IGNvbWJvLmNvdW50ID49IDVcbiAgICAgICAgICAgICAgICAgID8gJ2xpbmVhci1ncmFkaWVudCgxMzVkZWcsICNlZjQ0NDQsICNkYzI2MjYpJ1xuICAgICAgICAgICAgICAgICAgOiBjb21iby5jb3VudCA+PSAzXG4gICAgICAgICAgICAgICAgICA/ICdsaW5lYXItZ3JhZGllbnQoMTM1ZGVnLCAjZjU5ZTBiLCAjZDc3NzA2KScKICAgICAgICAgICAgICAgICAgOiAnbGluZWFyLWdyYWRpZW50KDEzNWRlZywgIzhiNWNmNiwgIzdjM2FlZCknLFxuICAgICAgICAgICAgICAgIGJveFNoYWRvdzogY29tYm8uY291bnQgPj0gNVxuICAgICAgICAgICAgICAgICAgPyAnMCA0cHggMTZweCByZ2JhKDIzOSwgNjgsIDY4LCAwLjQpJ1xuICAgICAgICAgICAgICAgICAgOiBjb21iby5jb3VudCA+PSAzXG4gICAgICAgICAgICAgICAgICA/ICcwIDRweCAxNnB4IHJnYmEoMjQ1LCAxNTgsIDExLCAwLjQpJ1xuICAgICAgICAgICAgICAgICAgOiAnMCA0cHggMTZweCByZ2JhKDEzOSwgOTIsIDI0NiwgMC40KScsXG4gICAgICAgICAgICAgIH19XG4gICAgICAgICAgICAgIGFuaW1hdGU9e3sgc2NhbGU6IFsxLCAxLjEsIDEgXSB9fVxuICAgICAgICAgICAgICB0cmFuc2l0aW9uPXt7IGR1cmF0aW9uOiAwLjUsIHJlcGVhdDogSW5maW5pdHkgfX1cbiAgICAgICAgICAgID5cbiAgICAgICAgICAgICAg8J+OpCBDT01CTyB4e2NvbWJvLmNvdW50fVxuICAgICAgICAgICAgPC9tb3Rpb24uZGl2PlxuICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LVsxMHB4XSBmb250LWJvbGQgdGV4dC1pbmRpZ28tOTAwLzYwIj5cbiAgICAgICAgICAgICAgK3tNYXRoLnJvdW5kKChjb21iby5tdWx0aXBsaWVyIC0gMSkgKiAxMDApfSVYWCBcbiAgICAgICAgICAgIDwvc3Bhbj5cbiAgICAgICAgICA8L21vdGlvbi5kaXY+XG4gICAgICAgICl9XG4gICAgICA8L0FuaW1hdGVQcmVzZW5jZT5cbiAgICA8L2Rpdj5cbiAgKTtcbn07XG5cbi8vIEhlbHBlciB0byBkaXNwYXRjaCBjb21ibyBldmVudHNcbmV4cG9ydCBmdW5jdGlvbiBkaXNwYXRjaENvbWJvVXBkYXRlKGNvbWJvQ291bnQ6IG51bWJlciwgbGFzdERpc2NvdmVyeVRpbWU6IG51bWJlcikge1xuICB3aW5kb3cuZGlzcGF0Y2hFdmVudChcbiAgICBuZXcgQ3VzdG9tRXZlbnQoJ2NvbWJvLXVwZGF0ZScsIHsgZGV0YWlsOiB7IGNvbWJvQ291bnQsIGxhc3REaXNjb3ZlcnlUaW1lIH0gfSlcbiAgKTtcbn0K
+"use client";
+
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface ComboData {
+  count: number;
+  multiplier: number;
+  id: number;
+}
+
+interface ComboCounterProps {
+  comboCount: number;
+  lastDiscoveryTime: number;
+}
+
+export const ComboCounter = () => {
+  const [combo, setCombo] = useState<ComboData | null>(null);
+  const [, setLastDiscoveryTime] = useState(0);
+
+  useEffect(() => {
+    const handler = (e: CustomEvent<ComboCounterProps>) => {
+      const { comboCount, lastDiscoveryTime } = e.detail;
+      setLastDiscoveryTime(lastDiscoveryTime);
+      if (comboCount >= 2) {
+        const multipliers = { 2: 1.5, 3: 2, 4: 2.5, 5: 3 };
+        const multiplier = multipliers[comboCount as keyof typeof multipliers] || 3;
+        setCombo({ count: comboCount, multiplier, id: Date.now() });
+      } else {
+        setCombo(null);
+      }
+    };
+    window.addEventListener('combo-update', handler as EventListener);
+    return () => window.removeEventListener('combo-update', handler as EventListener);
+  }, []);
+
+  return (
+    <div className="absolute top-28 right-4 z-[55] flex flex-col items-end pointer-events-none">
+      <AnimatePresence>
+        {combo && (
+          <motion.div
+            key={combo.id}
+            initial={{ opacity: 0, scale: 0.5, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: -20 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            className="flex flex-col items-center gap-1"
+          >
+            <motion.div
+              className="px-3 py-1.5 rounded-full font-black text-white text-sm shadow-lg"
+              style={{
+                background: combo.count >= 5
+                  ? 'linear-gradient(135deg, #ef4444, #dc2626)'
+                  : combo.count >= 3
+                  ? 'linear-gradient(135deg, #f59e0b, #d97706)'
+                  : 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                boxShadow: combo.count >= 5
+                  ? '0 4px 16px rgba(239, 68, 68, 0.4)'
+                  : combo.count >= 3
+                  ? '0 4px 16px rgba(245, 158, 11, 0.4)'
+                  : '0 4px 16px rgba(139, 92, 246, 0.4)',
+              }}
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 0.5, repeat: Infinity }}
+            >
+              🔥 COMBO x{combo.count}
+            </motion.div>
+            <span className="text-[10px] font-bold text-indigo-900/60">
+              +{Math.round((combo.multiplier - 1) * 100)}% XP
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export function dispatchComboUpdate(comboCount: number, lastDiscoveryTime: number) {
+  window.dispatchEvent(
+    new CustomEvent('combo-update', { detail: { comboCount, lastDiscoveryTime } })
+  );
+}
