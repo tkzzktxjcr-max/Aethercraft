@@ -3,18 +3,15 @@ FROM node:22 AS builder
 
 WORKDIR /app
 
-RUN npm install -g pnpm
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
 
 COPY . .
-
-RUN rm -f pnpm-lock.yaml 2>/dev/null; pnpm install --no-lockfile && \
-    pnpm approve-builds esbuild @swc/core && \
-    pnpm rebuild esbuild @swc/core
 
 ARG VITE_APPWRITE_ENDPOINT
 ARG VITE_APPWRITE_PROJECT_ID
 
-RUN NODE_ENV=production pnpm build 2>&1
+RUN npm run build
 
 # ---- Production stage ----
 FROM nginx:alpine
