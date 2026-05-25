@@ -1,1 +1,513 @@
-aW1wb3J0IHsgY3JlYXRlIH0gZnJvbSAnenVzdGFuZCc7CmltcG9ydCB7IHBlcnNpc3QgfSBmcm9tICd6dXN0YW5kL21pZGRsZXdhcmUnOwppbXBvcnQgdHlwZSB7IENhbnZhc09yYiwgRGlzY292ZXJ5LCBHYW1lRWxlbWVudCwgQUlFbGVtZW50LCBBSUNvbWJpbmF0aW9uLCBBSVN0YXR1cywgRnVzaW9uRXZlbnQsIEdhbWVNb2RlIH0gZnJvbSAnQC90eXBlcy9nYW1lJzsKaW1wb3J0IHsgZ2V0RWxlbWVudEJ5SWQsIGZpbmRDb21iaW5hdGlvbiwgT1JJR0lOX1BBQ0tTLCBFTEVNRU5UUyB9IGZyb20gJ0AvbGliL2dhbWVEYXRhJzsKaW1wb3J0IHsgZmluZFRhZ0Jhc2VkQ29tYmluYXRpb24gfSBmcm9tICdAL2xpYi90YWdFbmdpbmUnOwppbXBvcnQgeyByZXNvbHZlQ29tYmluYXRpb24sIGh5ZHJhdGVBSUNhY2hlLCBnZXRBSUNvbWJvS2V5IH0gZnJvbSAnQC9saWIvYWlDb21iaW5hdGlvbnMnOwppbXBvcnQgeyBnZW5lcmF0ZUVsZW1lbnRTdHJlYW0sIHR5cGUgT25Qcm9ncmVzcyB9IGZyb20gJ0AvbGliL2FpL2FwaUdlbmVyYXRvcic7CmltcG9ydCB7IGluaXRBdXRoIH0gZnJvbSAnQC9saWIvYXV0aCc7CmltcG9ydCB7IHVzZVByb2dyZXNzaW9uU3RvcmUgfSBmcm9tICcuL3Byb2dyZXNzaW9uU3RvcmUnOwppbXBvcnQgeyBwbGF5Q29tYmluZVNvdW5kLCBwbGF5RGlzY292ZXJ5U291bmQsIHBsYXlGdW5ueUZhaWxTb3VuZCwgcGxheUNvbWJvU291bmQgfSBmcm9tICdAL2xpYi9hdWRpbyc7CgpsZXQgaWRDb3VudGVyID0gMDsKY29uc3QgZ2VuSWQgPSAoKSA9PiBgb3JiXyR7KytpZENvdW50ZXJ9XyR7RGF0ZS5ub3coKS50b1N0cmluZygzNil9YDsKCmludGVyZmFjZSBHZW5lcmF0aW5nT3JiIHsKICBpZDogc3RyaW5nOwogIGVsZW1lbnSWRHM7IFtzdHJpbmcsIHN0cmluZ107CiAgcHJvZ3Jlc3M6IHN0cmluZzsKICB4OiBudW1iZXI7CiAgeTogbnVtYmVyOwp9CgppbnRlcmZhY2UgR2FtZVN0YXRlIHsKICBwbGF5ZXJOYW1lOiBzdHJpbmc7CiAgY3VycmVudFBhY2tJZDogc3RyaW5nIHwgbnVsbDsKICBkaXNjb3ZlcmVkRWxlbWVudHM6IHN0cmluZ1tdOwogIGNhbnZhc09yYnM6IENhbnZhc09yYltdOwogIHNlbGVjdGVkRWxlbWVudElkOiBzdHJpbmcgfCBudWxsOwogIHJlY2VudERpc2NvdmVyaWVzOiBEaXNjb3ZlcnlbXTsKICBzaWRlYmFyVGFiOiAnaW52ZW50b3J5JyB8ICd0cmVlJyB8ICdmZWVkJyB8ICdxdWVzdHMnOwogIGlzR2VuZXJhdGluZzogYm9vbGVhbjsKICBnZW5lcmF0aW5nRWxlbWVudHM6IFtzdHJpbmcsIHN0cmluZ10gfCBudWxsOwogIGdlbmVyYXRpbmdPcmI6IEdlbmVyYXRpbmdPcmIgfCBudWxsOwogIGFpRWxlbWVudHM6IFJlY29yZDxzdHJpbmcsIEFJRWxlbWVudD47CiAgYWlDb21iaW5hdGlvbnM6IFJlY29yZDxzdHJpbmcsIEFJQ29tYmluYXRpb24+OwogIGFpU3RhdHVzOiBBSVN0YXR1czsKICB1c2VySWQ6IHN0cmluZzsKICBkaXNwbGF5TmFtZTogc3RyaW5nOwogIGlzQW5vbnltb3VzOiBib29sZWFuOwogIGdsb2JhbERpc2NvdmVyaWVzOiBEaXNjb3ZlcnlbXTsKICBnYW1lTW9kZTogR2FtZU1vZGU7CiAgZnVzaW9uRXZlbnQ6IEZ1c2lvbkV2ZW50IHwgbnVsbDsKICBuZWFyTWlzc0hpbnQ6IHsgbWVzc2FnZTogc3RyaW5nOyBlbGVtZW50TmFtZTogc3RyaW5nIH0gfCBudWxsOwogIGNvbWJvQ291bnQ6IG51bWJlcjsKICBsYXN0RGlzY292ZXJ5VGltZTogbnVtYmVyOwoKICBzZXRQbGF5ZXJOYW1lOiAobmFtZTogc3RyaW5nKSA9PiB2b2lkOwogIHNldFVzZXI6ICh1c2VySWQ6IHN0cmluZywgZGlzcGxheU5hbWU6IHN0cmluZywgaXNBbm9ueW1vdXM6IGJvb2xlYW4pID0+IHZvaWQ7CiAgc2V0QUlTdGF0dXM6IChzdGF0dXM6IEFJU3RhdHVzKSA9PiB2b2lkOwogIGFkZEdsb2JhbERpc2NvdmVyeTogKGRpc2NvdmVyeTogRGlzY292ZXJ5KSA9PiB2b2lkOwogIGluaXNBdXRoOiAoKSA9PiBQcm9taXNlPHZvaWQ+OwogIHNlbGVjdFBhY2s6IChwYWNrSWQ6IHN0cmluZykgPT4gdm9pZDsKICBhZGRPcmI6IChlbGVtZW50SWQ6IHN0cmluZywgeD86IG51bWJlciwgeT86IG51bWJlcikgPT4gdm9pZDsKICByZW1vdmVPcmI6IChvcmJJZDogc3RyaW5nKSA9PiB2b2lkOwogIG1vdmVPcmI6IChvcmJJZDogc3RyaW5nLCB4OiBudW1iZXIsIHk6IG51bWJlcikgPT4gdm9pZDsKICB0cnlDb21iaW5lOiAob3JiQUlkOiBzdHJpbmcsIG9yYkJJZDogc3RyaW5nKSA9PiBQcm9taXNlPHsgc3VjY2VzczogYm9vbGVhbjsgcmVzdWx0PzogR2FtZUVsZW1lbnQsIGNvbWJvQ291bnQ6IG51bWJlcjsgfT47CiAgc2VsZWN0RWxlbWVudDogKGVsZW1lbnRJZDogc3RyaW5nIHwgbnVsbCkgPT4gdm9pZDsKICBzZXRTaWRlYmFyVGFiOiAodGFiOiAnaW52ZW50b3J5JyB8ICd0cmVlJyB8ICdmZWVkJyB8ICdxdWVzdHMnKSA9PiB2b2lkOwogIHJlc3RvcmVTZXNzaW9uOiAoKSA9PiB2b2lkOwogIHJlc2V0R2FtZTogKCkgPT4gdm9pZDsKICBzZXRHYW1lTW9kZTogKG1vZGU6IEdhbWVNb2RlKSA9PiB2b2lkOwogIHRyaWdnZXJGdXNpb246ICh4OiBudW1iZXIsIHk6IG51bWJlciwgZWxlbWVudFR5cGU6IEVsZW1lbnRUeXBlKSA9PiB2b2lkOwogIHNldENhbnZhc09yYnM6IChvcmJzOiBDYW52YXNPcmJbXSkgPT4gdm9pZDsKICB1cGRhdGVHZW5lcmF0aW5nUHJvZ3Jlc3M6IChwcm9ncmVzczogc3RyaW5nKSA9PiB2b2lkOwogIGNsZWFyTmVhck1pc3M6ICgpID0+IHZvaWQ7Cn0KCmV4cG9ydCBjb25zdCB1c2VHYW1lU3RvcmUgPSBjcmVhdGU8R2FtZVN0YXRlPigpKApwZXJzaXN0KAooYWN0aW9ucywgc3RhdGUpID0+ICh7CiAgYWN0aW9ucy5zZXRQbGF5ZXJOYW1lKG5hbWUpOwp9KSwKewogIG5hbWU6ICdhZXRoZXJjcmFmdC1zdG9yYWdlJywKICBwYXJ0aWFsaXplOiAoc3RhdGUpID0+ICh7CiAgICBwbGF5ZXJOYW1lOiBzdGF0ZS5wbGF5ZXJOYW1lLAogICAgZGlzY292ZXJlZEVsZW1lbnRzOiBzdGF0ZS5kaXNjb3ZlcmVkRWxlbWVudHMsCiAgICBjdXJyZW50UGFja0lkOiBzdGF0ZS5jdXJyZW50UGFja0lkLAogICAgcmVjZW50RGlzY292ZXJpZXM6IHN0YXRlLnJlY2VudERpc2NvdmVyaWVzLAogICAgYWlFbGVtZW50czogc3RhdGUuYWlFbGVtZW50cywKICAgIGFpQ29tYmluYXRpb25zOiBzdGF0ZS5haUNvbWJpbmF0aW9ucywKICAgIHVzZXJJZDogc3RhdGUudXNlcklkLAogICAgZGlzcGxheU5hbWU6IHN0YXRlLmRpc3BsYXlOYW1lLAogICAgaXNBbm9ueW1vdXM6IHN0YXRlLmlzQW5vbnltb3VzLAogICAgZ2xvYmFsRGlzY292ZXJpZXM6IHN0YXRlLmdsb2JhbERpc2NvdmVyaWVzLAogICAgZ2FtZU1vZGU6IHN0YXRlLmdhbWVNb2RlLAogIH0pLAp9Cik7Cg==
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { CanvasOrb, Discovery, GameElement, AIElement, AICombination, AIStatus, FusionEvent, GameMode } from '@/types/game';
+import { getElementById, findCombination, ORIGIN_PACKS, ELEMENTS } from '@/lib/gameData';
+import { findTagBasedCombination } from '@/lib/tagEngine';
+import { resolveCombination, hydrateAICache, getAIComboKey } from '@/lib/aiCombinations';
+import { generateElementStream, type OnProgress } from '@/lib/ai/apiGenerator';
+import { initAuth } from '@/lib/auth';
+import { useProgressionStore } from './progressionStore';
+import { playCombineSound, playDiscoverySound, playFunnyFailSound, playComboSound } from '@/lib/audio';
+import type { ElementType } from '@/types/game';
+
+let idCounter = 0;
+const genId = () => `orb_${++idCounter}_${Date.now().toString(36)}`;
+
+interface GeneratingOrb {
+  id: string;
+  elementIds: [string, string];
+  progress: string;
+  x: number;
+  y: number;
+}
+
+interface GameState {
+  playerName: string;
+  currentPackId: string | null;
+  discoveredElements: string[];
+  canvasOrbs: CanvasOrb[];
+  selectedElementId: string | null;
+  recentDiscoveries: Discovery[];
+  sidebarTab: 'inventory' | 'tree' | 'feed' | 'quests';
+  isGenerating: boolean;
+  generatingElements: [string, string] | null;
+  generatingOrb: GeneratingOrb | null;
+  aiElements: Record<string, AIElement>;
+  aiCombinations: Record<string, AICombination>;
+  aiStatus: AIStatus;
+  userId: string;
+  displayName: string;
+  isAnonymous: boolean;
+  globalDiscoveries: Discovery[];
+  gameMode: GameMode;
+  fusionEvent: FusionEvent | null;
+  nearMissHint: { message: string; elementName: string } | null;
+  comboCount: number;
+  lastDiscoveryTime: number;
+
+  setPlayerName: (name: string) => void;
+  setUser: (userId: string, displayName: string, isAnonymous: boolean) => void;
+  setAIStatus: (status: AIStatus) => void;
+  addGlobalDiscovery: (discovery: Discovery) => void;
+  initAuth: () => Promise<void>;
+  selectPack: (packId: string) => void;
+  addOrb: (elementId: string, x?: number, y?: number) => void;
+  removeOrb: (orbId: string) => void;
+  moveOrb: (orbId: string, x: number, y: number) => void;
+  tryCombine: (orbAId: string, orbBId: string) => Promise<{ success: boolean; result?: GameElement; comboCount: number }>;
+  selectElement: (elementId: string | null) => void;
+  setSidebarTab: (tab: 'inventory' | 'tree' | 'feed' | 'quests') => void;
+  restoreSession: () => void;
+  resetGame: () => void;
+  setGameMode: (mode: GameMode) => void;
+  triggerFusion: (x: number, y: number, elementType: ElementType) => void;
+  setCanvasOrbs: (orbs: CanvasOrb[]) => void;
+  updateGeneratingProgress: (progress: string) => void;
+  clearNearMiss: () => void;
+}
+
+export const useGameStore = create<GameState>()(
+  persist(
+    (set, get) => ({
+      playerName: '',
+      currentPackId: null,
+      discoveredElements: [],
+      canvasOrbs: [],
+      selectedElementId: null,
+      recentDiscoveries: [],
+      sidebarTab: 'inventory',
+      isGenerating: false,
+      generatingElements: null,
+      generatingOrb: null,
+      aiElements: {},
+      aiCombinations: {},
+      aiStatus: 'idle',
+      userId: '',
+      displayName: '',
+      isAnonymous: true,
+      globalDiscoveries: [],
+      gameMode: 'sandbox',
+      fusionEvent: null,
+      nearMissHint: null,
+      comboCount: 0,
+      lastDiscoveryTime: 0,
+
+      setPlayerName: (name) => set({ playerName: name }),
+      setUser: (userId, displayName, isAnonymous) => set({ userId, displayName, isAnonymous }),
+      setAIStatus: (status) => set({ aiStatus: status }),
+      addGlobalDiscovery: (discovery) =>
+        set((state) => ({
+          globalDiscoveries: [discovery, ...state.globalDiscoveries].slice(0, 50),
+        })),
+
+      initAuth: async () => {
+        const profile = await initAuth();
+        if (profile) {
+          set({
+            userId: profile.userId,
+            displayName: profile.displayName,
+            isAnonymous: profile.isAnonymous,
+            playerName: profile.displayName,
+          });
+        }
+      },
+
+      selectPack: (packId) => {
+        const pack = ORIGIN_PACKS.find((p) => p.id === packId);
+        if (!pack) return;
+        const starters = pack.elements;
+        set({
+          currentPackId: packId,
+          discoveredElements: starters,
+          canvasOrbs: starters.map((elId, i) => ({
+            id: genId(),
+            elementId: elId,
+            x: 320 + i * 100,
+            y: 280,
+            isNew: false,
+          })),
+          selectedElementId: null,
+          recentDiscoveries: [],
+          gameMode: 'sandbox',
+        });
+      },
+
+      addOrb: (elementId, x, y) => {
+        const orb: CanvasOrb = {
+          id: genId(),
+          elementId,
+          x: x ?? 350 + Math.random() * 80,
+          y: y ?? 350 + Math.random() * 80,
+          isNew: false,
+        };
+        set((state) => ({ canvasOrbs: [...state.canvasOrbs, orb] }));
+      },
+
+      removeOrb: (orbId) => {
+        set((state) => ({ canvasOrbs: state.canvasOrbs.filter((o) => o.id !== orbId) }));
+      },
+
+      moveOrb: (orbId, x, y) => {
+        set((state) => ({
+          canvasOrbs: state.canvasOrbs.map((o) => (o.id === orbId ? { ...o, x, y } : o)),
+        }));
+      },
+
+      updateGeneratingProgress: (progress) => {
+        set((state) => ({
+          generatingOrb: state.generatingOrb ? { ...state.generatingOrb, progress } : null,
+        }));
+      },
+
+      tryCombine: async (orbAId, orbBId) => {
+        const state = get();
+
+        const orbA = state.canvasOrbs.find((o) => o.id === orbAId);
+        const orbB = state.canvasOrbs.find((o) => o.id === orbBId);
+        if (!orbA || !orbB || orbAId === orbBId) return { success: false, comboCount: state.comboCount };
+
+        const resultId = findCombination(orbA.elementId, orbB.elementId);
+
+        if (resultId) {
+          const resultElement = getElementById(resultId);
+          if (!resultElement) return { success: false, comboCount: state.comboCount };
+
+          const isNew = !state.discoveredElements.includes(resultId);
+
+          const now = Date.now();
+          let currentCombo = state.comboCount;
+          if (isNew && now - state.lastDiscoveryTime < 30000) {
+            currentCombo += 1;
+            if (currentCombo >= 2) playComboSound(currentCombo);
+          } else if (isNew) {
+            currentCombo = 1;
+          } else {
+            currentCombo = 0;
+          }
+
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(
+              new CustomEvent('combo-update', { detail: { comboCount: currentCombo, lastDiscoveryTime: now } })
+            );
+          }
+
+          const newOrb: CanvasOrb = {
+            id: genId(),
+            elementId: resultId,
+            x: (orbA.x + orbB.x) / 2,
+            y: (orbA.y + orbB.y) / 2,
+            isNew: true,
+          };
+
+          const discovery: Discovery = {
+            id: genId(),
+            elementId: resultId,
+            elementName: resultElement.name,
+            elementEmoji: resultElement.emoji,
+            timestamp: now,
+            isFirst: isNew,
+            discoverer: state.displayName || state.playerName || 'You',
+          };
+
+          set({
+            canvasOrbs: [...state.canvasOrbs.filter((o) => o.id !== orbAId && o.id !== orbBId), newOrb],
+            discoveredElements: isNew ? [...state.discoveredElements, resultId] : state.discoveredElements,
+            recentDiscoveries: [discovery, ...state.recentDiscoveries].slice(0, 50),
+            globalDiscoveries: [discovery, ...state.globalDiscoveries].slice(0, 50),
+            selectedElementId: resultId,
+            fusionEvent: { x: newOrb.x, y: newOrb.y, elementType: resultElement.type, timestamp: now },
+            nearMissHint: null,
+            comboCount: currentCombo,
+            lastDiscoveryTime: isNew ? now : state.lastDiscoveryTime,
+          });
+
+          const progression = useProgressionStore.getState();
+          const multipliers: Record<number, number> = { 2: 1.5, 3: 2, 4: 2.5, 5: 3 };
+          const multiplier = currentCombo >= 2 ? (multipliers[currentCombo] || 3) : 1;
+          progression.recordDiscovery(isNew, false, multiplier);
+          progression.syncBadges();
+
+          if (isNew) {
+            playDiscoverySound();
+          } else {
+            playCombineSound();
+          }
+
+          setTimeout(() => {
+            set((s) => ({
+              canvasOrbs: s.canvasOrbs.map((o) => (o.id === newOrb.id ? { ...o, isNew: false } : o)),
+              fusionEvent: null,
+            }));
+          }, 2000);
+
+          return { success: true, result: resultElement, comboCount: currentCombo };
+        }
+
+        const nearMiss = findTagBasedCombination(orbA.elementId, orbB.elementId);
+        if (nearMiss) {
+          const elAName = getElementById(orbA.elementId)?.name || '?';
+          const elBName = getElementById(orbB.elementId)?.name || '?';
+          set({
+            nearMissHint: {
+              message: `Hmm... ${elAName} + ${elBName} almost feels like it could make something! Try a different angle.`,
+              elementName: nearMiss.name,
+            },
+          });
+          playFunnyFailSound();
+          setTimeout(() => set({ nearMissHint: null }), 3000);
+          return { success: false, comboCount: state.comboCount };
+        }
+
+        playFunnyFailSound();
+        set((s) => ({ comboCount: 0 }));
+
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('combo-update', { detail: { comboCount: 0, lastDiscoveryTime: state.lastDiscoveryTime } }));
+        }
+
+        const generatingOrbId = `gen_${Date.now()}`;
+        const placeholderOrb: CanvasOrb = {
+          id: generatingOrbId,
+          elementId: 'generating',
+          x: (orbA.x + orbB.x) / 2,
+          y: (orbA.y + orbB.y) / 2,
+          isNew: false,
+          isGenerating: true,
+        };
+
+        set((s) => ({
+          canvasOrbs: [...s.canvasOrbs.filter((o) => o.id !== orbAId && o.id !== orbBId), placeholderOrb],
+          isGenerating: true,
+          generatingElements: [orbA.elementId, orbB.elementId],
+          generatingOrb: {
+            id: generatingOrbId,
+            elementIds: [orbA.elementId, orbB.elementId],
+            progress: 'The AI is thinking...',
+            x: placeholderOrb.x,
+            y: placeholderOrb.y,
+          },
+        }));
+
+        const elA = getElementById(orbA.elementId);
+        const elB = getElementById(orbB.elementId);
+        if (!elA || !elB) return { success: false, comboCount: 0 };
+
+        const onProgress: OnProgress = (partialText) => {
+          const short = partialText.slice(0, 60).replace(/\n/g, ' ');
+          get().updateGeneratingProgress(short);
+        };
+
+        try {
+          const generated = await generateElementStream(elA, elB, onProgress);
+
+          if (!generated) {
+            set((s) => ({
+              canvasOrbs: s.canvasOrbs.filter((o) => o.id !== generatingOrbId),
+              isGenerating: false,
+              generatingElements: null,
+              generatingOrb: null,
+            }));
+            return { success: false, comboCount: 0 };
+          }
+
+          let resultElement: GameElement | null = getElementById(generated.name);
+          if (!resultElement) {
+            resultElement = {
+              id: getAIComboKey(orbA.elementId, orbB.elementId),
+              name: generated.name,
+              emoji: generated.emoji,
+              type: generated.type as any,
+              properties: ['ai-generated'],
+              isAIGenerated: true,
+              createdBy: state.userId || 'guest',
+              createdAt: Date.now(),
+              discovererName: state.displayName || 'Guest',
+            } as AIElement;
+          }
+
+          const discoveredId = resultElement.id;
+          const isNew = !state.discoveredElements.includes(discoveredId);
+
+          const nowAI = Date.now();
+          let currentCombo = get().comboCount;
+          if (isNew && nowAI - get().lastDiscoveryTime < 30000) {
+            currentCombo += 1;
+            if (currentCombo >= 2) playComboSound(currentCombo);
+          } else if (isNew) {
+            currentCombo = 1;
+          } else {
+            currentCombo = 0;
+          }
+
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(
+              new CustomEvent('combo-update', { detail: { comboCount: currentCombo, lastDiscoveryTime: nowAI } })
+            );
+          }
+
+          const finalOrb: CanvasOrb = {
+            id: genId(),
+            elementId: discoveredId,
+            x: (orbA.x + orbB.x) / 2,
+            y: (orbA.y + orbB.y) / 2,
+            isNew: true,
+          };
+
+          const discovery: Discovery = {
+            id: genId(),
+            elementId: discoveredId,
+            elementName: resultElement.name,
+            elementEmoji: resultElement.emoji,
+            timestamp: nowAI,
+            isFirst: isNew,
+            discoverer: state.displayName || 'You',
+          };
+
+          const comboKey = getAIComboKey(orbA.elementId, orbB.elementId);
+
+          set((s) => ({
+            canvasOrbs: [
+              ...s.canvasOrbs.filter((o) => o.id !== generatingOrbId),
+              finalOrb,
+            ],
+            discoveredElements: isNew
+              ? [...s.discoveredElements, discoveredId]
+              : s.discoveredElements,
+            recentDiscoveries: [discovery, ...s.recentDiscoveries].slice(0, 50),
+            globalDiscoveries: [discovery, ...s.globalDiscoveries].slice(0, 50),
+            selectedElementId: discoveredId,
+            isGenerating: false,
+            generatingElements: null,
+            generatingOrb: null,
+            nearMissHint: null,
+            comboCount: currentCombo,
+            lastDiscoveryTime: isNew ? nowAI : s.lastDiscoveryTime,
+            aiElements: resultElement.isAIGenerated
+              ? { ...s.aiElements, [discoveredId]: resultElement as AIElement }
+              : s.aiElements,
+            aiCombinations: {
+              ...s.aiCombinations,
+              [comboKey]: {
+                id: comboKey,
+                elementA: orbA.elementId,
+                elementB: orbB.elementId,
+                resultId: discoveredId,
+                discoveredBy: state.userId || 'guest',
+                discoveredAt: Date.now(),
+                discovererName: state.displayName || 'Guest',
+                resultName: resultElement.name,
+                resultEmoji: resultElement.emoji,
+              },
+            },
+            fusionEvent: { x: finalOrb.x, y: finalOrb.y, elementType: resultElement.type, timestamp: nowAI },
+          }));
+
+          const progression = useProgressionStore.getState();
+          const multipliersAI: Record<number, number> = { 2: 1.5, 3: 2, 4: 2.5, 5: 3 };
+          const multiplier = currentCombo >= 2 ? (multipliersAI[currentCombo] || 3) : 1;
+          progression.recordDiscovery(isNew, resultElement.isAIGenerated === true, multiplier);
+          progression.syncBadges();
+
+          if (isNew) {
+            playDiscoverySound();
+          } else {
+            playCombineSound();
+          }
+
+          setTimeout(() => {
+            set((s2) => ({
+              canvasOrbs: s2.canvasOrbs.map((o) => (o.id === finalOrb.id ? { ...o, isNew: false } : o)),
+              fusionEvent: null,
+            }));
+          }, 2000);
+
+          return { success: true, result: resultElement, comboCount: currentCombo };
+        } catch (e) {
+          set((s) => ({
+            canvasOrbs: s.canvasOrbs.filter((o) => o.id !== generatingOrbId),
+            isGenerating: false,
+            generatingElements: null,
+            generatingOrb: null,
+          }));
+          return { success: false, comboCount: 0 };
+        }
+      },
+
+      clearNearMiss: () => set({ nearMissHint: null }),
+      selectElement: (id) => set({ selectedElementId: id }),
+      setSidebarTab: (tab) => set({ sidebarTab: tab }),
+
+      restoreSession: () => {
+        const state = get();
+        hydrateAICache(state.aiElements, state.aiCombinations);
+
+        if (state.currentPackId && state.canvasOrbs.length === 0) {
+          const pack = ORIGIN_PACKS.find((p) => p.id === state.currentPackId);
+          if (pack) {
+            set({
+              canvasOrbs: pack.elements.map((elId, i) => ({
+                id: genId(),
+                elementId: elId,
+                x: 320 + i * 100,
+                y: 280,
+                isNew: false,
+              })),
+            });
+          }
+        }
+      },
+
+      resetGame: () =>
+        set({
+          discoveredElements: [],
+          canvasOrbs: [],
+          selectedElementId: null,
+          recentDiscoveries: [],
+          currentPackId: null,
+          globalDiscoveries: [],
+          gameMode: 'sandbox',
+        }),
+
+      setGameMode: (mode) => {
+        set({ gameMode: mode });
+        if (mode === 'sandbox' && get().currentPackId) {
+          const pack = ORIGIN_PACKS.find((p) => p.id === get().currentPackId);
+          if (pack) {
+            set({
+              canvasOrbs: pack.elements.map((elId, i) => ({
+                id: genId(),
+                elementId: elId,
+                x: 320 + i * 100,
+                y: 280,
+                isNew: false,
+              })),
+            });
+          }
+        }
+      },
+
+      triggerFusion: (x, y, elementType) => {
+        set({ fusionEvent: { x, y, elementType: elementType as any, timestamp: Date.now() } });
+        setTimeout(() => set({ fusionEvent: null }), 2000);
+      },
+
+      setCanvasOrbs: (orbs) => set({ canvasOrbs: orbs }),
+    }),
+    {
+      name: 'aethercraft-storage',
+      partialize: (state) => ({
+        playerName: state.playerName,
+        discoveredElements: state.discoveredElements,
+        currentPackId: state.currentPackId,
+        recentDiscoveries: state.recentDiscoveries,
+        aiElements: state.aiElements,
+        aiCombinations: state.aiCombinations,
+        userId: state.userId,
+        displayName: state.displayName,
+        isAnonymous: state.isAnonymous,
+        globalDiscoveries: state.globalDiscoveries,
+        gameMode: state.gameMode,
+      }),
+    }
+  )
+);
