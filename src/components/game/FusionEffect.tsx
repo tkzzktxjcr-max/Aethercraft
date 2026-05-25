@@ -1,1 +1,117 @@
-InVzZSBjbGllbnQiOwoKaW1wb3J0IHsgdXNlRWZmZWN0LCB1c2VTdGF0ZSB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgdXNlR2FtZVN0b3JlIH0gZnJvbSAnQC9zdG9yZS9nYW1lU3RvcmUnOwppbXBvcnQgeyBtb3Rpb24sIEFuaW1hdGVQcmVzZW5jZSB9IGZyb20gJ2ZyYW1lci1tb3Rpb24nOwoKY29uc3QgVFlQRV9DT0xPUlM6IFJlY29yZDxzdHJpbmcsIHN0cmluZz4gPSB7CiAgZW5lcmd5OiAnI2Y1OWUwYicsCiAgbGlxdWlkOiAnIzNiODJmNicsCiAgbGlmZTogJyMyMmM1NWUnLAogIGNvc21pYzogJyM4YjVjZjYnLAogIG1hdHRlcjogJyNhMTYyMDcnLAogIGdhczogJyMwNmI2ZDQnLAp9OwoKaW50ZXJmYWNlIFBhcnRpY2xlIHsKICBpZDogbnVtYmVyOwogIHg6IG51bWJlcjsKICB5OiBudW1iZXI7CiAgYW5nbGU6IG51bWJlcjsKICBkaXN0YW5jZTogbnVtYmVyOwogIGNvbG9yOiBzdHJpbmc7CiAgc2l6ZTogbnVtYmVyOwogIGRlbGF5OiBudW1iZXI7Cn0KCmludGVyZmFjZSBTaG9ja3dhdmUgewogIGlkOiBudW1iZXI7CiAgeDogbnVtYmVyOwogIHk6IG51bWJlcjsKICBjb2xvcjogc3RyaW5nOwp9CgpleHBvcnQgY29uc3QgRnVzaW9uRWZmZWN0ID0gKCkgPT4gewogIGNvbnN0IGZ1c2lvbkV2ZW50ID0gdXNlR2FtZVN0b3JlKChzKSA9PiBzLmZ1c2lvbkV2ZW50KTsKICBjb25zdCBbcGFydGljbGVzLCBzZXRQYXJ0aWNsZXNdID0gdXNlU3RhdGU8UGFydGljbGVbXT4oW10pOwogIGNvbnN0IFtzaG9ja3dhdmVzLCBzZXRTaG9ja3dhdmVzXSA9IHVzZVN0YXRlPFNob2Nrd2F2ZVtdPihbXSk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBpZiAoIWZ1c2lvbkV2ZW50KSByZXR1cm47CiAgICBjb25zdCBjb2xvciA9IFRZUEVfQ09MT1JTW2Z1c2lvbkV2ZW50LmVsZW1lbnRUeXBlXSB8fCAnIzhiNWNmNic7CgogICAgY29uc3Qgc3dJZCA9IERhdGUubm93KCk7CiAgICBzZXRTaG9ja3dhdmVzKChwcmV2KSA9PiBbLi4ucHJldiwgeyBpZDogc3dJZCwgeDogZnVzaW9uRXZlbnQueCwgeTogZnVzaW9uRXZlbnQueSwgY29sb3IgfV0pOwogICAgc2V0VGltZW91dCgoKSA9PiB7CiAgICAgIHNldFNob2Nrd2F2ZXMoKHByZXYpID0+IHByZXYuZmlsdGVyKChzKSA9PiBzLmlkICE9PSBzd0lkKSk7CiAgICB9LCA5MDApOwoKICAgIGNvbnN0IG5ld1BhcnRpY2xlczogUGFydGljbGVbXSA9IEFycmF5LmZyb20oeyBsZW5ndGg6IDQwIH0sIChfLCBpKSA9PiAoewogICAgICBpZDogRGF0ZS5ub3coKSArIGksCiAgICAgIHg6IGZ1c2lvbkV2ZW50LngsCiAgICAgIHk6IGZ1c2lvbkV2ZW50LnksCiAgICAgIGFuZ2xlOiAoTWF0aC5QSSAqIDIgKiBpKSAvIDQwICsgTWF0aC5yYW5kb20oKSAqIDAuNCwKICAgICAgZGlzdGFuY2U6IDMwICsgTWF0aC5yYW5kb20oKSAqIDEyMCwKICAgICAgY29sb3IsCiAgICAgIHNpemU6IDIgKyBNYXRoLnJhbmRvbSgpICogNiwKICAgICAgZGVsYXk6IE1hdGgucmFuZG9tKCkgKiAwLjE1LAogICAgfSkpOwogICAgc2V0UGFydGljbGVzKChwcmV2KSA9PiBbLi4ucHJldiwgLi4ubmV3UGFydGljbGVzXSk7CiAgICBjb25zdCB0aW1lciA9IHNldFRpbWVvdXQoKCkgPT4gewogICAgICBzZXRQYXJ0aWNsZXMoKHByZXYpID0+IHByZXYuZmlsdGVyKChwKSA9PiAhbmV3UGFydGljbGVzLmZpbmQoKG5wKSA9PiBucC5pZCA9PT0gcC5pZCkpKTsKICAgIH0sIDEyMDApOwogICAgcmV0dXJuICgpID0+IGNsZWFyVGltZW91dCh0aW1lcik7CiAgfSwgW2Z1c2lvbkV2ZW50XSk7CgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0iYWJzb2x1dGUgaW5zZXQtMCBwb2ludGVyLWV2ZW50cy1ub25lIHotNDAgb3ZlcmZsb3ctaGlkZGVuIj4KICAgICAgPEFuaW1hdGVQcmVzZW5jZT4KICAgICAgICB7c2hvY2t3YXZlcy5tYXAoKHN3KSA9PiAoCiAgICAgICAgICA8bW90aW9uLmRpdgogICAgICAgICAgICBrZXk9e3N3LmlkfQogICAgICAgICAgICBpbml0aWFsPXt7IHg6IHN3LngsIHk6IHN3LnksIHNjYWxlOiAwLCBvcGFjaXR5OiAwLjcgfX0KICAgICAgICAgICAgYW5pbWF0ZT17eyBzY2FsZTogNCwgb3BhY2l0eTogMCB9fQogICAgICAgICAgICBleGl0PXt7IG9wYWNpdHk6IDAgfX0KICAgICAgICAgICAgdHJhbnNpdGlvbj17eyBkdXJhdGlvbjogMC44LCBlYXNlOiAnZWFzZU91dCcgfX0KICAgICAgICAgICAgY2xhc3NOYW1lPSJhYnNvbHV0ZSByb3VuZGVkLWZ1bGwgYm9yZGVyLTIiCiAgICAgICAgICAgIHN0eWxlPXt7CiAgICAgICAgICAgICAgbGVmdDogMCwgdG9wOiAwLAogICAgICAgICAgICAgIHdpZHRoOiA2NCwKICAgICAgICAgICAgICBoZWlnaHQ6IDY0LAogICAgICAgICAgICAgIG1hcmdpbkxlZnQ6IC0zMiwKICAgICAgICAgICAgICBtYXJnaW5Ub3A6IC0zMiwKICAgICAgICAgICAgICBib3JkZXJDb2xvcjogc3cuY29sb3IsCiAgICAgICAgICAgICAgYmFja2dyb3VuZENvbG9yOiAndHJhbnNwYXJlbnQnLAogICAgICAgICAgICAgIGJveFNoYWRvdzogYDAgMCAzMHB4ICR7c3cuY29sb3J9NDBgLAogICAgICAgICAgICB9fQogICAgICAgICAgLz4KICAgICAgICApKX0KICAgICAgPC9BbmltYXRlUHJlc2VuY2U+CiAgICAgIAogICAgICA8QW5pbWF0ZVByZXNlbmNlPgogICAgICAgIHtwYXJ0aWNsZXMubWFwKChwKSA9PiAoCiAgICAgICAgICA8bW90aW9uLmRpdgogICAgICAgICAgICBrZXk9e3AuaWR9CiAgICAgICAgICAgIGluaXRpYWw9e3sgeDogcC54LCB5OiBwLnksIHNjYWxlOiAxLjUsIG9wYWNpdHk6IDEgfX0KICAgICAgICAgICAgYW5pbWF0ZT17ewogICAgICAgICAgICAgIHg6IHAueCArIE1hdGguY29zKHAuYW5nbGUpICogcC5kaXN0YW5jZSwKICAgICAgICAgICAgICB5OiBwLnkgKyBNYXRoLnNpbihwLmFuZ2xlKSAqIHAuZGlzdGFuY2UsCiAgICAgICAgICAgICAgc2NhbGU6IDAsCiAgICAgICAgICAgICAgb3BhY2l0eTogMCwKICAgICAgICAgICAgfX0KICAgICAgICAgICAgZXhpdD17eyBvcGFjaXR5OiAwIH19CiAgICAgICAgICAgIHRyYW5zaXRpb249e3sgZHVyYXRpb246IDAuOSwgZWFzZTogJ2Vhc2VPdXQnLCBkZWxheTogcC5kZWxheSB9fQogICAgICAgICAgICBjbGFzc05hbWU9ImFic29sdXRlIHJvdW5kZWQtZnVsbCIKICAgICAgICAgICAgc3R5bGU9e3sKICAgICAgICAgICAgICB3aWR0aDogcC5zaXplLAogICAgICAgICAgICAgIGhlaWdodDogcC5zaXplLAogICAgICAgICAgICAgIGJhY2tncm91bmRDb2xvcjogcC5jb2xvciwKICAgICAgICAgICAgICBib3hTaGFkb3c6IGAwIDAgJHtwLnNpemUgKiAzfXB4ICR7cC5jb2xvcn0sIDAgMCAke3Auc2l6ZSAqIDZ9cHggJHtwLmNvbG9yfTYwYCwKICAgICAgICAgICAgICBmaWx0ZXI6ICdibHVyKDAuNXB4KScsCiAgICAgICAgICAgIH19CiAgICAgICAgICAvPgogICAgICAgICkpfQogICAgICA8L0FuaW1hdGVQcmVzZW5jZT4KICAgIDwvZGl2PgogICk7Cn07Cg==
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useGameStore } from '@/store/gameStore';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const TYPE_COLORS: Record<string, string> = {
+  energy: '#f59e0b',
+  liquid: '#3b82f6',
+  life: '#22c55e',
+  cosmic: '#8b5cf6',
+  matter: '#a16207',
+  gas: '#06b6d4',
+};
+
+interface Particle {
+  id: number;
+  x: number;
+  y: number;
+  angle: number;
+  distance: number;
+  color: string;
+  size: number;
+  delay: number;
+}
+
+interface Shockwave {
+  id: number;
+  x: number;
+  y: number;
+  color: string;
+}
+
+export const FusionEffect = () => {
+  const fusionEvent = useGameStore((s) => s.fusionEvent);
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [shockwaves, setShockwaves] = useState<Shockwave[]>([]);
+
+  useEffect(() => {
+    if (!fusionEvent) return;
+    const color = TYPE_COLORS[fusionEvent.elementType] || '#8b5cf6';
+
+    const swId = Date.now();
+    setShockwaves((prev) => [...prev, { id: swId, x: fusionEvent.x, y: fusionEvent.y, color }]);
+    setTimeout(() => {
+      setShockwaves((prev) => prev.filter((s) => s.id !== swId));
+    }, 900);
+
+    const newParticles: Particle[] = Array.from({ length: 40 }, (_, i) => ({
+      id: Date.now() + i,
+      x: fusionEvent.x,
+      y: fusionEvent.y,
+      angle: (Math.PI * 2 * i) / 40 + Math.random() * 0.4,
+      distance: 30 + Math.random() * 120,
+      color,
+      size: 2 + Math.random() * 6,
+      delay: Math.random() * 0.15,
+    }));
+    setParticles((prev) => [...prev, ...newParticles]);
+    const timer = setTimeout(() => {
+      setParticles((prev) => prev.filter((p) => !newParticles.find((np) => np.id === p.id)));
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [fusionEvent]);
+
+  return (
+    <div className="absolute inset-0 pointer-events-none z-40 overflow-hidden">
+      <AnimatePresence>
+        {shockwaves.map((sw) => (
+          <motion.div
+            key={sw.id}
+            initial={{ x: sw.x, y: sw.y, scale: 0, opacity: 0.7 }}
+            animate={{ scale: 4, opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="absolute rounded-full border-2"
+            style={{
+              left: 0, top: 0,
+              width: 64,
+              height: 64,
+              marginLeft: -32,
+              marginTop: -32,
+              borderColor: sw.color,
+              backgroundColor: 'transparent',
+              boxShadow: `0 0 30px ${sw.color}40`,
+            }}
+          />
+        ))}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {particles.map((p) => (
+          <motion.div
+            key={p.id}
+            initial={{ x: p.x, y: p.y, scale: 1.5, opacity: 1 }}
+            animate={{
+              x: p.x + Math.cos(p.angle) * p.distance,
+              y: p.y + Math.sin(p.angle) * p.distance,
+              scale: 0,
+              opacity: 0,
+            }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.9, ease: 'easeOut', delay: p.delay }}
+            className="absolute rounded-full"
+            style={{
+              width: p.size,
+              height: p.size,
+              backgroundColor: p.color,
+              boxShadow: `0 0 ${p.size * 3}px ${p.color}, 0 0 ${p.size * 6}px ${p.color}60`,
+              filter: 'blur(0.5px)',
+            }}
+          />
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+};
