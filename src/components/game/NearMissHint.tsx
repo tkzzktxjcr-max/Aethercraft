@@ -1,1 +1,28 @@
-In91c2UgY2xpZW50IjsKaW1wb3J0IHsgdXNlR2FtZVN0b3JlIH0gZnJvbSAnQC9zdG9yZS9nYW1lU3RvcmUnOwppbXBvcnQgeyBtb3Rpb24sIEFuaW1hdGVQcmVzZW5jZSB9IGZyb20gJ2ZyYW1lci1tb3Rpb24nOwppbXBvcnQgeyBIZWxwQ2lyY2xlIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKCgpleHBvcnQgY29uc3QgTmVhck1pc3NIaW50ID0gKCkgPT4gewogIGNvbnN0IHsgbmVhck1pc3NIaW50IH0gPSB1c2VHYW1lU3RvcmUoKTsKCiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJhYnNvbHV0ZSB0b3AtMjggbGVmdC0xLzIgLXRyYW5zbGF0ZS14LTEvMiB6LVs1NV0gZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIgcG9pbnRlci1ldmVudHMtbm9uZSI+CiAgICAgIDxBbmltYXRlUHJlc2VuY2U+CiAgICAgICAge25lYXJNaXNzSGludCAmJigKICAgICAgICAgIDxNb3Rpb24uZGl2CiAgICAgICAgICAgIGluaXRpYWw9e3sgb3BhY2l0eTogMCwgeTogLTIwLCBzY2FsZTogMC45IH19CiAgICAgICAgICAgIGFuaW1hdGU9e3sgb3BhY2l0eTogMSwgeTogMCwgc2NhbGU6IDEgfX0KICAgICAgICAgICAgZXhpdD17eyBvcGFjaXR5OiAwLCB5OiAtMTAsIHNjYWxlOiAwLjk1IH19CiAgICAgICAgICAgIHRyYW5zaXRpb249e3sgdHlwZTogJ3NwcmluZycsIHN0aWZmbmVzczogNDAwLCBkYW1waW5nOiAyNSB9fQogICAgICAgICAgICBjbGFzc05hbWU9InB4LTQgcHktMi41IHJvdW5kZWQteGwgYmctYW1iZXItNTAvOTUgYm9yZGVyIGJvcmRlci1hbWJlci0yMDAgc2hhZG93LWxnIGZsZXggaXRlbXMtY2VudGVyIGdhcC0yIgogICAgICAgICAgPgogICAgICAgICAgICA8SGVscENpcmNsZSBjbGFzc05hbWU9InctNCBoLTQgdGV4dC1hbWJlci01MDAgc2hyaW5rLTAiIC8+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC14cyBmb250LW1lZGl1bSB0ZXh0LWFtYmVyLTgwMCI+e25lYXJNaXNzSGludC5tZXNzYWdlfTwvc3Bhbj4KICAgICAgICAgIDwvTW90aW9uLmRpdj4KICAgICAgICApfQogICAgICA8L0FuaW1hdGVQcmVzZW5jZT4KICAgIDwvZGl2PgogICk7Cn07Cg==
+"use client";
+
+import { useGameStore } from '@/store/gameStore';
+import { motion, AnimatePresence } from 'framer-motion';
+import { HelpCircle } from 'lucide-react';
+
+export const NearMissHint = () => {
+  const { nearMissHint } = useGameStore();
+
+  return (
+    <div className="absolute top-28 left-1/2 -translate-x-1/2 z-[55] flex flex-col items-center pointer-events-none">
+      <AnimatePresence>
+        {nearMissHint && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className="px-4 py-2.5 rounded-xl bg-amber-50/95 border border-amber-200 shadow-lg flex items-center gap-2"
+          >
+            <HelpCircle className="w-4 h-4 text-amber-500 shrink-0" />
+            <span className="text-xs font-medium text-amber-800">{nearMissHint.message}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
