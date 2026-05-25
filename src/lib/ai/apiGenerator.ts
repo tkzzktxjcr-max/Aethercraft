@@ -1,18 +1,11 @@
-/**
- * Server-side AI generation via Ollama API with streaming progress.
- * No fallback — Ollama is the sole AI source.
- * Streaming shows partial output in real-time for immersive UX.
- */
 import type { GameElement } from "@/types/game";
+import { buildPrompt } from "./apiPrompts";
 
 const OLLAMA_URL = "https://ai.aethercraft.071098v2.duckdns.org/api/generate";
 const OLLAMA_MODEL = "qwen2.5:7b";
 
 export type OnProgress = (partialText: string) => void;
 
-/**
- * Stream a combination from Ollama, showing partial text as it arrives.
- */
 export async function generateElementStream(
   elementA: GameElement,
   elementB: GameElement,
@@ -32,8 +25,12 @@ export async function generateElementStream(
       prompt,
       stream: true,
       options: {
-        temperature: 0.7,
-        num_predict: 80,
+        temperature: 0.85,
+        num_predict: 60,
+        top_k: 40,
+        top_p: 0.9,
+        repeat_penalty: 1.1,
+        seed: Math.floor(Math.random() * 100000),
       },
     }),
   });
@@ -87,42 +84,10 @@ export async function generateElementStream(
   return generated;
 }
 
-function buildPrompt(elementA: GameElement, elementB: GameElement): string {
-  const propsA = [...elementA.properties, ...(elementA.tags || []), elementA.type].filter(Boolean);
-  const propsB = [...elementB.properties, ...(elementB.tags || []), elementB.type].filter(Boolean);
-
-  return `You are an infinite-crafting alchemy game engine inspired by Infinite Craft.
-
-Combine these two elements into ONE new element. The result must be creative, surprising, and instantly make sense.
-
-RULES:
-- The result MUST follow at least one logic: physical, symbolic, cultural, humorous, linguistic, scientific, emotional, historical, or fictional
-- The result must feel obvious AFTER the fact ("ah yes... that makes sense")
-- Name: 1-4 common English words max
-- Never make up invented words (no Starfire, Voidling)
-- Output ONLY valid JSON: {"name":"...","emoji":"...","type":"..."}
-- Type must be one of: energy, liquid, life, cosmic, matter, gas
-
-Element A: ${elementA.name} ${elementA.emoji} (${propsA.join(", ")})
-Element B: ${elementB.name} ${elementB.emoji} (${propsB.join(", ")})
-
-GOOD:
-Fire + Water → {"name":"Steam","emoji":"♨️","type":"gas"}
-Robot + Magic → {"name":"Technomancy","emoji":"🤖","type":"energy"}
-Cat + Internet → {"name":"Meme","emoji":"😹","type":"matter"}
-Moon + Love → {"name":"Tide","emoji":"🌊","type":"liquid"}
-Dragon + Fire → {"name":"Ash Drake","emoji":"🐉","type":"life"}
-
-BAD:
-Fire + Water → {"name":"Cosmic Banana","emoji":"🍌","type":"matter"}
-Metal + Fire → {"name":"Quantum Explosion","emoji":"💥","type":"energy"}
-
-${elementA.name} + ${elementB.name} → `;
-}
-
 function parseServerResponse(raw: string): { name: string; emoji: string; type: string } | null {
   try {
-    const jsonMatch = raw.match(/\{[\s\S]*?\}/);
+    const cleaned = raw.replace(/\n/g, ' ').replace(/\s+/g, ' ');
+    const jsonMatch = cleaned.match(/\{[^{}]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
       if (parsed.name && parsed.emoji && parsed.type) {
