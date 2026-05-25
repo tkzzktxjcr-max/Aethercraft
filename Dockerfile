@@ -13,7 +13,8 @@ COPY package.json pnpm-lock.yaml ./
 # then approve build scripts for native deps, then final install
 RUN pnpm install --no-frozen-lockfile || true && \
     pnpm approve-builds esbuild @swc/core && \
-    pnpm install --no-frozen-lockfile || true
+    pnpm install --no-frozen-lockfile && \
+    pnpm rebuild esbuild @swc/core
 
 # Copy source
 COPY . .
